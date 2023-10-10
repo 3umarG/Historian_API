@@ -24,12 +24,10 @@ public record RegisterStudentRequestDto(
 
 
         @NotNull(message = "Gender of the user is required")
-        @NotBlank(message = "Gender of the user is required")
         Gender gender,
 
 
         @NotNull(message = "Have SIM_Card or not is required")
-        @NotBlank(message = "Have SIM_Card or not is required")
         boolean haveSimCard,
 
 

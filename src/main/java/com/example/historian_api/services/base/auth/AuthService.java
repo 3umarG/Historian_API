@@ -1,0 +1,11 @@
+package com.example.historian_api.services.base.auth;
+
+import com.example.historian_api.dtos.requests.RegisterStudentRequestDto;
+import com.example.historian_api.dtos.requests.RegisterTeacherRequestDto;
+import com.example.historian_api.dtos.responses.RegisterStudentResponseDto;
+
+import java.io.IOException;
+
+public interface AuthService {
+    RegisterStudentResponseDto registerStudent(RegisterStudentRequestDto requestDto) throws IOException;
+}

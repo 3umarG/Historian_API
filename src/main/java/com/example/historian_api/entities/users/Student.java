@@ -1,5 +1,6 @@
 package com.example.historian_api.entities.users;
 
+import com.example.historian_api.dtos.requests.RegisterStudentRequestDto;
 import com.example.historian_api.enums.Gender;
 import com.example.historian_api.enums.Role;
 import jakarta.persistence.*;
@@ -170,20 +171,20 @@ public class Student implements UserDetails {
         );
     }
 
-//    public static Student generateStudentFromRequestDto(
-//            StudentRegisterRequestDto dto,
-//            String photoUrl,
-//            UserImage userImage){
-//        return new Student(
-//                dto.getName(),
-//                dto.getDeviceSerial(),
-//                dto.getPhone(),
-//                Role.ROLE_USER,
-//                dto.getGender(),
-//                dto.isHaveSimCard(),
-//                dto.getToken(),
-//                photoUrl,
-//                userImage
-//        );
-//    }
+    public static Student generateStudentFromRequestDto(
+            RegisterStudentRequestDto dto,
+            String photoUrl,
+            StudentImage userImage){
+        return new Student(
+                dto.name(),
+                dto.deviceSerial(),
+                dto.phone(),
+                Role.ROLE_USER,
+                dto.gender(),
+                dto.haveSimCard(),
+                dto.token(),
+                photoUrl,
+                userImage
+        );
+    }
 }
