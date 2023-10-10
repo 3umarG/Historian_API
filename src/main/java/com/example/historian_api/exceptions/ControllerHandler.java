@@ -5,15 +5,20 @@ import com.example.historian_api.exceptions.auth.NotFoundPhoneNumberLoginExcepti
 import com.example.historian_api.exceptions.auth.UsedPhoneRegisterException;
 import com.example.historian_api.factories.impl.*;
 import com.example.historian_api.models.ApiCustomResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestControllerAdvice
 @ResponseBody
@@ -25,6 +30,23 @@ public class ControllerHandler {
     private final ResponseFactory404 notFoundFactory;
     private final ResponseFactory401 unAuthorizedFactory;
     private final ResponseFactory403 forbiddenFactory;
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> notValid(MethodArgumentNotValidException ex) {
+        List<String> errors = new ArrayList<>();
+
+        ex.getAllErrors().forEach(err -> errors.add(err.getDefaultMessage()));
+
+        var responseBody = ApiCustomResponse
+                .builder()
+                .message("Not Valid request inputs !!")
+                .statusCode(400)
+                .isSuccess(false)
+                .data(errors)
+                .build();
+
+        return ResponseEntity.badRequest().body(responseBody);
+    }
 
     @ExceptionHandler(AlreadySolvedQuizException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
