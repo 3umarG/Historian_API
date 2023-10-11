@@ -2,7 +2,7 @@ package com.example.historian_api.services.impl.auth;
 
 import com.example.historian_api.entities.users.StudentImage;
 import com.example.historian_api.exceptions.NotFoundResourceException;
-import com.example.historian_api.repositories.StudentImageRepository;
+import com.example.historian_api.repositories.users.StudentImageRepository;
 import com.example.historian_api.services.base.auth.StudentsImageService;
 import com.example.historian_api.utils.ImageUtils;
 import com.example.historian_api.utils.constants.ExceptionMessages;
