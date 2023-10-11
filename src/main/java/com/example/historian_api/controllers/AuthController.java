@@ -6,9 +6,11 @@ import com.example.historian_api.dtos.requests.RegisterStudentRequestDto;
 import com.example.historian_api.dtos.requests.RegisterTeacherRequestDto;
 import com.example.historian_api.factories.impl.ResponseFactory200;
 import com.example.historian_api.services.base.auth.AuthService;
+import com.example.historian_api.services.base.auth.StudentsImageService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -25,6 +27,7 @@ public class AuthController {
 
     private final ResponseFactory200 factory;
     private final AuthService authService;
+    private final StudentsImageService studentsImageService;
 
     @PostMapping(
             value = "/students/register",
@@ -61,5 +64,14 @@ public class AuthController {
             ){
         var response = factory.createResponse(authService.loginTeacher(loginDto));
         return ResponseEntity.ok().body(response);
+    }
+
+//    /students/images/TITLE
+    @GetMapping("/students/images/{title}")
+    public ResponseEntity<?> getImageByTitle(@PathVariable String title){
+        byte[] imageData = studentsImageService.downloadImage(title);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/png"))
+                .body(imageData);
     }
 }
