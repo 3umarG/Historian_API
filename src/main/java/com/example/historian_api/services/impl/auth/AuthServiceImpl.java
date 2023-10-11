@@ -1,14 +1,17 @@
 package com.example.historian_api.services.impl.auth;
 
 import com.example.historian_api.dtos.requests.LoginStudentRequestDto;
+import com.example.historian_api.dtos.requests.LoginTeacherRequestDto;
 import com.example.historian_api.dtos.requests.RegisterStudentRequestDto;
 import com.example.historian_api.dtos.requests.RegisterTeacherRequestDto;
 import com.example.historian_api.dtos.responses.LoginStudentResponseDto;
+import com.example.historian_api.dtos.responses.LoginTeacherResponseDto;
 import com.example.historian_api.dtos.responses.RegisterStudentResponseDto;
 import com.example.historian_api.dtos.responses.RegisterTeacherResponseDto;
 import com.example.historian_api.entities.users.Student;
 import com.example.historian_api.entities.users.StudentImage;
 import com.example.historian_api.entities.users.Teacher;
+import com.example.historian_api.exceptions.MismatchPasswordException;
 import com.example.historian_api.exceptions.NotFoundAuthenticatedUserException;
 import com.example.historian_api.exceptions.auth.AlreadyLoginPhoneWithAnotherDeviceException;
 import com.example.historian_api.exceptions.auth.NotFoundPhoneNumberLoginException;
@@ -127,6 +130,66 @@ public class AuthServiceImpl implements AuthService {
         var savedTeacher = saveTeacherToDb(teacher);
 
         return generateRegisterTeacherResponseDto(savedTeacher);
+
+    }
+
+    @Override
+    public LoginTeacherResponseDto loginTeacher(LoginTeacherRequestDto loginDto) {
+        var teacher = findTeacherByPhone(loginDto);
+
+        if(!isPasswordsMatched(loginDto.password(), teacher.getPassword())){
+            throw new MismatchPasswordException("Your password is not correct!!");
+        }
+
+        var jwt = generateJwtTokenForTeacher(teacher);
+
+        authenticateTeacher(teacher.getPhone(), loginDto.password());
+
+        return generateLoginTeacherResponseDto(teacher, jwt);
+
+    }
+
+    private LoginTeacherResponseDto generateLoginTeacherResponseDto(Teacher teacher, String jwt) {
+        return new LoginTeacherResponseDto(
+                teacher.getId(),
+                teacher.getName(),
+                teacher.getPhone(),
+                teacher.getRole().name(),
+                jwt,
+                true
+        );
+    }
+
+    private void authenticateTeacher(String phone, String password) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            phone,
+                            password
+
+                    )
+            );
+        } catch (AuthenticationException exception) {
+            LOGGER.warn(exception.getMessage());
+            throw new NotFoundAuthenticatedUserException(NOT_AUTHENTICATED_USER_EXCEPTION_MSG);
+        }
+
+    }
+
+    private String generateJwtTokenForTeacher(Teacher teacher) {
+        Map<String, Object> claims = teacher.getClaims();
+        var jwt = jwtService.generateToken(claims, teacher);
+        return jwt;
+
+    }
+
+    private boolean isPasswordsMatched(String requestPassword, String realPassword) {
+        return passwordEncoder.matches(requestPassword, realPassword);
+    }
+
+    private Teacher findTeacherByPhone(LoginTeacherRequestDto loginDto) {
+        return teachersRepository.findByPhone(loginDto.phone())
+                .orElseThrow(() -> new NotFoundPhoneNumberLoginException("There is no Instructor logged in with this phone number !!"));
 
     }
 

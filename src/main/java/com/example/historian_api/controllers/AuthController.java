@@ -59,6 +59,7 @@ public class AuthController {
     public ResponseEntity<?> loginTeacher(
             @Valid @RequestBody LoginTeacherRequestDto loginDto
             ){
-        return ResponseEntity.ok().build();
+        var response = factory.createResponse(authService.loginTeacher(loginDto));
+        return ResponseEntity.ok().body(response);
     }
 }

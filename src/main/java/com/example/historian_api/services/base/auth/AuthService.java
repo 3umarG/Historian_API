@@ -1,9 +1,11 @@
 package com.example.historian_api.services.base.auth;
 
 import com.example.historian_api.dtos.requests.LoginStudentRequestDto;
+import com.example.historian_api.dtos.requests.LoginTeacherRequestDto;
 import com.example.historian_api.dtos.requests.RegisterStudentRequestDto;
 import com.example.historian_api.dtos.requests.RegisterTeacherRequestDto;
 import com.example.historian_api.dtos.responses.LoginStudentResponseDto;
+import com.example.historian_api.dtos.responses.LoginTeacherResponseDto;
 import com.example.historian_api.dtos.responses.RegisterStudentResponseDto;
 import com.example.historian_api.dtos.responses.RegisterTeacherResponseDto;
 
@@ -15,4 +17,6 @@ public interface AuthService {
     LoginStudentResponseDto loginStudent(LoginStudentRequestDto loginDto);
 
     RegisterTeacherResponseDto registerTeacher(RegisterTeacherRequestDto teacherRequestDto);
+
+    LoginTeacherResponseDto loginTeacher(LoginTeacherRequestDto loginDto);
 }
