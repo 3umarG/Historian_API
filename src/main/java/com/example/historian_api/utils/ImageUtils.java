@@ -14,6 +14,9 @@ public class ImageUtils {
     @Value("${images.host}")
     private String host;
 
+    @Value("${api.version}")
+    private String apiVersion;
+
     public byte[] compressImage(byte[] data) {
         Deflater deflater = new Deflater();
         deflater.setLevel(Deflater.BEST_COMPRESSION);
@@ -55,7 +58,7 @@ public class ImageUtils {
     }
 
     public String generateImagePath(String path, String imageTitle) {
-        return host + "/api/v1/" + path + "/" + imageTitle;
+        return host + apiVersion + "/" + path + "/" + imageTitle;
     }
 
     public String generateImageTitle(String name) {
