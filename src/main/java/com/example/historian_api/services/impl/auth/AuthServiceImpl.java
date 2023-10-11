@@ -2,16 +2,20 @@ package com.example.historian_api.services.impl.auth;
 
 import com.example.historian_api.dtos.requests.LoginStudentRequestDto;
 import com.example.historian_api.dtos.requests.RegisterStudentRequestDto;
+import com.example.historian_api.dtos.requests.RegisterTeacherRequestDto;
 import com.example.historian_api.dtos.responses.LoginStudentResponseDto;
 import com.example.historian_api.dtos.responses.RegisterStudentResponseDto;
+import com.example.historian_api.dtos.responses.RegisterTeacherResponseDto;
 import com.example.historian_api.entities.users.Student;
 import com.example.historian_api.entities.users.StudentImage;
+import com.example.historian_api.entities.users.Teacher;
 import com.example.historian_api.exceptions.NotFoundAuthenticatedUserException;
 import com.example.historian_api.exceptions.auth.AlreadyLoginPhoneWithAnotherDeviceException;
 import com.example.historian_api.exceptions.auth.NotFoundPhoneNumberLoginException;
 import com.example.historian_api.exceptions.auth.UsedPhoneRegisterException;
 import com.example.historian_api.mappers.RegisteredStudentResponseDtoMapper;
 import com.example.historian_api.repositories.users.StudentsRepository;
+import com.example.historian_api.repositories.users.TeachersRepository;
 import com.example.historian_api.services.base.JwtService;
 import com.example.historian_api.services.base.auth.AuthService;
 import com.example.historian_api.services.base.auth.StudentsImageService;
@@ -19,9 +23,12 @@ import com.example.historian_api.utils.ImageUtils;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,6 +51,13 @@ public class AuthServiceImpl implements AuthService {
     private final StudentsImageService studentsImageService;
     private final RegisteredStudentResponseDtoMapper registeredStudentResponseDtoMapper;
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthServiceImpl.class);
+    private final TeachersRepository teachersRepository;
+
+
+    @Autowired
+    @Qualifier("bCryptPasswordEncoder")
+    private PasswordEncoder passwordEncoder;
+
 
     @Override
     public RegisterStudentResponseDto registerStudent(RegisterStudentRequestDto requestDto) throws IOException {
@@ -99,6 +113,48 @@ public class AuthServiceImpl implements AuthService {
         var jwt = generateJwtTokenFromUser(user);
         authenticateStudent(loginDto, user);
         return generateLoginResponseDtoWithJwtToken(user, jwt);
+    }
+
+    @Override
+    public RegisterTeacherResponseDto registerTeacher(RegisterTeacherRequestDto teacherRequestDto) {
+
+        if(isExistedTeacherWithPhone(teacherRequestDto.phone())){
+            throw new UsedPhoneRegisterException("There is already Instructor signed with that phone.");
+        }
+
+        var teacher = generateTeacherFromDto(teacherRequestDto);
+
+        var savedTeacher = saveTeacherToDb(teacher);
+
+        return generateRegisterTeacherResponseDto(savedTeacher);
+
+    }
+
+    private RegisterTeacherResponseDto generateRegisterTeacherResponseDto(Teacher teacher) {
+        return new RegisterTeacherResponseDto(
+                teacher.getId(),
+                teacher.getName(),
+                teacher.getPhone(),
+                teacher.getRole().name()
+        );
+    }
+
+    private Teacher saveTeacherToDb(Teacher teacher) {
+        return teachersRepository.save(teacher);
+    }
+
+    private Teacher generateTeacherFromDto(RegisterTeacherRequestDto teacherRequestDto) {
+        return new Teacher(
+                teacherRequestDto.name(),
+                teacherRequestDto.phone(),
+                passwordEncoder.encode(teacherRequestDto.password())
+        );
+
+    }
+
+    private boolean isExistedTeacherWithPhone(String phone) {
+        var instructor = teachersRepository.findByPhone(phone);
+        return instructor.isPresent();
     }
 
     private Student getUserWithPhoneNumber(String phone) {

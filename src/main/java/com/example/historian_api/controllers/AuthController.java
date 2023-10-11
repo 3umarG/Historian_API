@@ -50,7 +50,8 @@ public class AuthController {
     public ResponseEntity<?> registerTeacher(
             @Valid @RequestBody RegisterTeacherRequestDto teacherRequestDto
             ){
-        return ResponseEntity.ok().build();
+        var response = factory.createResponse(authService.registerTeacher(teacherRequestDto));
+        return ResponseEntity.ok().body(response);
     }
 
 
