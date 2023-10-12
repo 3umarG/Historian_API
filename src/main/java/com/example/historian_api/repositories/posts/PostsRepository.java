@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post, Integer> {
+public interface PostsRepository extends JpaRepository<Post, Integer> {
 
     @Query("SELECT distinct p " +
            "FROM Post p " +
@@ -37,5 +37,11 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
            "LEFT JOIN  p.likes l " +
            "LEFT JOIN  p.comments c " +
            "WHERE p.id = ?1")
-    Optional<Post> findEagerById(Integer postId);
+    Optional<Post> findPostById(Integer postId);
+
+    @Query("SELECT p " +
+           "FROM Post p " +
+           "LEFT JOIN p.postImages " +
+           "WHERE p.id = ?1")
+    Optional<Post> findByPostIdWithImages(Integer postId);
 }
