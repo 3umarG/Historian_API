@@ -1,19 +1,18 @@
 package com.example.historian_api.services.impl.posts;
 
 import com.example.historian_api.dtos.requests.PostRequestDto;
-import com.example.historian_api.dtos.responses.CommentResponseDto;
-import com.example.historian_api.dtos.responses.LikeResponseDto;
 import com.example.historian_api.dtos.responses.PostResponseDto;
 import com.example.historian_api.entities.posts.Post;
 import com.example.historian_api.entities.posts.PostImages;
+import com.example.historian_api.entities.projections.PostWithLikesAndCommentsCountsProjection;
 import com.example.historian_api.entities.users.Teacher;
 import com.example.historian_api.exceptions.NotFoundResourceException;
-import com.example.historian_api.mappers.CommentToCommentResponseDtoMapper;
-import com.example.historian_api.mappers.LikeToLikeResponseDtoMapper;
 import com.example.historian_api.mappers.PostDtoToPostMapper;
 import com.example.historian_api.mappers.PostToPostDtoMapper;
-import com.example.historian_api.repositories.posts.PostsRepository;
+import com.example.historian_api.repositories.posts.BookmarksRepository;
+import com.example.historian_api.repositories.posts.LikesRepository;
 import com.example.historian_api.repositories.posts.PostsImagesRepository;
+import com.example.historian_api.repositories.posts.PostsRepository;
 import com.example.historian_api.repositories.users.TeachersRepository;
 import com.example.historian_api.services.base.posts.PostsService;
 import com.example.historian_api.utils.ImageUtils;
@@ -38,57 +37,57 @@ public class PostsServiceImpl implements PostsService {
     private final PostDtoToPostMapper postMapper;
     private final PostsImagesRepository imagesRepository;
     private final TeachersRepository teachersRepository;
-    private final LikeToLikeResponseDtoMapper likeMapper;
-    private final CommentToCommentResponseDtoMapper commentResponseDtoMapper;
     private final ImageUtils imageUtils;
+    private final LikesRepository likesRepository;
+    private final BookmarksRepository bookmarksRepository;
 
-    // TODO : will change ...
     @Override
     public List<PostResponseDto> getAll(Integer studentId) {
 
-        List<Post> posts = postsRepository.findAllPosts();
+
+        List<PostWithLikesAndCommentsCountsProjection> posts = postsRepository.findAllPosts();
+
         return posts.stream().map(post -> {
 
-            List<LikeResponseDto> likes = getLikeResponseDtos(post);
+            var images = findImagesForPost(post.getId());
 
-            boolean isStudentLikePost = isStudentLikesPost(studentId, likes);
+            boolean isStudentLikePost = likesRepository.isStudentLikePost(studentId, post.getId());
+            boolean isStudentBookmarksPost = bookmarksRepository.isStudentBookmarksPost(studentId, post.getId());
 
-            return postDtoMapper.apply(post, isStudentLikePost);
+            return new PostResponseDto(
+                    post.getId(),
+                    post.getTitle(),
+                    post.getContent(),
+                    post.getTeacherId(),
+                    isStudentLikePost,
+                    isStudentBookmarksPost,
+                    post.getNumberOfComments(),
+                    post.getNumberOfLikes(),
+                    images
+            );
+
         }).toList();
 
+
     }
 
-    private static boolean isStudentLikesPost(Integer studentId, List<LikeResponseDto> likes) {
-        return likes
-                .stream()
-                .map(LikeResponseDto::userId)
-                .anyMatch(id -> id.equals(studentId));
-    }
-
-    private List<CommentResponseDto> getCommentResponseDtos(Post post) {
-        List<CommentResponseDto>
-                comments = post.getComments() != null
-                ? post.getComments().stream().map(commentResponseDtoMapper).toList()
-                : new ArrayList<>();
-        return comments;
-    }
-
-    private List<LikeResponseDto> getLikeResponseDtos(Post post) {
-        List<LikeResponseDto> likes =
-                post.getLikes() != null
-                        ? post.getLikes().stream().map(likeMapper).toList()
-                        : new ArrayList<>();
-        return likes;
+    private List<String> findImagesForPost(Integer post) {
+        return imagesRepository
+                .findAllPhotoUrlsByPostId(post);
     }
 
     @Override
     public PostResponseDto getPostById(@NotNull Integer id) throws NotFoundResourceException {
-        return postDtoMapper.apply(
-                postsRepository
-                        .findPostById(id)
-                        .orElseThrow(() ->
-                                new NotFoundResourceException(ExceptionMessages.NOT_FOUND_EXCEPTION_MSG))
-        );
+
+        var postProjection = postsRepository
+                .findPostById(id)
+                .orElseThrow(() ->
+                        new NotFoundResourceException(ExceptionMessages.NOT_FOUND_EXCEPTION_MSG));
+
+        var images = findImagesForPost(id);
+
+        return postDtoMapper.apply(postProjection, images, null);
+
     }
 
     @Override

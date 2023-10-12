@@ -20,4 +20,13 @@ public interface LikesRepository extends JpaRepository<Like, Integer> {
            "AND l.post.id= :postId " +
            "order by l.id desc ")
     Optional<Like> getLikeWithPostIdAndAndCreatorId(@Param("postId") Integer postId, @Param("creatorId") Integer userId);
+
+    @Query(value = "select case when exists( " +
+                   "    select id " +
+                   "    from posts_likes " +
+                   "    where creator_id = ?1 AND post_id = ?2 " +
+                   ") " +
+                   "then cast(1 as bit) " +
+                   "else cast(0 as bit) end",nativeQuery = true)
+    Boolean isStudentLikePost(Integer studentId , Integer postId);
 }
