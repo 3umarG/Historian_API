@@ -21,16 +21,16 @@ public class CommentsController {
 
 
     @GetMapping("/{postId}")
-    public ResponseEntity<?> getAllCommentsByPostId(@PathVariable Integer postId){
-        var response = commentsService.getAllCommentsByPostId(postId);
+    public ResponseEntity<?> getAllCommentsByPostId(@PathVariable Integer postId) {
+        var response = successFactory.createResponse(commentsService.getAllCommentsByPostId(postId));
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{postId}")
     public ResponseEntity<?> addCommentToPost(@RequestParam("studentId") Integer studentId,
                                               @PathVariable Integer postId,
-                                              @RequestParam("content") String content){
-        var response = successFactory.createResponse(commentsService.addCommentByPostId(postId,studentId,content));
+                                              @RequestParam("content") String content) {
+        var response = successFactory.createResponse(commentsService.addCommentByPostId(postId, studentId, content));
         return ResponseEntity.ok(response);
     }
 
@@ -38,8 +38,8 @@ public class CommentsController {
     public ResponseEntity<?> updateCommentById(
             @PathVariable Integer commentId,
             @RequestParam("content") String contentUpdated
-    ){
-        var response = successFactory.createResponse(commentsService.updateCommentContentById(commentId,contentUpdated));
+    ) {
+        var response = successFactory.createResponse(commentsService.updateCommentContentById(commentId, contentUpdated));
         return ResponseEntity.ok(response);
     }
 
@@ -47,7 +47,7 @@ public class CommentsController {
     @DeleteMapping("/{commentId}")
     public ResponseEntity<?> deleteCommentById(
             @PathVariable Integer commentId
-    ){
+    ) {
         var response = successFactory.createResponse(commentsService.deleteCommentById(commentId));
         return ResponseEntity.ok(response);
     }
