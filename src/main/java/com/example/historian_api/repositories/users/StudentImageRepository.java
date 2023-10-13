@@ -1,4 +1,4 @@
-package com.example.historian_api.repositories;
+package com.example.historian_api.repositories.users;
 
 import com.example.historian_api.entities.users.StudentImage;
 import org.springframework.data.jpa.repository.JpaRepository;

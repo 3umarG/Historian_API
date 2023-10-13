@@ -27,7 +27,6 @@ public class DelegatedAuthenticationEntryPoint implements AuthenticationEntryPoi
                          HttpServletResponse response,
                          AuthenticationException authException)
             throws IOException {
-        // TODO : that will give the handling process to the @ControllerAdvice
         LOGGER.warn("Enter the `Commence` method");
         LOGGER.error(authException.getMessage());
         resolver.resolveException(request, response, null, authException);
