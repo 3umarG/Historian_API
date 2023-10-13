@@ -1,4 +1,4 @@
-package com.example.historian_api.repositories;
+package com.example.historian_api.repositories.posts;
 
 import com.example.historian_api.entities.posts.CommentReply;
 import org.springframework.data.jpa.repository.JpaRepository;

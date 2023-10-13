@@ -42,7 +42,10 @@ public class LikesServiceImpl implements LikesService {
 
     private PostWithLikesResponseDto generatePostLikesResponseDto(Post post, List<Like> likesForPostId) {
         return new PostWithLikesResponseDto(
-                dtoMapper.apply(post),
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getTeacher().getId(),
                 likesForPostId
                         .stream()
                         .map(likeResponseDtoMapper)

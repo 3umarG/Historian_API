@@ -32,14 +32,21 @@ public class CommentsServiceImpl implements CommentsService {
     public PostWithCommentsResponseDto getAllCommentsByPostId(Integer postId) {
         Post post = getPostById(postId);
 
-        List<Comment> comments = commentsRepository.findAllByPost_IdOrderByCreationDateDesc(postId);
+        List<Comment> comments = commentsRepository.findAllByPostIdOrderByCreationDateDesc(postId);
 
         return generatePostWithCommentsResponseDto(post, comments);
     }
 
     private PostWithCommentsResponseDto generatePostWithCommentsResponseDto(Post post, List<Comment> comments) {
-        return PostWithCommentsResponseDto
-                .generatePostWithComments(post, comments);
+        return new PostWithCommentsResponseDto(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getTeacher().getId(),
+                comments.stream()
+                        .map(commentResponseDtoMapper)
+                        .toList()
+        );
     }
 
     private Post getPostById(Integer postId) {

@@ -4,8 +4,11 @@ import lombok.Builder;
 
 import java.util.List;
 
-// TODO : will change this model later
 @Builder
 public record PostWithLikesResponseDto(
-        PostResponseDto post, List<LikeResponseDto> usersLikes) {
+        Integer postId,
+        String postTitle,
+        String postContent,
+        Integer authorId,
+        List<LikeResponseDto> usersLikes) {
 }
