@@ -13,10 +13,12 @@ import com.example.historian_api.entities.users.StudentImage;
 import com.example.historian_api.entities.users.Teacher;
 import com.example.historian_api.exceptions.MismatchPasswordException;
 import com.example.historian_api.exceptions.NotFoundAuthenticatedUserException;
+import com.example.historian_api.exceptions.NotFoundResourceException;
 import com.example.historian_api.exceptions.auth.AlreadyLoginPhoneWithAnotherDeviceException;
 import com.example.historian_api.exceptions.auth.NotFoundPhoneNumberLoginException;
 import com.example.historian_api.exceptions.auth.UsedPhoneRegisterException;
 import com.example.historian_api.mappers.RegisteredStudentResponseDtoMapper;
+import com.example.historian_api.repositories.StudentGradesRepository;
 import com.example.historian_api.repositories.users.StudentsRepository;
 import com.example.historian_api.repositories.users.TeachersRepository;
 import com.example.historian_api.services.base.JwtService;
@@ -50,6 +52,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final StudentsRepository studentsRepository;
     private final ImageUtils imageUtils;
+    private final StudentGradesRepository gradesRepository;
     private final JwtService jwtService;
     private final StudentsImageService studentsImageService;
     private final RegisteredStudentResponseDtoMapper registeredStudentResponseDtoMapper;
@@ -64,6 +67,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public RegisterStudentResponseDto registerStudent(RegisterStudentRequestDto requestDto) throws IOException {
+
         checkForExistedUserSigned(requestDto);
 
         Student user = generateStudentFromRequestDto(requestDto);
@@ -94,8 +98,10 @@ public class AuthServiceImpl implements AuthService {
             photoUrl = imageUtils.generateImagePath(STUDENTS_IMAGES_PATH, imageTitle);
         }
 
+        var grade = gradesRepository.findById(request.gradeId())
+                .orElseThrow(() -> new NotFoundResourceException("There is no Grade with that id !!"));
 
-        return Student.generateStudentFromRequestDto(request, photoUrl, userImage);
+        return Student.generateStudentFromRequestDto(request, photoUrl, userImage, grade);
     }
 
     private static String generateUniqueImageTitle(MultipartFile image) {
@@ -121,7 +127,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public RegisterTeacherResponseDto registerTeacher(RegisterTeacherRequestDto teacherRequestDto) {
 
-        if(isExistedTeacherWithPhone(teacherRequestDto.phone())){
+        if (isExistedTeacherWithPhone(teacherRequestDto.phone())) {
             throw new UsedPhoneRegisterException("There is already Instructor signed with that phone.");
         }
 
@@ -137,7 +143,7 @@ public class AuthServiceImpl implements AuthService {
     public LoginTeacherResponseDto loginTeacher(LoginTeacherRequestDto loginDto) {
         var teacher = findTeacherByPhone(loginDto);
 
-        if(!isPasswordsMatched(loginDto.password(), teacher.getPassword())){
+        if (!isPasswordsMatched(loginDto.password(), teacher.getPassword())) {
             throw new MismatchPasswordException("Your password is not correct!!");
         }
 
@@ -265,6 +271,8 @@ public class AuthServiceImpl implements AuthService {
                 student.getToken(),
                 student.getPhotoUrl(),
                 true,
+                student.getStudentGrade().getId(),
+                student.getStudentGrade().getName(),
                 jwtToken
         );
     }

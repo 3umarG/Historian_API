@@ -1,6 +1,7 @@
 package com.example.historian_api.entities.users;
 
 import com.example.historian_api.dtos.requests.RegisterStudentRequestDto;
+import com.example.historian_api.entities.courses.StudentGrade;
 import com.example.historian_api.entities.posts.Bookmark;
 import com.example.historian_api.entities.posts.Comment;
 import com.example.historian_api.entities.posts.Like;
@@ -82,6 +83,11 @@ public class Student implements UserDetails {
     private Set<Like> likes = new HashSet<>();
 
 
+    @ManyToOne
+    @JoinColumn(name = "class_id")
+    private StudentGrade studentGrade;
+
+
 //    @OneToMany(
 //            cascade = CascadeType.ALL,
 //            mappedBy = "student",
@@ -108,7 +114,8 @@ public class Student implements UserDetails {
                    boolean haveSimCard,
                    String token,
                    String photoUrl,
-                   StudentImage studentImage) {
+                   StudentImage studentImage,
+                   StudentGrade grade) {
         this.name = name;
         this.deviceSerial = deviceSerial;
         this.phone = phone;
@@ -118,6 +125,7 @@ public class Student implements UserDetails {
         this.token = token;
         this.photoUrl = photoUrl;
         this.studentImage = studentImage;
+        this.studentGrade = grade;
     }
 
     public Student(String name,
@@ -185,7 +193,8 @@ public class Student implements UserDetails {
     public static Student generateStudentFromRequestDto(
             RegisterStudentRequestDto dto,
             String photoUrl,
-            StudentImage userImage){
+            StudentImage userImage,
+            StudentGrade grade){
         return new Student(
                 dto.name(),
                 dto.deviceSerial(),
@@ -195,7 +204,8 @@ public class Student implements UserDetails {
                 dto.haveSimCard(),
                 dto.token(),
                 photoUrl,
-                userImage
+                userImage,
+                grade
         );
     }
 }

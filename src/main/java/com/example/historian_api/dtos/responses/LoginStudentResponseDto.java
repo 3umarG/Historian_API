@@ -24,6 +24,8 @@ public record LoginStudentResponseDto(
 
         String photoUrl,
         boolean isAuthenticated,
+        Integer gradeId,
+        String gradeName,
         String accessToken
 ) {
 
