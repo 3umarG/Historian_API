@@ -35,6 +35,7 @@ public record RegisterStudentRequestDto(
         @NotBlank(message = "Token is required")
         String token,
 
+        Integer gradeId,
 
         @NotNull
         MultipartFile photo

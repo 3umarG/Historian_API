@@ -114,7 +114,8 @@ public class Student implements UserDetails {
                    boolean haveSimCard,
                    String token,
                    String photoUrl,
-                   StudentImage studentImage) {
+                   StudentImage studentImage,
+                   StudentGrade grade) {
         this.name = name;
         this.deviceSerial = deviceSerial;
         this.phone = phone;
@@ -124,6 +125,7 @@ public class Student implements UserDetails {
         this.token = token;
         this.photoUrl = photoUrl;
         this.studentImage = studentImage;
+        this.studentGrade = grade;
     }
 
     public Student(String name,
@@ -191,7 +193,8 @@ public class Student implements UserDetails {
     public static Student generateStudentFromRequestDto(
             RegisterStudentRequestDto dto,
             String photoUrl,
-            StudentImage userImage){
+            StudentImage userImage,
+            StudentGrade grade){
         return new Student(
                 dto.name(),
                 dto.deviceSerial(),
@@ -201,7 +204,8 @@ public class Student implements UserDetails {
                 dto.haveSimCard(),
                 dto.token(),
                 photoUrl,
-                userImage
+                userImage,
+                grade
         );
     }
 }
