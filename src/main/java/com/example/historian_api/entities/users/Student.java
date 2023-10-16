@@ -1,7 +1,7 @@
 package com.example.historian_api.entities.users;
 
 import com.example.historian_api.dtos.requests.RegisterStudentRequestDto;
-import com.example.historian_api.entities.courses.StudentClass;
+import com.example.historian_api.entities.courses.StudentGrade;
 import com.example.historian_api.entities.posts.Bookmark;
 import com.example.historian_api.entities.posts.Comment;
 import com.example.historian_api.entities.posts.Like;
@@ -85,7 +85,7 @@ public class Student implements UserDetails {
 
     @ManyToOne
     @JoinColumn(name = "class_id")
-    private StudentClass studentClass;
+    private StudentGrade studentGrade;
 
 
 //    @OneToMany(

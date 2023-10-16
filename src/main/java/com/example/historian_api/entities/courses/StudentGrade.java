@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "students_classes")
-public class StudentClass {
+@Table(name = "students_grades")
+public class StudentGrade {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +18,7 @@ public class StudentClass {
 
     private String name;
 
-    public StudentClass(String name) {
+    public StudentGrade(String name) {
         this.name = name;
     }
 }
