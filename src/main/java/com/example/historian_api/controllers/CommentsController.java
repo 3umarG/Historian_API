@@ -71,4 +71,10 @@ public class CommentsController {
         var response = successFactory.createResponse(commentsService.addReplyToCommentForTeacher(dto));
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/replies/{replyId}")
+    public ResponseEntity<?> deleteReplyById(@PathVariable Integer replyId){
+        var response = successFactory.createResponse(commentsService.deleteReplyById(replyId));
+        return ResponseEntity.ok(response);
+    }
 }

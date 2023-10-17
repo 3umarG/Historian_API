@@ -23,4 +23,6 @@ public interface CommentsService {
     PostCommentReplyResponseDto addReplyToCommentForStudent(AddReplyForPostCommentByStudentRequestDto dto);
 
     PostCommentReplyResponseDto addReplyToCommentForTeacher(AddReplyForPostCommentByTeacherRequestDto dto);
+
+    PostCommentReplyResponseDto deleteReplyById(Integer replyId);
 }

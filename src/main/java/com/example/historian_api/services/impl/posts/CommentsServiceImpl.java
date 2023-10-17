@@ -191,6 +191,24 @@ public class CommentsServiceImpl implements CommentsService {
 
     }
 
+    @Override
+    public PostCommentReplyResponseDto deleteReplyById(Integer replyId) {
+        var reply = commentRepliesRepository.findById(replyId)
+                .orElseThrow(() -> new NotFoundResourceException("There is no Reply with that id !!"));
+
+        commentRepliesRepository.deleteById(replyId);
+
+        return new PostCommentReplyResponseDto(
+                reply.getId(),
+                reply.getContent(),
+                reply.getCreatedAt(),
+                determineAuthorId(reply),
+                determineAuthorName(reply),
+                determineAuthorType(reply),
+                reply.getComment().getId()
+        );
+    }
+
     private Comment findComment(Integer dto) {
         var comment = commentsRepository.findById(dto)
                 .orElseThrow(() -> new NotFoundResourceException("There is no Comment with that id !!"));
