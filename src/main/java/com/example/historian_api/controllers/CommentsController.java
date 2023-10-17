@@ -52,5 +52,9 @@ public class CommentsController {
         return ResponseEntity.ok(response);
     }
 
-    // TODO : will add replies endpoints here
+    @GetMapping("/{commentId}/replies")
+    public ResponseEntity<?> getAllRepliesForCommentId(@PathVariable Integer commentId){
+        var response = successFactory.createResponse(commentsService.getAllRepliesByCommentId(commentId));
+        return ResponseEntity.ok(response);
+    }
 }

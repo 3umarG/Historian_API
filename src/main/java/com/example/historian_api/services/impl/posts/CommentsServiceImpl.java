@@ -1,13 +1,17 @@
 package com.example.historian_api.services.impl.posts;
 
 import com.example.historian_api.dtos.responses.CommentResponseDto;
+import com.example.historian_api.dtos.responses.PostCommentReplyResponseDto;
 import com.example.historian_api.dtos.responses.PostWithCommentsResponseDto;
 import com.example.historian_api.entities.posts.Comment;
+import com.example.historian_api.entities.posts.CommentReply;
 import com.example.historian_api.entities.posts.Post;
 import com.example.historian_api.entities.users.Student;
+import com.example.historian_api.enums.AuthorType;
 import com.example.historian_api.exceptions.NotFoundResourceException;
 import com.example.historian_api.exceptions.auth.NotFoundPhoneNumberLoginException;
 import com.example.historian_api.mappers.CommentToCommentResponseDtoMapper;
+import com.example.historian_api.repositories.posts.CommentRepliesRepository;
 import com.example.historian_api.repositories.posts.CommentsRepository;
 import com.example.historian_api.repositories.posts.PostsRepository;
 import com.example.historian_api.repositories.users.StudentsRepository;
@@ -27,6 +31,7 @@ public class CommentsServiceImpl implements CommentsService {
     private final PostsRepository postsRepository;
     private final CommentToCommentResponseDtoMapper commentResponseDtoMapper;
     private final StudentsRepository studentsRepository;
+    private final CommentRepliesRepository commentRepliesRepository;
 
     @Override
     public PostWithCommentsResponseDto getAllCommentsByPostId(Integer postId) {
@@ -105,5 +110,45 @@ public class CommentsServiceImpl implements CommentsService {
         commentsRepository.deleteById(commentId);
 
         return commentResponseDtoMapper.apply(comment);
+    }
+
+    @Override
+    public List<PostCommentReplyResponseDto> getAllRepliesByCommentId(Integer commentId) {
+        if (!isExistsCommentId(commentId))
+            throw new NotFoundResourceException("There is no Comment with this id !!");
+
+        var replies = commentRepliesRepository.findAllByCommentIdOrderByCreatedAt(commentId);
+        return replies.stream().map(reply ->
+                new PostCommentReplyResponseDto(
+                        reply.getId(),
+                        reply.getContent(),
+                        reply.getCreatedAt(),
+                        determineAuthorId(reply),
+                        determineAuthorName(reply),
+                        determineAuthorType(reply),
+                        commentId
+                )).toList();
+    }
+
+    private static String determineAuthorName(CommentReply reply) {
+        return reply.getStudent() == null
+                ? reply.getTeacher().getName()
+                : reply.getStudent().getName();
+    }
+
+    private static AuthorType determineAuthorType(CommentReply reply) {
+        return reply.getStudent() == null
+                ? AuthorType.TEACHER
+                : AuthorType.STUDENT;
+    }
+
+    private static Integer determineAuthorId(CommentReply reply) {
+        return reply.getStudent() == null
+                ? reply.getTeacher().getId()
+                : reply.getStudent().getId();
+    }
+
+    private boolean isExistsCommentId(Integer commentId) {
+        return commentsRepository.existsById(commentId);
     }
 }
