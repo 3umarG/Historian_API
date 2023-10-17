@@ -4,19 +4,16 @@ package com.example.historian_api.entities.posts;
 import com.example.historian_api.entities.users.Student;
 import com.example.historian_api.entities.users.Teacher;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "comments_replies")
+@Table(name = "posts_comments_replies")
 public class CommentReply {
 
     @Id

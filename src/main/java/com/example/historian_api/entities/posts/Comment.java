@@ -6,8 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -44,6 +48,13 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "postId")
     private Post post;
+
+    @OneToMany(
+            mappedBy = "comment",
+            cascade = CascadeType.ALL
+    )
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<CommentReply> replies = new ArrayList<>();
 
     public Comment(String content, Student creator, Post post) {
         this.content = content;
