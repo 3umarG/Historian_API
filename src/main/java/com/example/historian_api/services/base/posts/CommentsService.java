@@ -1,6 +1,7 @@
 package com.example.historian_api.services.base.posts;
 
 
+import com.example.historian_api.dtos.requests.AddReplyForPostCommentByStudentRequestDto;
 import com.example.historian_api.dtos.responses.CommentResponseDto;
 import com.example.historian_api.dtos.responses.PostCommentReplyResponseDto;
 import com.example.historian_api.dtos.responses.PostWithCommentsResponseDto;
@@ -17,4 +18,6 @@ public interface CommentsService {
     CommentResponseDto deleteCommentById(Integer commentId );
 
     List<PostCommentReplyResponseDto> getAllRepliesByCommentId(Integer commentId);
+
+    PostCommentReplyResponseDto addReplyToCommentForStudent(AddReplyForPostCommentByStudentRequestDto dto);
 }

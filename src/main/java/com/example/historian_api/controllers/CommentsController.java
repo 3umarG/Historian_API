@@ -1,6 +1,7 @@
 package com.example.historian_api.controllers;
 
 
+import com.example.historian_api.dtos.requests.AddReplyForPostCommentByStudentRequestDto;
 import com.example.historian_api.factories.impl.ResponseFactory200;
 import com.example.historian_api.services.base.posts.CommentsService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -53,8 +54,14 @@ public class CommentsController {
     }
 
     @GetMapping("/{commentId}/replies")
-    public ResponseEntity<?> getAllRepliesForCommentId(@PathVariable Integer commentId){
+    public ResponseEntity<?> getAllRepliesForCommentId(@PathVariable Integer commentId) {
         var response = successFactory.createResponse(commentsService.getAllRepliesByCommentId(commentId));
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/replies/students")
+    public ResponseEntity<?> addReplyToCommentForStudent(@RequestBody AddReplyForPostCommentByStudentRequestDto dto) {
+        var response = successFactory.createResponse(commentsService.addReplyToCommentForStudent(dto));
         return ResponseEntity.ok(response);
     }
 }

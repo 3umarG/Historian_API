@@ -1,5 +1,6 @@
 package com.example.historian_api.services.impl.posts;
 
+import com.example.historian_api.dtos.requests.AddReplyForPostCommentByStudentRequestDto;
 import com.example.historian_api.dtos.responses.CommentResponseDto;
 import com.example.historian_api.dtos.responses.PostCommentReplyResponseDto;
 import com.example.historian_api.dtos.responses.PostWithCommentsResponseDto;
@@ -18,9 +19,11 @@ import com.example.historian_api.repositories.users.StudentsRepository;
 import com.example.historian_api.services.base.posts.CommentsService;
 import com.example.historian_api.utils.constants.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -128,6 +131,38 @@ public class CommentsServiceImpl implements CommentsService {
                         determineAuthorType(reply),
                         commentId
                 )).toList();
+    }
+
+    @Override
+    public PostCommentReplyResponseDto addReplyToCommentForStudent(AddReplyForPostCommentByStudentRequestDto dto) {
+        var comment = commentsRepository.findById(dto.commentId())
+                .orElseThrow(() -> new NotFoundResourceException("There is no Comment with that id !!"));
+
+        var student = studentsRepository.findById(dto.studentId())
+                .orElseThrow(() -> new NotFoundResourceException("There is no Student with that id !!"));
+
+        var reply = new CommentReply(
+                dto.content(),
+                LocalDateTime.now(),
+                student,
+                comment
+        );
+
+        var savedReply = commentRepliesRepository.save(reply);
+
+        return new PostCommentReplyResponseDto(
+                savedReply.getId(),
+                savedReply.getContent(),
+                savedReply.getCreatedAt(),
+                dto.studentId(),
+                student.getName(),
+                AuthorType.STUDENT,
+                dto.commentId()
+        );
+    }
+
+    private boolean isExistsStudent(Integer id) {
+        return studentsRepository.existsById(id);
     }
 
     private static String determineAuthorName(CommentReply reply) {
