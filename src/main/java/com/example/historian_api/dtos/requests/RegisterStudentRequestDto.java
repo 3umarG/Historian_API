@@ -28,7 +28,6 @@ public record RegisterStudentRequestDto(
 
         Integer gradeId,
 
-        @NotNull
         MultipartFile photo
 ) {
 
