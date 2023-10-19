@@ -22,15 +22,6 @@ public record RegisterStudentRequestDto(
         @NotBlank(message = "Phone number is required")
         String phone,
 
-
-        @NotNull(message = "Gender of the user is required")
-        Gender gender,
-
-
-        @NotNull(message = "Have SIM_Card or not is required")
-        boolean haveSimCard,
-
-
         @NotNull(message = "Token is required")
         @NotBlank(message = "Token is required")
         String token,

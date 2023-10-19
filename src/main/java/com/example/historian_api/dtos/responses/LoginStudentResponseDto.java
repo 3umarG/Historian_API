@@ -16,10 +16,6 @@ public record LoginStudentResponseDto(
 
         Role role,
 
-        Gender gender,
-
-        boolean haveSimCard,
-
         String token,
 
         String photoUrl,

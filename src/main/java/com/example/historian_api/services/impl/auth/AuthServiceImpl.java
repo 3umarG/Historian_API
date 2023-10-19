@@ -266,8 +266,6 @@ public class AuthServiceImpl implements AuthService {
                 student.getDeviceSerial(),
                 student.getPhone(),
                 student.getRole(),
-                student.getGender(),
-                student.isHaveSimCard(),
                 student.getToken(),
                 student.getPhotoUrl(),
                 true,

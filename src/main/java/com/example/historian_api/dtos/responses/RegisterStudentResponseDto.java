@@ -20,10 +20,6 @@ public record RegisterStudentResponseDto(
 
         Role role,
 
-        Gender gender,
-
-        boolean haveSimCard,
-
         String token,
 
         String photoUrl

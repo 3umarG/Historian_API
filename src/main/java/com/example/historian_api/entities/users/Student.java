@@ -46,13 +46,6 @@ public class Student implements UserDetails {
     private Role role;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-
-    @Column(nullable = false)
-    private boolean haveSimCard;
-
-    @Column(nullable = false)
     private String token;
 
     private String photoUrl;
@@ -110,8 +103,6 @@ public class Student implements UserDetails {
                    String deviceSerial,
                    String phone,
                    Role role,
-                   Gender gender,
-                   boolean haveSimCard,
                    String token,
                    String photoUrl,
                    StudentImage studentImage,
@@ -120,8 +111,6 @@ public class Student implements UserDetails {
         this.deviceSerial = deviceSerial;
         this.phone = phone;
         this.role = role;
-        this.gender = gender;
-        this.haveSimCard = haveSimCard;
         this.token = token;
         this.photoUrl = photoUrl;
         this.studentImage = studentImage;
@@ -132,15 +121,11 @@ public class Student implements UserDetails {
                    String deviceSerial,
                    String phone,
                    Role role,
-                   Gender gender,
-                   boolean haveSimCard,
                    String token) {
         this.name = name;
         this.deviceSerial = deviceSerial;
         this.phone = phone;
         this.role = role;
-        this.gender = gender;
-        this.haveSimCard = haveSimCard;
         this.token = token;
     }
 
@@ -184,9 +169,7 @@ public class Student implements UserDetails {
                 "id", getId(),
                 "name", getName(),
                 "phone", getPhone(),
-                "serial", getDeviceSerial(),
-                "haveSimCard", isHaveSimCard(),
-                "gender", getGender()
+                "serial", getDeviceSerial()
         );
     }
 
@@ -194,14 +177,12 @@ public class Student implements UserDetails {
             RegisterStudentRequestDto dto,
             String photoUrl,
             StudentImage userImage,
-            StudentGrade grade){
+            StudentGrade grade) {
         return new Student(
                 dto.name(),
                 dto.deviceSerial(),
                 dto.phone(),
                 Role.ROLE_USER,
-                dto.gender(),
-                dto.haveSimCard(),
                 dto.token(),
                 photoUrl,
                 userImage,
