@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 
-public class MapperImpl implements Mapper{
+public class NotificationMapperImpl implements NotificationMapper {
     @Override
     public NotificationResponseDto convertNotificationEntityToNotificationDto(Notification notificationEntity) {
         return NotificationResponseDto

@@ -1,4 +1,4 @@
-package com.example.historian_api.services.base.notification;
+package com.example.historian_api.services.base;
 
 
 import com.example.historian_api.dtos.requests.NotificationRequestDto;

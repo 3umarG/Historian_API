@@ -2,7 +2,7 @@ package com.example.historian_api.controllers;
 import com.example.historian_api.dtos.requests.NotificationRequestDto;
 import com.example.historian_api.dtos.responses.NotificationResponseDto;
 import com.example.historian_api.factories.impl.ResponseFactory200;
-import com.example.historian_api.services.base.notification.NotificationService;
+import com.example.historian_api.services.base.NotificationService;
 import com.example.historian_api.services.impl.NotificationServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;

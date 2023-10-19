@@ -4,10 +4,10 @@ import com.example.historian_api.dtos.requests.NotificationRequestDto;
 import com.example.historian_api.dtos.responses.NotificationResponseDto;
 import com.example.historian_api.entities.notification.Notification;
 import com.example.historian_api.exceptions.NotFoundNotificationException;
-import com.example.historian_api.mappers.Mapper;
-import com.example.historian_api.mappers.MapperImpl;
+import com.example.historian_api.mappers.NotificationMapper;
+import com.example.historian_api.mappers.NotificationMapperImpl;
 import com.example.historian_api.repositories.NotificationRepository;
-import com.example.historian_api.services.base.notification.NotificationService;
+import com.example.historian_api.services.base.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +17,10 @@ import java.util.List;
 public class NotificationServiceImpl implements NotificationService {
 
     private final NotificationRepository notificationRepository;
-    private final Mapper mapper;
+    private final NotificationMapper mapper;
 
     @Autowired
-    public NotificationServiceImpl(NotificationRepository notificationRepository, MapperImpl mapper) {
+    public NotificationServiceImpl(NotificationRepository notificationRepository, NotificationMapperImpl mapper) {
         this.notificationRepository = notificationRepository;
         this.mapper = mapper;
     }

@@ -4,7 +4,7 @@ import com.example.historian_api.dtos.requests.NotificationRequestDto;
 import com.example.historian_api.dtos.responses.NotificationResponseDto;
 import com.example.historian_api.entities.notification.Notification;
 
-public interface Mapper {
+public interface NotificationMapper {
     NotificationResponseDto convertNotificationEntityToNotificationDto(Notification notificationEntity);
     Notification convertNotificationDtoToNotificationEntity(NotificationRequestDto notification);
 }
