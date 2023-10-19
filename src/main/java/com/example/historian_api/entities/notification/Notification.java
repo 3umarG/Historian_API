@@ -1,0 +1,24 @@
+package com.example.historian_api.entities.notification;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "notifications")
+public class Notification {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long notificationId;
+    private String notificationTitle;
+    private String notificationBody;
+    private Date date;
+}
