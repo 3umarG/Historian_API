@@ -15,6 +15,6 @@ import java.io.Serializable;
 @Getter
 public class FinalRevisionResultKey implements Serializable {
 
-    private Integer revisionId;
+    private Integer unitId;
     private Integer studentId;
 }

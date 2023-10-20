@@ -28,9 +28,6 @@ public class LessonQuestion {
 
     private String question;
 
-//    @ElementCollection(fetch = FetchType.EAGER,targetClass = String.class)
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    @JoinColumn(name = "")
     @Convert(converter = StringToListConverter.class)
     private List<String> answers = new ArrayList<>();
 

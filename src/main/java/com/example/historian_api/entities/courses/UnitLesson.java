@@ -30,7 +30,7 @@ public class UnitLesson {
 
     @ManyToOne
     @JoinColumn(name = "unit_id")
-    private CourseUnit unit;
+    private Unit unit;
 
     private String videoUrl;
 
@@ -57,7 +57,7 @@ public class UnitLesson {
     private List<VideoComment> comments = new ArrayList<>();
 
 
-    public UnitLesson(String title, String content, CourseUnit unit, String videoUrl) {
+    public UnitLesson(String title, String content, Unit unit, String videoUrl) {
         this.title = title;
         this.content = content;
         this.unit = unit;

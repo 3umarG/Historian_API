@@ -21,9 +21,9 @@ public class FinalRevisionResult {
     private FinalRevisionResultKey key;
 
     @ManyToOne
-    @MapsId("revisionId")
-    @JoinColumn(name = "revision_id")
-    private FinalRevisionExam revisionExam;
+    @MapsId("unitId")
+    @JoinColumn(name = "unit_id")
+    private Unit unit;
 
     @ManyToOne
     @MapsId("studentId")

@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "courses_units")
-public class CourseUnit {
+public class Unit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,11 +32,11 @@ public class CourseUnit {
     @JoinColumn(name = "course_id")
     private Course course;
 
-    @OneToOne(
+    @OneToMany(
             mappedBy = "unit"
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private FinalRevisionExam exam;
+    private List<FinalRevisionQuestion> revisionQuestions = new ArrayList<>();
 
     @OneToMany(
             mappedBy = "unit",
@@ -45,7 +45,14 @@ public class CourseUnit {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<UnitLesson> lessons = new ArrayList<>();
 
-    public CourseUnit(String title, String content, Course course) {
+    @OneToMany(
+            mappedBy = "unit",
+            cascade = CascadeType.ALL
+    )
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<FinalRevisionResult> revisionResults = new ArrayList<>();
+
+    public Unit(String title, String content, Course course) {
         this.title = title;
         this.content = content;
         this.course = course;

@@ -36,7 +36,7 @@ public class Course {
             cascade = CascadeType.ALL
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<CourseUnit> units = new ArrayList<>();
+    private List<Unit> units = new ArrayList<>();
 
     @OneToMany(
             mappedBy = "course",
