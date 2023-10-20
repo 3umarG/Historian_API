@@ -1,7 +1,7 @@
 package com.example.historian_api.entities.users;
 
 import com.example.historian_api.dtos.requests.RegisterStudentRequestDto;
-import com.example.historian_api.entities.courses.StudentGrade;
+import com.example.historian_api.entities.courses.*;
 import com.example.historian_api.entities.posts.Bookmark;
 import com.example.historian_api.entities.posts.Comment;
 import com.example.historian_api.entities.posts.Like;
@@ -80,6 +80,44 @@ public class Student implements UserDetails {
     @JoinColumn(name = "class_id")
     private StudentGrade studentGrade;
 
+
+    @OneToMany(
+            mappedBy = "student",
+            cascade = CascadeType.ALL
+    )
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<EnrollmentCourse> enrollmentCourses = new ArrayList<>();
+
+
+    @OneToMany(
+            mappedBy = "student",
+            cascade = CascadeType.ALL
+    )
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<FinalRevisionResult> finalRevisionResults = new ArrayList<>();
+
+
+    @OneToMany(
+            mappedBy = "student",
+            cascade = CascadeType.ALL
+    )
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<LessonQuizResult> quizResults = new ArrayList<>();
+
+
+    @OneToMany(
+            mappedBy = "creator",
+            cascade = CascadeType.ALL
+    )
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<VideoComment> videoComments = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "student",
+            cascade = CascadeType.ALL
+    )
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<VideoCommentReply> videoCommentReplies = new ArrayList<>();
 
 //    @OneToMany(
 //            cascade = CascadeType.ALL,
