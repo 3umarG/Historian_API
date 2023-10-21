@@ -41,23 +41,15 @@ public class VideoComment {
     @JoinColumn(name = "lesson_id")
     private UnitLesson lesson;
 
-    @OneToMany(
-            mappedBy = "comment",
-            cascade = CascadeType.ALL
-    )
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<VideoCommentReply> replies = new ArrayList<>();
 
 
     public VideoComment(String content,
                         LocalDate creationDate,
                         Student creator,
-                        UnitLesson lesson,
-                        List<VideoCommentReply> replies) {
+                        UnitLesson lesson) {
         this.content = content;
         this.creationDate = creationDate;
         this.creator = creator;
         this.lesson = lesson;
-        this.replies = replies;
     }
 }

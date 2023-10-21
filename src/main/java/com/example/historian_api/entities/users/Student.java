@@ -112,13 +112,6 @@ public class Student implements UserDetails {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<VideoComment> videoComments = new ArrayList<>();
 
-    @OneToMany(
-            mappedBy = "student",
-            cascade = CascadeType.ALL
-    )
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<VideoCommentReply> videoCommentReplies = new ArrayList<>();
-
 //    @OneToMany(
 //            cascade = CascadeType.ALL,
 //            mappedBy = "student",

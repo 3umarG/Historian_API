@@ -22,10 +22,10 @@ public class UnitLesson {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 100,nullable = false)
+    @Column(length = 100, nullable = false)
     private String title;
 
-    @Column(length = 150,nullable = false)
+    @Column(length = 150, nullable = false)
     private String content;
 
     @ManyToOne
@@ -33,6 +33,10 @@ public class UnitLesson {
     private Unit unit;
 
     private String videoUrl;
+
+    private String videoDescription;
+
+    private boolean isFree;
 
     @OneToMany(
             mappedBy = "lesson",
@@ -57,10 +61,17 @@ public class UnitLesson {
     private List<VideoComment> comments = new ArrayList<>();
 
 
-    public UnitLesson(String title, String content, Unit unit, String videoUrl) {
+    public UnitLesson(String title,
+                      String content,
+                      Unit unit,
+                      String videoUrl,
+                      String videoDescription,
+                      boolean isFree) {
         this.title = title;
         this.content = content;
         this.unit = unit;
         this.videoUrl = videoUrl;
+        this.isFree = isFree;
+        this.videoDescription = videoDescription;
     }
 }
