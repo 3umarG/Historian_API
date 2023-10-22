@@ -10,6 +10,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class Comment {
     private String content;
 
     @Column(nullable = false)
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
 
     @ManyToOne
     @JoinColumn(name = "creatorId")
@@ -58,7 +59,7 @@ public class Comment {
 
     public Comment(String content, Student creator, Post post) {
         this.content = content;
-        this.creationDate = LocalDate.now();
+        this.creationDate = LocalDateTime.now();
         this.creator = creator;
         this.post = post;
     }

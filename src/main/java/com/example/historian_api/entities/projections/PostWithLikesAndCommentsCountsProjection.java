@@ -3,6 +3,7 @@ package com.example.historian_api.entities.projections;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public interface PostWithLikesAndCommentsCountsProjection {
 
@@ -14,7 +15,7 @@ public interface PostWithLikesAndCommentsCountsProjection {
     String getContent();
 
     @Value("#{target.creation_date}")
-    LocalDate getCreationDate();
+    LocalDateTime getCreationDate();
 
     @Value("#{target.title}")
     String getTitle();

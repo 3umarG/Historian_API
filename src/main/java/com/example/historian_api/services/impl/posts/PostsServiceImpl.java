@@ -24,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,7 +48,7 @@ public class PostsServiceImpl implements PostsService {
     @Override
     public List<PostResponseDto> getAll(Integer studentId) {
         var student = studentsRepository.findById(studentId)
-                              .orElseThrow(() -> new NotFoundResourceException("There is no Student with that id !!"));
+                .orElseThrow(() -> new NotFoundResourceException("There is no Student with that id !!"));
 
         List<PostWithLikesAndCommentsCountsProjection> posts = postsRepository.findAllPosts();
 
@@ -67,12 +69,111 @@ public class PostsServiceImpl implements PostsService {
                     post.getNumberOfComments(),
                     post.getNumberOfLikes(),
                     post.getCreationDate(),
+                    calculateCreatedSinceForPost(post.getCreationDate()),
                     images
             );
 
         }).toList();
 
 
+    }
+
+    private String calculateCreatedSinceForPost(LocalDateTime creationDate) {
+        LocalDateTime dateNow = LocalDateTime.now();
+        Duration duration = Duration.between(creationDate, dateNow);
+
+        long days = duration.toDays();
+        long hours = duration.toHours() % 24;
+        long minutes = duration.toMinutes() % 60;
+
+        String createdSince;
+
+        if (days >= 365) {
+            createdSince = calculateCreatedSinceYears(days);
+        } else if (days >= 30) {
+            createdSince = calculateCreatedSinceMonths(days);
+        } else if (days > 0) {
+            createdSince = calculateCreatedSinceDays(days);
+        } else if (hours > 0) {
+            createdSince = calculateCreatedSinceHours(hours);
+        } else {
+            createdSince = calculateCreatedSinceMinutes(minutes);
+        }
+        return createdSince;
+    }
+
+    private static String calculateCreatedSinceMinutes(long minutes) {
+        String createdSince;
+        if (minutes == 1) {
+            createdSince = "منذ دقيقة";
+        } else if (minutes == 2) {
+            createdSince = "منذ دقيقتين";
+        } else if (minutes <= 10) {
+            createdSince = "منذ " + minutes + " دقائق";
+        } else {
+            createdSince = "منذ " + minutes + " دقيقة";
+        }
+
+        return createdSince;
+    }
+
+    private static String calculateCreatedSinceHours(long hours) {
+        String createdSince;
+        if (hours == 2) {
+            createdSince = "منذ ساعتين";
+        } else if (hours == 1) {
+            createdSince = "منذ ساعة";
+        } else if (hours <= 10) {
+            createdSince = "منذ " + hours + " ساعات";
+        } else {
+            createdSince = "منذ " + hours + " ساعة";
+        }
+        return createdSince;
+    }
+
+    private static String calculateCreatedSinceDays(long days) {
+        String createdSince;
+        if (days == 2) {
+            createdSince = "منذ يومين";
+        } else if (days == 1) {
+            createdSince = "منذ يوم";
+        } else if (days <= 10) {
+            createdSince = "منذ " + days + " أيام";
+        } else {
+            createdSince = "منذ " + days + " يوم";
+        }
+        return createdSince;
+    }
+
+    private static String calculateCreatedSinceMonths(long days) {
+        String createdSince;
+        long months = days / 30;
+        if (months == 2) {
+            createdSince = "منذ شهرين";
+        } else if (months == 1) {
+            createdSince = "منذ شهر";
+        } else if (months <= 10) {
+            createdSince = "منذ " + months + " أشهر";
+        } else {
+            createdSince = "منذ " + months + " شهر";
+        }
+        return createdSince;
+
+    }
+
+    private static String calculateCreatedSinceYears(long days) {
+        String createdSince;
+        long years = days / 365;
+        if (years == 2) {
+            createdSince = "منذ سنتين";
+        } else if (years == 1) {
+            createdSince = "منذ سنة";
+        } else if (years <= 10) {
+            createdSince = "منذ " + years + " سنوات";
+        } else {
+            createdSince = "منذ " + years + " سنة";
+        }
+        return createdSince;
     }
 
     private List<String> findImagesForPost(Integer post) {
@@ -147,7 +248,8 @@ public class PostsServiceImpl implements PostsService {
     }
 
     @Override
-    public PostResponseDto updatePostById(@NotNull Integer id, @NotNull PostRequestDto dto) throws NotFoundResourceException {
+    public PostResponseDto updatePostById(@NotNull Integer id, @NotNull PostRequestDto dto) throws
+            NotFoundResourceException {
 
         // check for the post
         Post post = fetchPostWithId(id);

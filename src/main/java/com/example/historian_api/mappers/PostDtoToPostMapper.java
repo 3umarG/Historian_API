@@ -5,6 +5,7 @@ import com.example.historian_api.entities.posts.Post;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.function.Function;
 
 @Service
@@ -14,7 +15,7 @@ public class PostDtoToPostMapper implements Function<PostRequestDto, Post> {
         return Post.builder()
                 .title(dto.title())
                 .content(dto.content())
-                .creationDate(LocalDate.now())
+                .creationDate(LocalDateTime.now())
                 .build();
     }
 }
