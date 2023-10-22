@@ -8,6 +8,7 @@ public record PostCommentReplyResponseDto(
         Integer id,
         String content,
         LocalDateTime createdAt,
+        String createdSince,
         Integer authorId,
         String authorName,
         AuthorType authorType,
