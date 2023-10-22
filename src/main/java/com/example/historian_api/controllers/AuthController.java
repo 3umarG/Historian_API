@@ -7,6 +7,7 @@ import com.example.historian_api.dtos.requests.RegisterTeacherRequestDto;
 import com.example.historian_api.factories.impl.ResponseFactory200;
 import com.example.historian_api.services.base.auth.AuthService;
 import com.example.historian_api.services.base.auth.StudentsImageService;
+import com.example.historian_api.services.base.auth.TeacherImageService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class AuthController {
     private final ResponseFactory200 factory;
     private final AuthService authService;
     private final StudentsImageService studentsImageService;
+    private final TeacherImageService teacherImageService;
 
     @PostMapping(
             value = "/students/register",
@@ -35,7 +37,7 @@ public class AuthController {
     )
     public ResponseEntity<?> registerStudent(
             @Valid @ModelAttribute RegisterStudentRequestDto requestDto
-            ) throws IOException {
+    ) throws IOException {
         var response = factory.createResponse(authService.registerStudent(requestDto));
         return ResponseEntity.ok().body(response);
     }
@@ -43,16 +45,19 @@ public class AuthController {
     @PostMapping("/students/login")
     public ResponseEntity<?> loginStudent(
             @Valid @RequestBody LoginStudentRequestDto loginDto
-            ){
+    ) {
         var response = factory.createResponse(authService.loginStudent(loginDto));
         return ResponseEntity.ok().body(response);
     }
 
 
-    @PostMapping("/teachers/register")
+    @PostMapping(
+            value = "/teachers/register",
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}
+    )
     public ResponseEntity<?> registerTeacher(
-            @Valid @RequestBody RegisterTeacherRequestDto teacherRequestDto
-            ){
+            @Valid @ModelAttribute RegisterTeacherRequestDto teacherRequestDto
+    ) throws IOException {
         var response = factory.createResponse(authService.registerTeacher(teacherRequestDto));
         return ResponseEntity.ok().body(response);
     }
@@ -61,15 +66,23 @@ public class AuthController {
     @PostMapping("/teachers/login")
     public ResponseEntity<?> loginTeacher(
             @Valid @RequestBody LoginTeacherRequestDto loginDto
-            ){
+    ) {
         var response = factory.createResponse(authService.loginTeacher(loginDto));
         return ResponseEntity.ok().body(response);
     }
 
-//    /students/images/TITLE
+    //    /students/images/TITLE
     @GetMapping("/students/images/{title}")
-    public ResponseEntity<?> getImageByTitle(@PathVariable String title){
+    public ResponseEntity<?> getStudentImageByTitle(@PathVariable String title) {
         byte[] imageData = studentsImageService.downloadImage(title);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/png"))
+                .body(imageData);
+    }
+
+    @GetMapping("/teachers/images/{title}")
+    public ResponseEntity<?> getTeacherImageByTitle(@PathVariable String title) {
+        byte[] imageData = teacherImageService.downloadImage(title);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
                 .body(imageData);

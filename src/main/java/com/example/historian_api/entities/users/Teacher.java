@@ -35,19 +35,11 @@ public class Teacher implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role = Role.ROLE_ADMIN;
 
-//    @OneToMany(
-//            mappedBy = "teacher",
-//            cascade = CascadeType.ALL
-//    )
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    private Set<Post> posts = new HashSet<>();
+    @OneToOne()
+    @JoinColumn(name = "photo_id")
+    private TeacherImage teacherImage;
 
-//    @OneToMany(
-//            mappedBy = "teacher",
-//            cascade = CascadeType.ALL
-//    )
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    private List<Course> courses = new ArrayList<>();
+    private String photoUrl;
 
 
     public Teacher(String name, String phone) {
@@ -55,18 +47,12 @@ public class Teacher implements UserDetails {
         this.phone = phone;
     }
 
-    // TODO : uncomment that after creating Post and Course models
-//    public Teacher(String name, String phone, Set<Post> posts, List<Course> courses) {
-//        this.name = name;
-//        this.phone = phone;
-//        this.posts = posts;
-//        this.courses = courses;
-//    }
-
-    public Teacher(String name, String phone, String password) {
+    public Teacher(String name, String phone, String password, TeacherImage teacherImage, String photoUrl) {
         this.name = name;
         this.phone = phone;
         this.password = password;
+        this.teacherImage = teacherImage;
+        this.photoUrl = photoUrl;
     }
 
     @Override
@@ -101,10 +87,10 @@ public class Teacher implements UserDetails {
 
     public Map<String, Object> getClaims() {
         return Map.of(
-                "id",id,
-                "name",name,
-                "phone",phone,
-                "role",role.name()
+                "id", id,
+                "name", name,
+                "phone", phone,
+                "role", role.name()
         );
     }
 }
