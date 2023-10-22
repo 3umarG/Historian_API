@@ -99,7 +99,7 @@ public class CommentsServiceImpl implements CommentsService {
 
     private static void updateCommentContent(Comment comment, String contentUpdated) {
         comment.setContent(contentUpdated);
-        comment.setCreationDate(LocalDate.now());
+        comment.setCreationDate(LocalDateTime.now());
     }
 
     private Comment getCommentById(Integer commentId) {

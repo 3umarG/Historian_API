@@ -104,7 +104,16 @@ public class PostsServiceImpl implements PostsService {
 
     private static String calculateCreatedSinceMinutes(long minutes) {
         String createdSince;
-        createdSince = "منذ " + minutes + " دقائق";
+        if (minutes == 1) {
+            createdSince = "منذ دقيقة";
+        } else if (minutes == 2) {
+            createdSince = "منذ دقيقتين";
+        } else if (minutes <= 10) {
+            createdSince = "منذ " + minutes + " دقائق";
+        } else {
+            createdSince = "منذ " + minutes + " دقيقة";
+        }
+
         return createdSince;
     }
 
