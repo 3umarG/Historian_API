@@ -12,6 +12,8 @@ public record PostResponseDto(
         String title,
         String content,
         Integer authorId,
+        String authorName,
+        String authorPhotoUrl,
         Boolean isLiked,
         Boolean isBookmarked,
         Integer numberOfComments,

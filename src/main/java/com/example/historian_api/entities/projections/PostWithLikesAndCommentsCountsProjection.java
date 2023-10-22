@@ -27,4 +27,11 @@ public interface PostWithLikesAndCommentsCountsProjection {
     Integer getNumberOfComments();
     @Value("#{target.number_of_likes}")
     Integer getNumberOfLikes();
+
+    @Value("#{target.author_name}")
+    String getAuthorName();
+
+
+    @Value("#{target.author_photo_url}")
+    String getAuthorPhotoUrl();
 }

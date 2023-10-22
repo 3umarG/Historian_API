@@ -64,6 +64,8 @@ public class PostsServiceImpl implements PostsService {
                     post.getTitle(),
                     post.getContent(),
                     post.getTeacherId(),
+                    post.getAuthorName(),
+                    post.getAuthorPhotoUrl(),
                     isStudentLikePost,
                     isStudentBookmarksPost,
                     post.getNumberOfComments(),

@@ -15,9 +15,6 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class PostToPostDtoMapper implements Function<Post, PostResponseDto> {
 
-    private final CommentToCommentResponseDtoMapper commentResponseDtoMapper;
-    private final LikeToLikeResponseDtoMapper likeMapper;
-
     public PostResponseDto apply(Post post, Boolean isStudentLike) {
         return PostResponseDto
                 .builder()
@@ -26,6 +23,8 @@ public class PostToPostDtoMapper implements Function<Post, PostResponseDto> {
                 .content(post.getContent())
                 .isLiked(isStudentLike)
                 .authorId(post.getTeacher().getId())
+                .authorName(post.getTeacher().getName())
+                .authorPhotoUrl(post.getTeacher().getPhotoUrl())
                 .build();
 
     }
@@ -39,6 +38,8 @@ public class PostToPostDtoMapper implements Function<Post, PostResponseDto> {
                 .content(post.getContent())
                 .createdOn(post.getCreationDate())
                 .authorId(post.getTeacher().getId())
+                .authorName(post.getTeacher().getName())
+                .authorPhotoUrl(post.getTeacher().getPhotoUrl())
                 .build();
     }
 
@@ -54,6 +55,8 @@ public class PostToPostDtoMapper implements Function<Post, PostResponseDto> {
                 .createdOn(post.getCreationDate())
                 .content(post.getContent())
                 .authorId(post.getTeacherId())
+                .authorName(post.getAuthorName())
+                .authorPhotoUrl(post.getAuthorPhotoUrl())
                 .build();
     }
 }
