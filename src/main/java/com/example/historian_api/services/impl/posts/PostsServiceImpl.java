@@ -13,6 +13,7 @@ import com.example.historian_api.repositories.posts.BookmarksRepository;
 import com.example.historian_api.repositories.posts.LikesRepository;
 import com.example.historian_api.repositories.posts.PostsImagesRepository;
 import com.example.historian_api.repositories.posts.PostsRepository;
+import com.example.historian_api.repositories.users.StudentsRepository;
 import com.example.historian_api.repositories.users.TeachersRepository;
 import com.example.historian_api.services.base.posts.PostsService;
 import com.example.historian_api.utils.ImageUtils;
@@ -40,10 +41,12 @@ public class PostsServiceImpl implements PostsService {
     private final ImageUtils imageUtils;
     private final LikesRepository likesRepository;
     private final BookmarksRepository bookmarksRepository;
+    private final StudentsRepository studentsRepository;
 
     @Override
     public List<PostResponseDto> getAll(Integer studentId) {
-
+        var student = studentsRepository.findById(studentId)
+                              .orElseThrow(() -> new NotFoundResourceException("There is no Student with that id !!"));
 
         List<PostWithLikesAndCommentsCountsProjection> posts = postsRepository.findAllPosts();
 

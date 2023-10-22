@@ -34,7 +34,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 100,nullable = false)
+    @Column(length = 100,nullable = true)
     private String title;
 
     @Column(columnDefinition = "TEXT")

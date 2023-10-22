@@ -6,6 +6,7 @@ public record DirectQuestionResponseDto(
         Integer quid,
         String questionContent,
         LocalDateTime askedOn,
-        Integer studentId
+        Integer studentId,
+        String studentName
 ) {
 }
