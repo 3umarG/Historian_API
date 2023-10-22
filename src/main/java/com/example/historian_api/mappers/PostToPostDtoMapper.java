@@ -37,6 +37,7 @@ public class PostToPostDtoMapper implements Function<Post, PostResponseDto> {
                 .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
+                .createdOn(post.getCreationDate())
                 .authorId(post.getTeacher().getId())
                 .build();
     }
@@ -50,6 +51,7 @@ public class PostToPostDtoMapper implements Function<Post, PostResponseDto> {
                 .numberOfComments(post.getNumberOfComments())
                 .isLiked(isStudentLikePost)
                 .title(post.getTitle())
+                .createdOn(post.getCreationDate())
                 .content(post.getContent())
                 .authorId(post.getTeacherId())
                 .build();

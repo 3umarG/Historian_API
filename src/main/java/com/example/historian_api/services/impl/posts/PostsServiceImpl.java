@@ -63,6 +63,7 @@ public class PostsServiceImpl implements PostsService {
                     isStudentBookmarksPost,
                     post.getNumberOfComments(),
                     post.getNumberOfLikes(),
+                    post.getCreationDate(),
                     images
             );
 
