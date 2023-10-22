@@ -12,7 +12,9 @@ import java.util.Optional;
 @Repository
 public interface PostsRepository extends JpaRepository<Post, Integer> {
 
-    @Query(value = "select p.*, " +
+    @Query(value = "select p.*," +
+                   "       t.name as author_name, " +
+                   "       t.photo_url as author_photo_url, " +
                    "       count(distinct comments.id) as number_of_comments, " +
                    "       count(distinct likes.id) as number_of_likes " +
                    "from posts p " +
@@ -20,12 +22,16 @@ public interface PostsRepository extends JpaRepository<Post, Integer> {
                    "                   ON p.id = comments.post_id " +
                    "         left join posts_likes likes " +
                    "                   ON p.id = likes.post_id " +
-                   "group by p.id " +
+                   "         join teachers t " +
+                   "                   ON t.id = p.teacher_id " +
+                   "group by p.id,t.name, t.photo_url " +
                    "order by p.id desc", nativeQuery = true)
     List<PostWithLikesAndCommentsCountsProjection> findAllPosts();
 
 
     @Query(value = "select p.*, " +
+                   "       t.name as author_name, " +
+                   "       t.photo_url as author_photo_url, " +
                    "       count(distinct comments.id) as number_of_comments, " +
                    "       count(distinct likes.id) as number_of_likes " +
                    "from posts p " +
@@ -33,14 +39,11 @@ public interface PostsRepository extends JpaRepository<Post, Integer> {
                    "                   ON p.id = comments.post_id " +
                    "         left join posts_likes likes " +
                    "                   ON p.id = likes.post_id " +
+                   "         join teachers t " +
+                   "                   ON t.id = p.teacher_id " +
                    "where p.id = ?1 " +
-                   "group by p.id ",
+                   "group by p.id,t.name, t.photo_url ",
             nativeQuery = true)
     Optional<PostWithLikesAndCommentsCountsProjection> findPostById(Integer postId);
 
-    @Query("SELECT p " +
-           "FROM Post p " +
-           "LEFT JOIN p.postImages " +
-           "WHERE p.id = ?1")
-    Optional<Post> findByPostIdWithImages(Integer postId);
 }

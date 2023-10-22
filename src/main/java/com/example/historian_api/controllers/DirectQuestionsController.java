@@ -25,8 +25,8 @@ public class DirectQuestionsController {
     }
 
     @PostMapping("/teachers/answers")
-    public ResponseEntity<?> answerQuestion(@RequestBody QuestionContentRequestDto dto, @RequestHeader(name = "qid") Integer questionId) {
-        var response = successFactory.createResponse(service.answerQuestionByTeacher(questionId, dto.content()));
+    public ResponseEntity<?> answerQuestion(@RequestBody QuestionContentRequestDto dto, @RequestHeader(name = "qid") Integer questionId,@RequestHeader(name = "uid") Integer teacherId) {
+        var response = successFactory.createResponse(service.answerQuestionByTeacher(questionId, dto.content(),teacherId));
         return ResponseEntity.ok(response);
     }
 

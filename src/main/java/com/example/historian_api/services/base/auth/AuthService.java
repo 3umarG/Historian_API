@@ -16,7 +16,7 @@ public interface AuthService {
 
     LoginStudentResponseDto loginStudent(LoginStudentRequestDto loginDto);
 
-    RegisterTeacherResponseDto registerTeacher(RegisterTeacherRequestDto teacherRequestDto);
+    RegisterTeacherResponseDto registerTeacher(RegisterTeacherRequestDto teacherRequestDto) throws IOException;
 
     LoginTeacherResponseDto loginTeacher(LoginTeacherRequestDto loginDto);
 }

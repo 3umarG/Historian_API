@@ -14,6 +14,7 @@ import com.example.historian_api.mappers.DirectQuestionWithAnswerToDtoMapper;
 import com.example.historian_api.repositories.DirectAnswersRepository;
 import com.example.historian_api.repositories.DirectQuestionsRepository;
 import com.example.historian_api.repositories.users.StudentsRepository;
+import com.example.historian_api.repositories.users.TeachersRepository;
 import com.example.historian_api.services.base.direct_questions.DirectQuestionsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ public class DirectQuestionsServiceImpl implements DirectQuestionsService {
     private final DirectAnswersRepository directAnswersRepository;
     private final DirectQuestionToDtoMapper questionToDtoMapper;
     private final DirectQuestionWithAnswerToDtoMapper questionWithAnswerToDtoMapper;
+    private final TeachersRepository teachersRepository;
 
     private static DirectQuestionWithAnswerResponseDto apply(QuestionWithAnswerProjection q) {
         return new DirectQuestionWithAnswerResponseDto(
@@ -44,7 +46,14 @@ public class DirectQuestionsServiceImpl implements DirectQuestionsService {
                 ),
                 q.getAnswerId() != null,
                 q.getAnswerId() != null
-                        ? new DirectAnswerResponseDto(q.getAnswerId(), q.getAnswer(), q.getAnsweredOnTime(), q.getQuestionId())
+                        ? new DirectAnswerResponseDto(
+                        q.getAnswerId(),
+                        q.getAnswer(),
+                        q.getAnsweredOnTime(),
+                        q.getQuestionId(),
+                        q.getTeacherId(),
+                        q.getTeacherName(),
+                        q.getTeacherPhotoUrl())
                         : null
 
         );
@@ -68,13 +77,15 @@ public class DirectQuestionsServiceImpl implements DirectQuestionsService {
     }
 
     @Override
-    public DirectAnswerResponseDto answerQuestionByTeacher(Integer questionId, String answerContent) {
+    public DirectAnswerResponseDto answerQuestionByTeacher(Integer questionId, String answerContent, Integer teacherId) {
         var question = findQuestionById(questionId);
+        var teacher = teachersRepository.findById(teacherId)
+                .orElseThrow(() -> new NotFoundResourceException("There is no Teacher with that id !!"));
 
         if (question.getAnswer() != null)
             throw new BadRequestException("Already answered Question !!");
 
-        var answerToQuestion = new DirectAnswer(question, answerContent, LocalDateTime.now());
+        var answerToQuestion = new DirectAnswer(question, answerContent, LocalDateTime.now(), teacher);
         var savedAnswer = directAnswersRepository.save(answerToQuestion);
 
         return generateDirectAnswerResponseDto(savedAnswer);
@@ -85,7 +96,10 @@ public class DirectQuestionsServiceImpl implements DirectQuestionsService {
                 savedAnswer.getId(),
                 savedAnswer.getContent(),
                 savedAnswer.getRepliedOn(),
-                savedAnswer.getQuestion().getId()
+                savedAnswer.getQuestion().getId(),
+                savedAnswer.getTeacher().getId(),
+                savedAnswer.getTeacher().getName(),
+                savedAnswer.getTeacher().getPhotoUrl()
         );
     }
 
@@ -127,7 +141,14 @@ public class DirectQuestionsServiceImpl implements DirectQuestionsService {
                         ),
                         q.getAnswerId() != null,
                         q.getAnswerId() != null
-                                ? new DirectAnswerResponseDto(q.getAnswerId(), q.getAnswer(), q.getAnsweredOnTime(), q.getQuestionId())
+                                ? new DirectAnswerResponseDto(
+                                    q.getAnswerId(),
+                                    q.getAnswer(),
+                                    q.getAnsweredOnTime(),
+                                    q.getQuestionId(),
+                                    q.getTeacherId(),
+                                    q.getTeacherName(),
+                                    q.getTeacherPhotoUrl())
                                 : null
 
                 ))

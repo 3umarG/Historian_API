@@ -29,4 +29,13 @@ public interface QuestionWithAnswerProjection {
 
     @Value("#{target.student_name}")
     String getStudentName();
+
+    @Value("#{target.teacher_id}")
+    Integer getTeacherId();
+
+    @Value("#{target.teacher_name}")
+    String getTeacherName();
+
+    @Value("#{target.teacher_photo_url}")
+    String getTeacherPhotoUrl();
 }

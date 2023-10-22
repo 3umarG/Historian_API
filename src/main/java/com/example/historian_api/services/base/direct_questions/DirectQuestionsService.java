@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface DirectQuestionsService {
     DirectQuestionResponseDto sendQuestionByStudentId(String questionContent,Integer studentId);
-    DirectAnswerResponseDto answerQuestionByTeacher(Integer questionId,String answerContent);
+    DirectAnswerResponseDto answerQuestionByTeacher(Integer questionId, String answerContent,Integer teacherId);
     List<DirectQuestionResponseDto> getAllUnsolvedQuestions();
     List<DirectQuestionWithAnswerResponseDto> getAllSolvedQuestions();
     List<DirectQuestionWithAnswerResponseDto> getAllQuestionsWithTheirAnswersByStudentId(Integer studentId);

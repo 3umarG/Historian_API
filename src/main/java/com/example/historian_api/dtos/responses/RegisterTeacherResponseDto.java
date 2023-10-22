@@ -4,6 +4,7 @@ public record RegisterTeacherResponseDto(
         Integer id,
         String name,
         String phone,
-        String role
+        String role,
+        String photoUrl
 ) {
 }
