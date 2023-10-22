@@ -31,6 +31,15 @@ public class ControllerHandler {
     private final ResponseFactory401 unAuthorizedFactory;
     private final ResponseFactory403 forbiddenFactory;
 
+
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<?> handleBadRequestException(BadRequestException exception) {
+        return ResponseEntity
+                .badRequest()
+                .body(badRequestFactory.createResponse(exception.getMessage()));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> notValid(MethodArgumentNotValidException ex) {
         List<String> errors = new ArrayList<>();

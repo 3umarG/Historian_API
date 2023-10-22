@@ -26,7 +26,7 @@ public class PostsController {
 
 
     @GetMapping()
-    public ResponseEntity<?> getAllPosts(@RequestParam(required = false) Integer studentId) {
+    public ResponseEntity<?> getAllPosts(@RequestParam Integer studentId) {
         var response = successFactory.createResponse(postsService.getAll(studentId));
         return ResponseEntity.ok(response);
     }

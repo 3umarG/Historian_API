@@ -7,8 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Builder
 public record PostRequestDto(
-        @NotNull(message = "Title is required")
-        @NotBlank(message = "Title is required")
         String title,
 
         @NotNull(message = "Content is required")
