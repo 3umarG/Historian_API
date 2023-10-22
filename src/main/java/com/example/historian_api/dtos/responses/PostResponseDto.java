@@ -3,6 +3,7 @@ package com.example.historian_api.dtos.responses;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -15,7 +16,7 @@ public record PostResponseDto(
         Boolean isBookmarked,
         Integer numberOfComments,
         Integer numberOfLikes,
-        LocalDate createdOn,
+        LocalDateTime createdOn,
         List<String> images
 ) {
 }

@@ -10,6 +10,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,26 +23,26 @@ import java.util.List;
 public class Post {
 
 
-  /*
-  Table "posts" {
-      id integer [pk]
-      title varchar(100) [not null]
-      content text
-      authorId integer
-    }
-   */
+    /*
+    Table "posts" {
+        id integer [pk]
+        title varchar(100) [not null]
+        content text
+        authorId integer
+      }
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 100,nullable = true)
+    @Column(length = 100, nullable = true)
     private String title;
 
     @Column(columnDefinition = "TEXT")
     private String content;
 
     @Column(nullable = false)
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
 
     @OneToMany(
             mappedBy = "post",
@@ -79,16 +80,16 @@ public class Post {
             fetch = FetchType.EAGER
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<PostImages> postImages =new ArrayList<>();
+    private List<PostImages> postImages = new ArrayList<>();
 
-  public Post(String title, String content) {
-    this.title = title;
-    this.content = content;
-  }
+    public Post(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 
-  public Post(String title, String content, Teacher teacher) {
-    this.title = title;
-    this.content = content;
-    this.teacher = teacher;
-  }
+    public Post(String title, String content, Teacher teacher) {
+        this.title = title;
+        this.content = content;
+        this.teacher = teacher;
+    }
 }
