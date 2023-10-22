@@ -6,6 +6,9 @@ public record DirectAnswerResponseDto(
         Integer answerId,
         String answerContent,
         LocalDateTime answeredOn,
-        Integer questionId
+        Integer questionId,
+        Integer authorId,
+        String authorName,
+        String authorPhotoUrl
 ) {
 }

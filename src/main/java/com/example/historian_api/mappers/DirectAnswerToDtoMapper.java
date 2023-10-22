@@ -14,7 +14,11 @@ public class DirectAnswerToDtoMapper implements Function<DirectAnswer, DirectAns
                 directAnswer.getId(),
                 directAnswer.getContent(),
                 directAnswer.getRepliedOn(),
-                directAnswer.getQuestion().getId()
+                directAnswer.getQuestion().getId(),
+                directAnswer.getTeacher().getId(),
+                directAnswer.getTeacher().getName(),
+                directAnswer.getTeacher().getPhotoUrl()
+
         );
     }
 }

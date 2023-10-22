@@ -1,6 +1,7 @@
 package com.example.historian_api.entities.direct_questions;
 
 
+import com.example.historian_api.entities.users.Teacher;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,10 +28,14 @@ public class DirectAnswer {
 
     private LocalDateTime repliedOn;
 
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private Teacher teacher;
 
-    public DirectAnswer(DirectQuestion question, String content, LocalDateTime repliedOn) {
+    public DirectAnswer(DirectQuestion question, String content, LocalDateTime repliedOn,Teacher teacher) {
         this.question = question;
         this.content = content;
         this.repliedOn = repliedOn;
+        this.teacher = teacher;
     }
 }
