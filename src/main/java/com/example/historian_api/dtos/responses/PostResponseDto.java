@@ -17,6 +17,7 @@ public record PostResponseDto(
         Integer numberOfComments,
         Integer numberOfLikes,
         LocalDateTime createdOn,
+        String createdSince,
         List<String> images
 ) {
 }
