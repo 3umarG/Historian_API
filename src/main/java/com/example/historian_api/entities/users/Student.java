@@ -112,23 +112,13 @@ public class Student implements UserDetails {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<VideoComment> videoComments = new ArrayList<>();
 
-//    @OneToMany(
-//            cascade = CascadeType.ALL,
-//            mappedBy = "student",
-//            fetch = FetchType.LAZY
-//    )
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    private List<EnrollmentCourses> enrollmentCourses = new ArrayList<>();
 
-
-//    @OneToMany(
-//            cascade = CascadeType.ALL,
-//            mappedBy = "student",
-//            fetch = FetchType.LAZY
-//    )
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    private List<StudentsWithQuizSolutions> quizSolutions = new ArrayList<>();
-
+    @OneToMany(
+            mappedBy = "student",
+            cascade = CascadeType.ALL
+    )
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<GradeQuizResult> gradeQuizResults = new ArrayList<>();
 
     public Student(String name,
                    String deviceSerial,

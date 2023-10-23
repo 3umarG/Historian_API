@@ -1,5 +1,6 @@
 package com.example.historian_api.entities.courses;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,36 +11,42 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "students_grades")
-public class StudentGrade {
+@Table(name = "grade_quizzes")
+public class GradeQuiz {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String name;
+    private String title;
+
+    private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "grade_id")
+    private StudentGrade grade;
 
     @OneToMany(
-            mappedBy = "grade",
+            mappedBy = "quiz",
             cascade = CascadeType.ALL
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<Course> courses = new ArrayList<>();
+    private List<GradeQuizQuestion> questions = new ArrayList<>();
 
     @OneToMany(
-            mappedBy = "grade",
+            mappedBy = "quiz",
             cascade = CascadeType.ALL
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<GradeQuiz> quizzes = new ArrayList<>();
+    private List<GradeQuizResult> results = new ArrayList<>();
 
-
-
-    public StudentGrade(String name) {
-        this.name = name;
+    public GradeQuiz(String title, String description, StudentGrade grade) {
+        this.title = title;
+        this.description = description;
+        this.grade = grade;
     }
 }
