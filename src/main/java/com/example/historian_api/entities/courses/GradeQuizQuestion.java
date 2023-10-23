@@ -6,8 +6,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,34 +14,37 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "lessons_questions")
-public class LessonQuestion {
+@Table(name = "grade_quizzes_questions")
+public class GradeQuizQuestion {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "lesson_id")
-    private UnitLesson lesson;
+    @JoinColumn(name = "quiz_id")
+    private GradeQuiz quiz;
 
     private String question;
 
     @Convert(converter = StringToListConverter.class)
     private List<String> answers = new ArrayList<>();
 
-    private Integer correctAnswerIndex; // TODO: How teacher will send the correct answer reference ??
+    private Integer correctAnswerIndex;
 
     private Boolean isCheckedAnswer;
 
-    public LessonQuestion(UnitLesson lesson,
-                          String question,
-                          List<String> answers,
-                          Integer correctAnswerIndex,
-                          Boolean isCheckedAnswer) {
-        this.lesson = lesson;
-        this.isCheckedAnswer = isCheckedAnswer;
+    public GradeQuizQuestion(
+            GradeQuiz quiz,
+            String question,
+            List<String> answers,
+            Integer correctAnswerIndex,
+            Boolean isCheckedAnswer
+    ) {
+        this.quiz = quiz;
         this.question = question;
         this.answers = answers;
         this.correctAnswerIndex = correctAnswerIndex;
+        this.isCheckedAnswer = isCheckedAnswer;
     }
 }

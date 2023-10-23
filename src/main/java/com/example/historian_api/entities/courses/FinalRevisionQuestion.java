@@ -32,12 +32,15 @@ public class FinalRevisionQuestion {
 
     private Integer correctAnswerIndex; // TODO: How teacher will send the correct answer reference ??
 
+    private Boolean isCheckedAnswer;
 
     public FinalRevisionQuestion(Unit unit,
                                  String question,
                                  List<String> answers,
-                                 Integer correctAnswerIndex) {
+                                 Integer correctAnswerIndex,
+                                 Boolean isCheckedAnswer) {
         this.unit = unit;
+        this.isCheckedAnswer = isCheckedAnswer;
         this.question = question;
         this.answers = answers;
         this.correctAnswerIndex = correctAnswerIndex;
