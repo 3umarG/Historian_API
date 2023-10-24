@@ -7,6 +7,7 @@ import com.example.historian_api.entities.users.Student;
 import com.example.historian_api.exceptions.NotFoundResourceException;
 import com.example.historian_api.repositories.users.StudentsRepository;
 import com.example.historian_api.repositories.users.TeachersRepository;
+import com.example.historian_api.services.base.competitions.CompetitionsService;
 import com.example.historian_api.services.base.feedbacks.FeedbacksService;
 import com.example.historian_api.services.base.profiles.ProfilesService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ public class ProfilesServiceImpl implements ProfilesService {
     private final StudentsRepository studentsRepository;
     private final TeachersRepository teachersRepository;
     private final FeedbacksService feedbacksService;
+    private final CompetitionsService competitionsService;
 
     @Override
     public LoginStudentResponseDto getStudentProfile(Integer studentId) {
@@ -63,11 +65,14 @@ public class ProfilesServiceImpl implements ProfilesService {
                 teacher.getPhotoUrl()
         );
 
-        var top3Feedbacks = feedbacksService.getTop(3);
+        var topFeedbacks = feedbacksService.getTop(3);
+
+        var topCompetitions = competitionsService.getTop(3);
 
         return new TeacherProfileResponseDto(
                 teacherDto,
-                top3Feedbacks
+                topFeedbacks,
+                topCompetitions
         );
 
     }

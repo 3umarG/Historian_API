@@ -1,8 +1,11 @@
 package com.example.historian_api.entities.users;
 
+import com.example.historian_api.entities.competitions.Competition;
 import com.example.historian_api.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,6 +41,13 @@ public class Teacher implements UserDetails {
     @OneToOne()
     @JoinColumn(name = "photo_id")
     private TeacherImage teacherImage;
+
+    @OneToMany(
+            mappedBy = "teacher",
+            cascade = CascadeType.ALL
+    )
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<Competition> competitions = new ArrayList<>();
 
     private String photoUrl;
 

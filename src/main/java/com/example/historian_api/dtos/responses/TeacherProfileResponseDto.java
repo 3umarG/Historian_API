@@ -4,6 +4,7 @@ import java.util.List;
 
 public record TeacherProfileResponseDto(
         LoginTeacherResponseDto teacher,
-        List<FeedbackResponseDto> feedbacks
+        List<FeedbackResponseDto> feedbacks,
+        List<CompetitionResponseDto> competitions
 ) {
 }
