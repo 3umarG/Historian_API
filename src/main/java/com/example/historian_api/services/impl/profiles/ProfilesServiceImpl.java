@@ -2,10 +2,12 @@ package com.example.historian_api.services.impl.profiles;
 
 import com.example.historian_api.dtos.responses.LoginStudentResponseDto;
 import com.example.historian_api.dtos.responses.LoginTeacherResponseDto;
+import com.example.historian_api.dtos.responses.TeacherProfileResponseDto;
 import com.example.historian_api.entities.users.Student;
 import com.example.historian_api.exceptions.NotFoundResourceException;
 import com.example.historian_api.repositories.users.StudentsRepository;
 import com.example.historian_api.repositories.users.TeachersRepository;
+import com.example.historian_api.services.base.feedbacks.FeedbacksService;
 import com.example.historian_api.services.base.profiles.ProfilesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ public class ProfilesServiceImpl implements ProfilesService {
 
     private final StudentsRepository studentsRepository;
     private final TeachersRepository teachersRepository;
+    private final FeedbacksService feedbacksService;
 
     @Override
     public LoginStudentResponseDto getStudentProfile(Integer studentId) {
@@ -42,11 +45,11 @@ public class ProfilesServiceImpl implements ProfilesService {
     }
 
     @Override
-    public LoginTeacherResponseDto getTeacherProfile(Integer teacherId) {
+    public TeacherProfileResponseDto getTeacherProfile(Integer teacherId) {
         var teacher = teachersRepository.findById(teacherId)
                 .orElseThrow(() -> new NotFoundResourceException("There is no Teacher with that id !!"));
 
-        return new LoginTeacherResponseDto(
+        var teacherDto = new LoginTeacherResponseDto(
                 teacher.getId(),
                 teacher.getName(),
                 teacher.getPhone(),
@@ -59,5 +62,13 @@ public class ProfilesServiceImpl implements ProfilesService {
                 teacher.getWhatsAppUrl(),
                 teacher.getPhotoUrl()
         );
+
+        var top3Feedbacks = feedbacksService.getTop(3);
+
+        return new TeacherProfileResponseDto(
+                teacherDto,
+                top3Feedbacks
+        );
+
     }
 }

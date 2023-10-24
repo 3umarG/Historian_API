@@ -1,6 +1,5 @@
 package com.example.historian_api.dtos.responses;
 
-// TODO : update with feedbacks and competitions
 public record LoginTeacherResponseDto(
         Integer id,
         String name,
