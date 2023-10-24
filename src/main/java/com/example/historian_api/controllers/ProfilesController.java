@@ -1,6 +1,7 @@
 package com.example.historian_api.controllers;
 
 import com.example.historian_api.factories.impl.ResponseFactory200;
+import com.example.historian_api.services.base.profiles.ProfilesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,15 +15,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProfilesController {
 
     private final ResponseFactory200 successFactory;
+    private final ProfilesService profilesService;
 
     @GetMapping("/students")
     public ResponseEntity<?> getStudentProfile(@RequestHeader(name = "uid") Integer studentId) {
-//        var response = successFactory.createResponse();
-        return ResponseEntity.ok().build();
+        var response = successFactory.createResponse(profilesService.getStudentProfile(studentId));
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/teachers")
     public ResponseEntity<?> getTeacherProfile(@RequestHeader(name = "uid") Integer teacherId){
-        return ResponseEntity.ok().build();
+        var response = successFactory.createResponse(profilesService.getTeacherProfile(teacherId));
+        return ResponseEntity.ok(response);
     }
 }

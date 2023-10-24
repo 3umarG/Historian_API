@@ -172,7 +172,12 @@ public class AuthServiceImpl implements AuthService {
                 teacher.getPhone(),
                 teacher.getRole().name(),
                 jwt,
-                true
+                true,
+                teacher.getAddress(),
+                teacher.getSummery(),
+                teacher.getFacebookUrl(),
+                teacher.getWhatsAppUrl(),
+                teacher.getPhotoUrl()
         );
     }
 
