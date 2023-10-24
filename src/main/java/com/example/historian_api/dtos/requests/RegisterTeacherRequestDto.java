@@ -24,6 +24,10 @@ public record RegisterTeacherRequestDto(
         @NotEmpty(message = "Password is required")
         String password,
 
-        MultipartFile photo
+        MultipartFile photo,
+        String address,
+        String summery,
+        String facebookUrl,
+        String whatsAppUrl
 ) {
 }

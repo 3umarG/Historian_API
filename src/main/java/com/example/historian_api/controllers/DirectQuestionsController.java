@@ -1,6 +1,6 @@
 package com.example.historian_api.controllers;
 
-import com.example.historian_api.dtos.requests.QuestionContentRequestDto;
+import com.example.historian_api.dtos.requests.ContentRequestDto;
 import com.example.historian_api.factories.impl.ResponseFactory200;
 import com.example.historian_api.services.base.direct_questions.DirectQuestionsService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,13 +19,13 @@ public class DirectQuestionsController {
 
 
     @PostMapping("/students/questions")
-    public ResponseEntity<?> sendQuestionByStudentId(@RequestBody QuestionContentRequestDto dto, @RequestHeader(name = "uid") Integer studentId) {
+    public ResponseEntity<?> sendQuestionByStudentId(@RequestBody ContentRequestDto dto, @RequestHeader(name = "uid") Integer studentId) {
         var response = successFactory.createResponse(service.sendQuestionByStudentId(dto.content(), studentId));
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/teachers/answers")
-    public ResponseEntity<?> answerQuestion(@RequestBody QuestionContentRequestDto dto, @RequestHeader(name = "qid") Integer questionId,@RequestHeader(name = "uid") Integer teacherId) {
+    public ResponseEntity<?> answerQuestion(@RequestBody ContentRequestDto dto, @RequestHeader(name = "qid") Integer questionId, @RequestHeader(name = "uid") Integer teacherId) {
         var response = successFactory.createResponse(service.answerQuestionByTeacher(questionId, dto.content(),teacherId));
         return ResponseEntity.ok(response);
     }

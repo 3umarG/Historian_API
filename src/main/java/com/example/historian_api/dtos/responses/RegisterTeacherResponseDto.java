@@ -5,6 +5,10 @@ public record RegisterTeacherResponseDto(
         String name,
         String phone,
         String role,
-        String photoUrl
+        String photoUrl,
+        String address,
+        String summery,
+        String facebookUrl,
+        String whatsAppUrl
 ) {
 }

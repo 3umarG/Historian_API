@@ -6,6 +6,18 @@ public record LoginTeacherResponseDto(
         String phone,
         String role,
         String token,
-        boolean isAuthenticated
+        boolean isAuthenticated,
+        String address,
+        String summery,
+        String facebookUrl,
+        String whatsAppUrl,
+        String photoUrl
 ) {
+
+//    LoginTeacherResponseDto( Integer id,
+//                             String name,
+//                             String phone,
+//                             String role,
+//                             String token,
+//                             boolean isAuthenticated){}
 }
