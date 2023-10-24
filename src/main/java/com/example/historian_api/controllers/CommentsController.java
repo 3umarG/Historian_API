@@ -3,6 +3,7 @@ package com.example.historian_api.controllers;
 
 import com.example.historian_api.dtos.requests.AddReplyForPostCommentByStudentRequestDto;
 import com.example.historian_api.dtos.requests.AddReplyForPostCommentByTeacherRequestDto;
+import com.example.historian_api.dtos.requests.ContentRequestDto;
 import com.example.historian_api.factories.impl.ResponseFactory200;
 import com.example.historian_api.services.base.posts.CommentsService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,19 +30,19 @@ public class CommentsController {
     }
 
     @PostMapping("/{postId}")
-    public ResponseEntity<?> addCommentToPost(@RequestParam("studentId") Integer studentId,
+    public ResponseEntity<?> addCommentToPost(@RequestHeader(name = "studentId") Integer studentId,
                                               @PathVariable Integer postId,
-                                              @RequestParam("content") String content) {
-        var response = successFactory.createResponse(commentsService.addCommentByPostId(postId, studentId, content));
+                                              @RequestBody ContentRequestDto dto) {
+        var response = successFactory.createResponse(commentsService.addCommentByPostId(postId, studentId, dto.content()));
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("{commentId}")
     public ResponseEntity<?> updateCommentById(
             @PathVariable Integer commentId,
-            @RequestParam("content") String contentUpdated
+            @RequestBody ContentRequestDto dto
     ) {
-        var response = successFactory.createResponse(commentsService.updateCommentContentById(commentId, contentUpdated));
+        var response = successFactory.createResponse(commentsService.updateCommentContentById(commentId, dto.content()));
         return ResponseEntity.ok(response);
     }
 
