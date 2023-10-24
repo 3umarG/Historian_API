@@ -8,10 +8,12 @@ import com.example.historian_api.entities.users.Teacher;
 import com.example.historian_api.exceptions.NotFoundResourceException;
 import com.example.historian_api.repositories.competitions.CompetitionsRepository;
 import com.example.historian_api.repositories.users.TeachersRepository;
-import com.example.historian_api.services.base.competitions.CompetitionsImagesService;
 import com.example.historian_api.services.base.competitions.CompetitionsService;
+import com.example.historian_api.services.base.images.ImagesService;
 import com.example.historian_api.utils.ImageUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,21 +22,27 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.example.historian_api.utils.constants.AppStrings.COMPETITIONS_IMAGES_PATH;
-import static com.example.historian_api.utils.constants.AppStrings.STUDENTS_IMAGES_PATH;
 
 @Service
 @RequiredArgsConstructor
 public class CompetitionsServiceImpl implements CompetitionsService {
 
-    private final CompetitionsImagesService competitionsImagesService;
+    @Autowired
+    @Qualifier("CompetitionsImageService")
+    private ImagesService<CompetitionImage> competitionsImagesService;
     private final CompetitionsRepository competitionsRepository;
     private final TeachersRepository teachersRepository;
     private final ImageUtils imageUtils;
+
+    private static int reversedCompetitionsComparator(Competition o1, Competition o2) {
+        return o2.getId().compareTo(o1.getId());
+    }
 
     @Override
     public List<CompetitionResponseDto> getAll() {
         return competitionsRepository.findAll()
                 .stream()
+                .sorted(CompetitionsServiceImpl::reversedCompetitionsComparator)
                 .map(competition -> new CompetitionResponseDto(
                         competition.getId(),
                         competition.getTitle(),

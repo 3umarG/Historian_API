@@ -1,10 +1,13 @@
 package com.example.historian_api.controllers;
 
 import com.example.historian_api.dtos.requests.CompetitionRequestDto;
+import com.example.historian_api.entities.competitions.CompetitionImage;
 import com.example.historian_api.factories.impl.ResponseFactory200;
-import com.example.historian_api.services.base.competitions.CompetitionsImagesService;
 import com.example.historian_api.services.base.competitions.CompetitionsService;
+import com.example.historian_api.services.base.images.ImagesService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +22,11 @@ public class CompetitionsController {
 
     private final ResponseFactory200 successFactory;
     private final CompetitionsService competitionsService;
-    private final CompetitionsImagesService competitionsImagesService;
+
+
+    @Autowired
+    @Qualifier("CompetitionsImageService")
+    private ImagesService<CompetitionImage> competitionsImagesService;
 
     @PostMapping(
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}
