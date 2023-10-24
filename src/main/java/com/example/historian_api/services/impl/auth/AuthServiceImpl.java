@@ -215,7 +215,11 @@ public class AuthServiceImpl implements AuthService {
                 teacher.getName(),
                 teacher.getPhone(),
                 teacher.getRole().name(),
-                teacher.getPhotoUrl()
+                teacher.getPhotoUrl(),
+                teacher.getAddress(),
+                teacher.getSummery(),
+                teacher.getFacebookUrl(),
+                teacher.getWhatsAppUrl()
         );
     }
 
@@ -240,7 +244,11 @@ public class AuthServiceImpl implements AuthService {
                 teacherRequestDto.phone(),
                 passwordEncoder.encode(teacherRequestDto.password()),
                 userImage,
-                photoUrl
+                photoUrl,
+                teacherRequestDto.address(),
+                teacherRequestDto.summery(),
+                teacherRequestDto.facebookUrl(),
+                teacherRequestDto.whatsAppUrl()
         );
 
     }

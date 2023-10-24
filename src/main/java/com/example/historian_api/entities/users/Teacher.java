@@ -41,18 +41,33 @@ public class Teacher implements UserDetails {
 
     private String photoUrl;
 
+    private String address;
 
-    public Teacher(String name, String phone) {
-        this.name = name;
-        this.phone = phone;
-    }
+    private String summery;
 
-    public Teacher(String name, String phone, String password, TeacherImage teacherImage, String photoUrl) {
+    private String facebookUrl;
+
+    private String whatsAppUrl;
+
+
+    public Teacher(String name,
+                   String phone,
+                   String password,
+                   TeacherImage teacherImage,
+                   String photoUrl,
+                   String address,
+                   String summery,
+                   String facebookUrl,
+                   String whatsAppUrl) {
         this.name = name;
         this.phone = phone;
         this.password = password;
         this.teacherImage = teacherImage;
         this.photoUrl = photoUrl;
+        this.address = address;
+        this.summery = summery;
+        this.facebookUrl = facebookUrl;
+        this.whatsAppUrl = whatsAppUrl;
     }
 
     @Override
