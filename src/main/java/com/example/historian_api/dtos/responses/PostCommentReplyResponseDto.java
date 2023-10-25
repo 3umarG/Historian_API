@@ -11,7 +11,8 @@ public record PostCommentReplyResponseDto(
         String createdSince,
         Integer authorId,
         String authorName,
-        AuthorType authorType,
+        String authorType,
+        String authorPhotoUrl,
         Integer commentId
 ) {
 }
