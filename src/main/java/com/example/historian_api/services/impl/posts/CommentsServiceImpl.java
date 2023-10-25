@@ -7,7 +7,7 @@ import com.example.historian_api.dtos.responses.PostCommentReplyResponseDto;
 import com.example.historian_api.dtos.responses.PostWithCommentsResponseDto;
 import com.example.historian_api.entities.posts.Comment;
 import com.example.historian_api.entities.posts.CommentReply;
-import com.example.historian_api.entities.posts.Post;
+import com.example.historian_api.entities.projections.PostProjection;
 import com.example.historian_api.entities.users.Student;
 import com.example.historian_api.enums.AuthorType;
 import com.example.historian_api.exceptions.NotFoundResourceException;
@@ -18,12 +18,12 @@ import com.example.historian_api.repositories.posts.CommentsRepository;
 import com.example.historian_api.repositories.posts.PostsRepository;
 import com.example.historian_api.repositories.users.StudentsRepository;
 import com.example.historian_api.repositories.users.TeachersRepository;
+import com.example.historian_api.services.base.helpers.TimeSinceFormatter;
 import com.example.historian_api.services.base.posts.CommentsService;
 import com.example.historian_api.utils.constants.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -37,31 +37,32 @@ public class CommentsServiceImpl implements CommentsService {
     private final StudentsRepository studentsRepository;
     private final CommentRepliesRepository commentRepliesRepository;
     private final TeachersRepository teachersRepository;
+    private final TimeSinceFormatter timeSinceFormatter;
 
     @Override
     public PostWithCommentsResponseDto getAllCommentsByPostId(Integer postId) {
-        Post post = getPostById(postId);
+        var post = getPostById(postId);
 
         List<Comment> comments = commentsRepository.findAllByPostIdOrderByCreationDateDesc(postId);
 
         return generatePostWithCommentsResponseDto(post, comments);
     }
 
-    private PostWithCommentsResponseDto generatePostWithCommentsResponseDto(Post post, List<Comment> comments) {
+    private PostWithCommentsResponseDto generatePostWithCommentsResponseDto(PostProjection post, List<Comment> comments) {
         return new PostWithCommentsResponseDto(
                 post.getId(),
                 post.getTitle(),
                 post.getContent(),
-                post.getTeacher().getId(),
+                post.getTeacherId(),
                 comments.stream()
                         .map(commentResponseDtoMapper)
                         .toList()
         );
     }
 
-    private Post getPostById(Integer postId) {
+    private PostProjection getPostById(Integer postId) {
         return postsRepository
-                .findById(postId)
+                .findPostById(postId)
                 .orElseThrow(() -> new NotFoundResourceException("There is no Post with that ID !!"));
     }
 
@@ -70,7 +71,8 @@ public class CommentsServiceImpl implements CommentsService {
             throws NotFoundPhoneNumberLoginException {
 
         var user = getStudentById(studentId);
-        var post = getPostById(postId);
+        var post = postsRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundResourceException("There is no Post with that id !!"));
 
         Comment comment = commentsRepository.save(new Comment(content, user, post));
         CommentResponseDto responseDto = commentResponseDtoMapper.apply(comment);
@@ -125,19 +127,26 @@ public class CommentsServiceImpl implements CommentsService {
         var replies = commentRepliesRepository.findAllByCommentIdOrderByCreatedAt(commentId);
         return replies.stream().map(reply -> {
 
-            var createdSince = calculateCreatedSinceForReplies(reply.getCreatedAt());
+            var createdSince = timeSinceFormatter.formatTimeSince(reply.getCreatedAt());
 
-           return new PostCommentReplyResponseDto(
+            return new PostCommentReplyResponseDto(
                     reply.getId(),
                     reply.getContent(),
                     reply.getCreatedAt(),
                     createdSince,
-                    determineAuthorId(reply),
-                    determineAuthorName(reply),
-                    determineAuthorType(reply),
-                    commentId
+                    reply.getAuthorId(),
+                    reply.getAuthorName(),
+                    reply.getAuthorType(),
+                    reply.getAuthorPhotoUrl(),
+                    reply.getCommentId()
             );
         }).toList();
+    }
+
+    private String determineAuthorPhotoUrl(CommentReply reply) {
+        return reply.getStudent() == null
+                ? reply.getTeacher().getPhotoUrl()
+                : reply.getStudent().getPhotoUrl();
     }
 
     @Override
@@ -156,15 +165,15 @@ public class CommentsServiceImpl implements CommentsService {
 
         var savedReply = commentRepliesRepository.save(reply);
 
-        var createdSince = "";
         return new PostCommentReplyResponseDto(
                 savedReply.getId(),
                 savedReply.getContent(),
                 savedReply.getCreatedAt(),
-                createdSince,
+                null,
                 dto.studentId(),
                 student.getName(),
-                AuthorType.STUDENT,
+                AuthorType.STUDENT.name(),
+                student.getPhotoUrl(),
                 dto.commentId()
         );
     }
@@ -185,15 +194,15 @@ public class CommentsServiceImpl implements CommentsService {
 
         var savedReply = commentRepliesRepository.save(reply);
 
-        var createdSince = calculateCreatedSinceForReplies(reply.getCreatedAt());
         return new PostCommentReplyResponseDto(
                 savedReply.getId(),
                 savedReply.getContent(),
                 savedReply.getCreatedAt(),
-                createdSince,
+                null,
                 dto.teacherId(),
                 teacher.getName(),
-                AuthorType.TEACHER,
+                AuthorType.TEACHER.name(),
+                teacher.getPhotoUrl(),
                 dto.commentId()
         );
 
@@ -206,15 +215,16 @@ public class CommentsServiceImpl implements CommentsService {
 
         commentRepliesRepository.deleteById(replyId);
 
-        var createdSince = calculateCreatedSinceForReplies(reply.getCreatedAt());
+
         return new PostCommentReplyResponseDto(
                 reply.getId(),
                 reply.getContent(),
                 reply.getCreatedAt(),
-                createdSince,
+                null,
                 determineAuthorId(reply),
                 determineAuthorName(reply),
-                determineAuthorType(reply),
+                determineAuthorType(reply).name(),
+                determineAuthorPhotoUrl(reply),
                 reply.getComment().getId()
         );
     }
@@ -249,104 +259,6 @@ public class CommentsServiceImpl implements CommentsService {
 
     private boolean isExistsCommentId(Integer commentId) {
         return commentsRepository.existsById(commentId);
-    }
-
-    private String calculateCreatedSinceForReplies(LocalDateTime creationDate) {
-        LocalDateTime dateNow = LocalDateTime.now();
-        Duration duration = Duration.between(creationDate, dateNow);
-
-        long days = duration.toDays();
-        long hours = duration.toHours() % 24;
-        long minutes = duration.toMinutes() % 60;
-
-        String createdSince;
-
-        if (days >= 365) {
-            createdSince = calculateCreatedSinceYears(days);
-        } else if (days >= 30) {
-            createdSince = calculateCreatedSinceMonths(days);
-        } else if (days > 0) {
-            createdSince = calculateCreatedSinceDays(days);
-        } else if (hours > 0) {
-            createdSince = calculateCreatedSinceHours(hours);
-        } else {
-            createdSince = calculateCreatedSinceMinutes(minutes);
-        }
-        return createdSince;
-    }
-
-    private static String calculateCreatedSinceYears(long days) {
-        String createdSince;
-        long years = days / 365;
-        if (years == 2) {
-            createdSince = "منذ سنتين";
-        } else if (years == 1) {
-            createdSince = "منذ سنة";
-        } else if (years <= 10) {
-            createdSince = "منذ " + years + " سنوات";
-        } else {
-            createdSince = "منذ " + years + " سنة";
-        }
-        return createdSince;
-    }
-
-    private static String calculateCreatedSinceMonths(long days) {
-        String createdSince;
-        long months = days / 30;
-        if (months == 2) {
-            createdSince = "منذ شهرين";
-        } else if (months == 1) {
-            createdSince = "منذ شهر";
-        } else if (months <= 10) {
-            createdSince = "منذ " + months + " أشهر";
-        } else {
-            createdSince = "منذ " + months + " شهر";
-        }
-        return createdSince;
-
-    }
-
-    private static String calculateCreatedSinceDays(long days) {
-        String createdSince;
-        if (days == 2) {
-            createdSince = "منذ يومين";
-        } else if (days == 1) {
-            createdSince = "منذ يوم";
-        } else if (days <= 10) {
-            createdSince = "منذ " + days + " أيام";
-        } else {
-            createdSince = "منذ " + days + " يوم";
-        }
-        return createdSince;
-    }
-
-    private static String calculateCreatedSinceHours(long hours) {
-        String createdSince;
-        if (hours == 2) {
-            createdSince = "منذ ساعتين";
-        } else if (hours == 1) {
-            createdSince = "منذ ساعة";
-        } else if (hours <= 10) {
-            createdSince = "منذ " + hours + " ساعات";
-        } else {
-            createdSince = "منذ " + hours + " ساعة";
-        }
-        return createdSince;
-    }
-
-    private static String calculateCreatedSinceMinutes(long minutes) {
-        String createdSince;
-        if (minutes == 1) {
-            createdSince = "منذ دقيقة";
-        } else if (minutes == 2) {
-            createdSince = "منذ دقيقتين";
-        } else if (minutes <= 10) {
-            createdSince = "منذ " + minutes + " دقائق";
-        } else {
-            createdSince = "منذ " + minutes + " دقيقة";
-        }
-
-        return createdSince;
     }
 
 }
