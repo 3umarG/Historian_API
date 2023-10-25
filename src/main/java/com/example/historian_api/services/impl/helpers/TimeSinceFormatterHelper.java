@@ -17,6 +17,8 @@ public class TimeSinceFormatterHelper implements TimeSinceFormatter {
         long days = duration.toDays();
         long hours = duration.toHours() % 24;
         long minutes = duration.toMinutes() % 60;
+        long seconds = duration.getSeconds() % 60;
+
 
         String createdSince;
 
@@ -28,11 +30,17 @@ public class TimeSinceFormatterHelper implements TimeSinceFormatter {
             createdSince = formatDays(days);
         } else if (hours > 0) {
             createdSince = formatHours(hours);
-        } else {
+        } else if (minutes > 0) {
             createdSince = formatMinutes(minutes);
+        } else {
+            createdSince = formatSeconds(seconds);
         }
         return createdSince;
 
+    }
+
+    private static String formatSeconds(long seconds) {
+        return "منذ " + seconds + " ثواني";
     }
 
     private static String formatMinutes(long minutes) {
