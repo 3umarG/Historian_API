@@ -1,6 +1,7 @@
 package com.example.historian_api.repositories.posts;
 
 import com.example.historian_api.entities.posts.Post;
+import com.example.historian_api.entities.projections.PostProjection;
 import com.example.historian_api.entities.projections.PostWithLikesAndCommentsCountsProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -44,6 +45,15 @@ public interface PostsRepository extends JpaRepository<Post, Integer> {
                    "where p.id = ?1 " +
                    "group by p.id,t.name, t.photo_url ",
             nativeQuery = true)
-    Optional<PostWithLikesAndCommentsCountsProjection> findPostById(Integer postId);
+    Optional<PostWithLikesAndCommentsCountsProjection> findPostWithLikesAndCommentsCountById(Integer postId);
+
+    @Query(value = "select " +
+                   "    p.id, " +
+                   "    p.title, " +
+                   "    p.content," +
+                   "    p.teacher_id " +
+                   "from posts p " +
+                   "where p.id = ?1", nativeQuery = true)
+    Optional<PostProjection> findPostById(Integer id);
 
 }
