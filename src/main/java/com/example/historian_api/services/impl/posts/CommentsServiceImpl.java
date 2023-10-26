@@ -169,7 +169,7 @@ public class CommentsServiceImpl implements CommentsService {
                 savedReply.getId(),
                 savedReply.getContent(),
                 savedReply.getCreatedAt(),
-                null,
+                timeSinceFormatter.formatTimeSince(savedReply.getCreatedAt()),
                 dto.studentId(),
                 student.getName(),
                 AuthorType.STUDENT.name(),
