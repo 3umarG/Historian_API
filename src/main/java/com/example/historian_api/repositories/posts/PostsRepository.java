@@ -56,4 +56,26 @@ public interface PostsRepository extends JpaRepository<Post, Integer> {
                    "where p.id = ?1", nativeQuery = true)
     Optional<PostProjection> findPostById(Integer id);
 
+    @Query(value = "select p.*, " +
+                   "       t.name as author_name, " +
+                   "       t.photo_url as author_photo_url, " +
+                   "       count(distinct comments.id) as number_of_comments, " +
+                   "       count(distinct likes.id) as number_of_likes " +
+                   "from posts p " +
+                   "         left join posts_comments comments " +
+                   "                   ON p.id = comments.post_id " +
+                   "         left join posts_likes likes " +
+                   "                   ON p.id = likes.post_id " +
+                   "         join teachers t " +
+                   "                   ON t.id = p.teacher_id " +
+                   "where p.id in (" +
+                   "    select b.post_id " +
+                   "    from bookmarks b " +
+                   "    where b.student_id = ?1" +
+                   ") " +
+                   "group by p.id,t.name, t.photo_url " +
+                   "order by p.id desc ",
+            nativeQuery = true)
+    List<PostWithLikesAndCommentsCountsProjection> findBookmarkedPostsByStudentId(Integer studentId);
+
 }

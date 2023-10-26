@@ -1,15 +1,21 @@
 package com.example.historian_api.services.impl.posts;
 
 import com.example.historian_api.dtos.responses.BookmarkResponseDto;
+import com.example.historian_api.dtos.responses.PostResponseDto;
 import com.example.historian_api.entities.keys.PostsBookmarksKey;
 import com.example.historian_api.entities.posts.Bookmark;
 import com.example.historian_api.entities.posts.Post;
 import com.example.historian_api.entities.posts.PostImages;
+import com.example.historian_api.entities.projections.PostWithLikesAndCommentsCountsProjection;
 import com.example.historian_api.entities.users.Student;
 import com.example.historian_api.exceptions.NotFoundResourceException;
+import com.example.historian_api.mappers.PostProjectionToPostResponseDtoMapper;
 import com.example.historian_api.repositories.posts.BookmarksRepository;
+import com.example.historian_api.repositories.posts.LikesRepository;
+import com.example.historian_api.repositories.posts.PostsImagesRepository;
 import com.example.historian_api.repositories.posts.PostsRepository;
 import com.example.historian_api.repositories.users.StudentsRepository;
+import com.example.historian_api.services.base.helpers.TimeSinceFormatter;
 import com.example.historian_api.services.base.posts.BookmarksService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +32,8 @@ public class BookmarksServiceImpl implements BookmarksService {
     private final BookmarksRepository bookmarksRepository;
     private final StudentsRepository studentsRepository;
     private final PostsRepository postsRepository;
+    private final PostProjectionToPostResponseDtoMapper postProjectionMapper;
+
 
     @Override
     public BookmarkResponseDto addOrDeletePostBookMarkForStudent(Integer postId, Integer studentId) {
@@ -69,7 +77,7 @@ public class BookmarksServiceImpl implements BookmarksService {
         } else {
             // student doesn't have this post as bookmark, then add new one
             var key = new PostsBookmarksKey(post.getId(), student.getId());
-            var bookmark = new Bookmark(key,student,post,LocalDate.now());
+            var bookmark = new Bookmark(key, student, post, LocalDate.now());
             return bookmarksRepository.save(bookmark);
         }
     }
@@ -92,15 +100,19 @@ public class BookmarksServiceImpl implements BookmarksService {
     }
 
     @Override
-    public List<BookmarkResponseDto> getBookMarksForStudentId(Integer studentId) {
+    public List<PostResponseDto> getBookMarksForStudentId(Integer studentId) {
 
-        findStudentById(studentId);
+        var student = studentsRepository.findById(studentId)
+                .orElseThrow(() -> new NotFoundResourceException("There is no Student with that id !!"));
 
-        List<Bookmark> bookmarks = bookmarksRepository.findAllByStudent_IdOrderBySavedOnDesc(studentId);
+        List<PostWithLikesAndCommentsCountsProjection> posts = postsRepository.findBookmarkedPostsByStudentId(studentId);
 
-        return bookmarks
+        return posts
                 .stream()
-                .map(this::generateBookmarkWithoutImagesResponseDto)
+                .map(post -> postProjectionMapper.apply(post, studentId))
                 .toList();
+
     }
+
+
 }
