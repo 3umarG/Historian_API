@@ -16,6 +16,7 @@ import com.example.historian_api.repositories.posts.PostsRepository;
 import com.example.historian_api.repositories.users.StudentsRepository;
 import com.example.historian_api.repositories.users.TeachersRepository;
 import com.example.historian_api.services.base.helpers.TimeSinceFormatter;
+import com.example.historian_api.services.base.posts.PostsImagesService;
 import com.example.historian_api.services.base.posts.PostsService;
 import com.example.historian_api.utils.ImageUtils;
 import com.example.historian_api.utils.constants.ExceptionMessages;
@@ -41,6 +42,7 @@ public class PostsServiceImpl implements PostsService {
     private final TeachersRepository teachersRepository;
     private final ImageUtils imageUtils;
     private final LikesRepository likesRepository;
+    private final PostsImagesService postsImagesService;
     private final BookmarksRepository bookmarksRepository;
     private final StudentsRepository studentsRepository;
     private final TimeSinceFormatter timeSinceFormatter;
@@ -54,7 +56,7 @@ public class PostsServiceImpl implements PostsService {
 
         return posts.stream().map(post -> {
 
-            var images = findImagesForPost(post.getId());
+            var images = postsImagesService.findImagesForPost(post.getId());
 
             boolean isStudentLikePost = likesRepository.isStudentLikePost(studentId, post.getId());
             boolean isStudentBookmarksPost = bookmarksRepository.isStudentBookmarksPost(studentId, post.getId());
@@ -80,11 +82,6 @@ public class PostsServiceImpl implements PostsService {
 
     }
 
-    private List<String> findImagesForPost(Integer post) {
-        return imagesRepository
-                .findAllPhotoUrlsByPostId(post);
-    }
-
     @Override
     public PostResponseDto getPostById(@NotNull Integer id) throws NotFoundResourceException {
 
@@ -93,7 +90,7 @@ public class PostsServiceImpl implements PostsService {
                 .orElseThrow(() ->
                         new NotFoundResourceException(ExceptionMessages.NOT_FOUND_EXCEPTION_MSG));
 
-        var images = findImagesForPost(id);
+        var images = postsImagesService.findImagesForPost(id);
 
         return postDtoMapper.apply(postProjection, images, null);
 
