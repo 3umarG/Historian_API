@@ -1,5 +1,7 @@
 package com.example.historian_api.dtos.responses;
 
+import java.time.LocalDateTime;
+
 public record CompetitionResponseDto(
         Integer id,
         String title,
@@ -7,6 +9,8 @@ public record CompetitionResponseDto(
         String photoUrl,
         Integer teacherId,
         String teacherName,
-        String teacherPhotoUrl
+        String teacherPhotoUrl,
+        LocalDateTime postedOn,
+        String createdSince
 ) {
 }

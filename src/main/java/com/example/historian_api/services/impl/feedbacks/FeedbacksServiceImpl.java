@@ -6,6 +6,7 @@ import com.example.historian_api.exceptions.NotFoundResourceException;
 import com.example.historian_api.repositories.feedbacks.FeedbacksRepository;
 import com.example.historian_api.repositories.users.StudentsRepository;
 import com.example.historian_api.services.base.feedbacks.FeedbacksService;
+import com.example.historian_api.services.base.helpers.TimeSinceFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ public class FeedbacksServiceImpl implements FeedbacksService {
 
     private final FeedbacksRepository feedbacksRepository;
     private final StudentsRepository studentsRepository;
+    private final TimeSinceFormatter timeSinceFormatter;
 
     @Override
     public List<FeedbackResponseDto> getTop(Integer count) {
@@ -27,6 +29,7 @@ public class FeedbacksServiceImpl implements FeedbacksService {
                         feedback.getId(),
                         feedback.getContent(),
                         feedback.getPostedOn(),
+                        timeSinceFormatter.formatTimeSince(feedback.getPostedOn()),
                         feedback.getStudentId(),
                         feedback.getStudentName(),
                         feedback.getStudentPhotoUrl()
@@ -42,6 +45,7 @@ public class FeedbacksServiceImpl implements FeedbacksService {
                         feedback.getId(),
                         feedback.getContent(),
                         feedback.getPostedOn(),
+                        timeSinceFormatter.formatTimeSince(feedback.getPostedOn()),
                         feedback.getStudent().getId(),
                         feedback.getStudent().getName(),
                         feedback.getStudent().getPhotoUrl()
@@ -50,7 +54,7 @@ public class FeedbacksServiceImpl implements FeedbacksService {
     }
 
     @Override
-    public FeedbackResponseDto addFeedback(Integer studentId , String content) {
+    public FeedbackResponseDto addFeedback(Integer studentId, String content) {
         var student = studentsRepository.findById(studentId)
                 .orElseThrow(() -> new NotFoundResourceException("There is no student with that id !!"));
 
@@ -66,6 +70,7 @@ public class FeedbacksServiceImpl implements FeedbacksService {
                 savedFeedback.getId(),
                 savedFeedback.getContent(),
                 savedFeedback.getPostedOn(),
+                timeSinceFormatter.formatTimeSince(feedback.getPostedOn()),
                 student.getId(),
                 student.getName(),
                 student.getPhotoUrl()

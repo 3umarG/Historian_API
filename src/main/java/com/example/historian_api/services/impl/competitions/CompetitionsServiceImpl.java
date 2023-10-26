@@ -9,6 +9,7 @@ import com.example.historian_api.exceptions.NotFoundResourceException;
 import com.example.historian_api.repositories.competitions.CompetitionsRepository;
 import com.example.historian_api.repositories.users.TeachersRepository;
 import com.example.historian_api.services.base.competitions.CompetitionsService;
+import com.example.historian_api.services.base.helpers.TimeSinceFormatter;
 import com.example.historian_api.services.base.images.ImagesService;
 import com.example.historian_api.utils.ImageUtils;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,6 +35,7 @@ public class CompetitionsServiceImpl implements CompetitionsService {
     private final CompetitionsRepository competitionsRepository;
     private final TeachersRepository teachersRepository;
     private final ImageUtils imageUtils;
+    private final TimeSinceFormatter timeSinceFormatter;
 
     private static int reversedCompetitionsComparator(Competition o1, Competition o2) {
         return o2.getId().compareTo(o1.getId());
@@ -50,7 +53,9 @@ public class CompetitionsServiceImpl implements CompetitionsService {
                         competition.getPhotoUrl(),
                         competition.getTeacher().getId(),
                         competition.getTeacher().getName(),
-                        competition.getTeacher().getPhotoUrl()
+                        competition.getTeacher().getPhotoUrl(),
+                        competition.getCreatedOn(),
+                        timeSinceFormatter.formatTimeSince(competition.getCreatedOn())
                 ))
                 .toList();
     }
@@ -66,7 +71,9 @@ public class CompetitionsServiceImpl implements CompetitionsService {
                         competition.getPhotoUrl(),
                         null,
                         null,
-                        null
+                        null,
+                        competition.getCreatedOn(),
+                        timeSinceFormatter.formatTimeSince(competition.getCreatedOn())
                 ))
                 .toList();
     }
@@ -87,7 +94,9 @@ public class CompetitionsServiceImpl implements CompetitionsService {
                 savedCompetition.getPhotoUrl(),
                 teacherId,
                 teacher.getName(),
-                teacher.getPhotoUrl()
+                teacher.getPhotoUrl(),
+                competition.getCreatedOn(),
+                timeSinceFormatter.formatTimeSince(competition.getCreatedOn())
         );
     }
 
@@ -108,7 +117,8 @@ public class CompetitionsServiceImpl implements CompetitionsService {
                 requestDto.description(),
                 photoUrl,
                 teacher,
-                competitionImage
+                competitionImage,
+                LocalDateTime.now()
         );
 
     }

@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,6 +27,8 @@ public class Competition {
 
     private String photoUrl;
 
+    private LocalDateTime createdOn;
+
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
@@ -33,8 +37,9 @@ public class Competition {
     @JoinColumn(name = "photo_id")
     private CompetitionImage competitionImage;
 
-    public Competition(String title, String description, String photoUrl, Teacher teacher, CompetitionImage competitionImage) {
+    public Competition(String title, String description, String photoUrl, Teacher teacher, CompetitionImage competitionImage,LocalDateTime createdOn) {
         this.title = title;
+        this.createdOn = createdOn;
         this.competitionImage = competitionImage;
         this.description = description;
         this.photoUrl = photoUrl;
