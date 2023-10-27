@@ -22,4 +22,14 @@ public interface CoursesRepository extends JpaRepository<Course, Integer> {
     List<GradeCoursesInformationProjection> getAllCoursesByGradeIdWithEnrollmentStateForStudent(Integer gradeId, Integer studentId);
 
 
+    @Query(value = "select c.id, " +
+                   "       c.title, " +
+                   "       coalesce(ec.state, 'NOT_TAKEN') as state " +
+                   "from courses c " +
+                   "          join enrollment_courses ec " +
+                   "                   on c.id = ec.course_id and ec.student_id = ?1 " +
+                   "where ec.state = ?2",
+            nativeQuery = true)
+    List<GradeCoursesInformationProjection> getAllCoursesWithStateByStudentId(Integer studentId, String status);
+
 }

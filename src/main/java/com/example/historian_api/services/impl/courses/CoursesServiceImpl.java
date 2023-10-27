@@ -1,6 +1,7 @@
 package com.example.historian_api.services.impl.courses;
 
 import com.example.historian_api.dtos.responses.CourseResponseDto;
+import com.example.historian_api.enums.CourseTakenState;
 import com.example.historian_api.exceptions.NotFoundResourceException;
 import com.example.historian_api.repositories.courses.CoursesRepository;
 import com.example.historian_api.repositories.grades.StudentGradesRepository;
@@ -27,7 +28,7 @@ public class CoursesServiceImpl implements CoursesService {
             throw new NotFoundResourceException("There is no Grade with that id !!");
         }
 
-        if(!isExistedStudent(studentId)){
+        if(isNotFoundStudent(studentId)){
             throw new NotFoundResourceException("There is no Student with that id !!");
         }
 
@@ -44,8 +45,27 @@ public class CoursesServiceImpl implements CoursesService {
         }).toList();
     }
 
-    private boolean isExistedStudent(Integer studentId) {
-        return studentsRepository.existsById(studentId);
+    @Override
+    public List<CourseResponseDto> getAllSubscribedCoursesForStudent(Integer studentId) {
+        if (isNotFoundStudent(studentId)){
+            throw new NotFoundResourceException("There is no Student with that id !!");
+        }
+
+        var courses = coursesRepository.getAllCoursesWithStateByStudentId(studentId, CourseTakenState.APPROVED.name());
+
+        return courses.stream().map(course -> {
+            var units = unitsService.getAllUnitsByCourseId(course.getCourseId());
+            return new CourseResponseDto(
+                    course.getCourseId(),
+                    course.getCourseTitle(),
+                    course.getCourseEnrollmentState(),
+                    units
+            );
+        }).toList();
+    }
+
+    private boolean isNotFoundStudent(Integer studentId) {
+        return !studentsRepository.existsById(studentId);
     }
 
     private boolean isExistedGrade(Integer gradeId) {

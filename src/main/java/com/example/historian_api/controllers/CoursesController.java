@@ -24,7 +24,8 @@ public class CoursesController {
 
     @GetMapping("/subscriptions")
     public ResponseEntity<?> getSubscribedCoursesForStudent(@RequestHeader("uid") Integer studentId) {
-        return ResponseEntity.ok().build();
+        var response = successResponseFactory.createResponse(coursesService.getAllSubscribedCoursesForStudent(studentId));
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/subscriptions")
