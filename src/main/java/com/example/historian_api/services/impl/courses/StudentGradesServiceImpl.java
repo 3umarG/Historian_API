@@ -1,7 +1,7 @@
 package com.example.historian_api.services.impl.courses;
 
 import com.example.historian_api.entities.courses.StudentGrade;
-import com.example.historian_api.repositories.StudentGradesRepository;
+import com.example.historian_api.repositories.grades.StudentGradesRepository;
 import com.example.historian_api.services.base.courses.StudentGradesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

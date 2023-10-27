@@ -19,7 +19,7 @@ import com.example.historian_api.exceptions.auth.AlreadyLoginPhoneWithAnotherDev
 import com.example.historian_api.exceptions.auth.NotFoundPhoneNumberLoginException;
 import com.example.historian_api.exceptions.auth.UsedPhoneRegisterException;
 import com.example.historian_api.mappers.RegisteredStudentResponseDtoMapper;
-import com.example.historian_api.repositories.StudentGradesRepository;
+import com.example.historian_api.repositories.grades.StudentGradesRepository;
 import com.example.historian_api.repositories.users.StudentsRepository;
 import com.example.historian_api.repositories.users.TeachersRepository;
 import com.example.historian_api.services.base.JwtService;

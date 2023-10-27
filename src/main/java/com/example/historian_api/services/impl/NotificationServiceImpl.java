@@ -6,7 +6,7 @@ import com.example.historian_api.entities.notification.Notification;
 import com.example.historian_api.exceptions.NotFoundNotificationException;
 import com.example.historian_api.mappers.NotificationMapper;
 import com.example.historian_api.mappers.NotificationMapperImpl;
-import com.example.historian_api.repositories.NotificationRepository;
+import com.example.historian_api.repositories.notifications.NotificationRepository;
 import com.example.historian_api.services.base.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
