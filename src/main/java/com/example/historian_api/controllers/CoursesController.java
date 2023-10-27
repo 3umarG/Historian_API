@@ -36,10 +36,11 @@ public class CoursesController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/lessons")
-    public ResponseEntity<?> getCourseLessonsForStudent(
+    @GetMapping("/units/lessons")
+    public ResponseEntity<?> getUnitLessonsForStudent(
             @RequestHeader("uid") Integer studentId,
-            @RequestHeader("cid") Integer courseId) {
-        return ResponseEntity.ok().build();
+            @RequestHeader("unitId") Integer unitId) {
+        var response = successResponseFactory.createResponse(coursesService.getUnitLessonsForStudent(unitId,studentId));
+        return ResponseEntity.ok(response);
     }
 }
