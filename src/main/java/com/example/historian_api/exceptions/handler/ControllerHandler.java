@@ -1,5 +1,6 @@
-package com.example.historian_api.exceptions;
+package com.example.historian_api.exceptions.handler;
 
+import com.example.historian_api.exceptions.*;
 import com.example.historian_api.exceptions.auth.AlreadyLoginPhoneWithAnotherDeviceException;
 import com.example.historian_api.exceptions.auth.NotFoundPhoneNumberLoginException;
 import com.example.historian_api.exceptions.auth.UsedPhoneRegisterException;
@@ -25,12 +26,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ControllerHandler {
 
-    private final ResponseFactory200 successFactory;
     private final ResponseFactory400 badRequestFactory;
     private final ResponseFactory404 notFoundFactory;
     private final ResponseFactory401 unAuthorizedFactory;
     private final ResponseFactory403 forbiddenFactory;
 
+
+    @ExceptionHandler(AlreadyEnrolledCourseException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<?> handleAlreadyEnrolledCourseException(AlreadyEnrolledCourseException e){
+        var response = badRequestFactory.createResponse(e.getMessage());
+        return ResponseEntity.badRequest().body(response);
+    }
 
     @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

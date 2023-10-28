@@ -1,4 +1,4 @@
-package com.example.historian_api.repositories;
+package com.example.historian_api.repositories.direct_answers;
 
 import com.example.historian_api.entities.direct_questions.DirectQuestion;
 import com.example.historian_api.entities.projections.QuestionWithAnswerProjection;

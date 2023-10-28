@@ -1,4 +1,4 @@
-package com.example.historian_api.repositories;
+package com.example.historian_api.repositories.notifications;
 import com.example.historian_api.entities.notification.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
