@@ -1,5 +1,6 @@
 package com.example.historian_api.entities.courses;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class StudentGrade {
 
     private String name;
 
+    @JsonIgnore
     @OneToMany(
             mappedBy = "grade",
             cascade = CascadeType.ALL
@@ -30,6 +32,7 @@ public class StudentGrade {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Course> courses = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(
             mappedBy = "grade",
             cascade = CascadeType.ALL
