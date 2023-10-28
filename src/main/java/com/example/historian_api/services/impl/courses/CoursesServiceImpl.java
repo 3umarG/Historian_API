@@ -1,6 +1,7 @@
 package com.example.historian_api.services.impl.courses;
 
 import com.example.historian_api.dtos.responses.CourseResponseDto;
+import com.example.historian_api.dtos.responses.EnrolledCourseResponseDto;
 import com.example.historian_api.dtos.responses.LessonResponseDto;
 import com.example.historian_api.enums.CourseTakenState;
 import com.example.historian_api.exceptions.NotFoundResourceException;
@@ -9,6 +10,7 @@ import com.example.historian_api.repositories.courses.UnitsRepository;
 import com.example.historian_api.repositories.grades.StudentGradesRepository;
 import com.example.historian_api.repositories.users.StudentsRepository;
 import com.example.historian_api.services.base.courses.CoursesService;
+import com.example.historian_api.services.base.courses.EnrollmentCoursesService;
 import com.example.historian_api.services.base.courses.LessonsService;
 import com.example.historian_api.services.base.courses.UnitsService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,8 @@ public class CoursesServiceImpl implements CoursesService {
     private final StudentsRepository studentsRepository;
     private final StudentGradesRepository gradesRepository;
     private final UnitsRepository unitsRepository;
+    private final EnrollmentCoursesService enrollmentCoursesService;
+
 
     @Override
     public List<CourseResponseDto> getAllCoursesByGradeIdForStudent(Integer gradeId, Integer studentId) {
@@ -79,11 +83,16 @@ public class CoursesServiceImpl implements CoursesService {
 
         checkForExistedUnit(unitId);
 
-        return lessonsService.getLessonsInUnitForStudent(unitId,studentId);
+        return lessonsService.getLessonsInUnitForStudent(unitId, studentId);
+    }
+
+    @Override
+    public EnrolledCourseResponseDto enrollCourseByStudent(Integer courseId, Integer studentId) {
+        return enrollmentCoursesService.enrollCourseByStudent(courseId, studentId);
     }
 
     private void checkForExistedUnit(Integer unitId) {
-        if (isNotFoundUnit(unitId)){
+        if (isNotFoundUnit(unitId)) {
             throw new NotFoundResourceException("There is no Unit with that id !!");
         }
     }
@@ -91,6 +100,7 @@ public class CoursesServiceImpl implements CoursesService {
     private boolean isNotFoundStudent(Integer studentId) {
         return !studentsRepository.existsById(studentId);
     }
+
     private boolean isNotFoundUnit(Integer unitId) {
         return !unitsRepository.existsById(unitId);
     }

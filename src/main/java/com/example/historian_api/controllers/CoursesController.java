@@ -33,7 +33,8 @@ public class CoursesController {
             @RequestHeader("uid") Integer studentId,
             @RequestHeader("cid") Integer courseId
     ) {
-        return ResponseEntity.ok().build();
+        var response = successResponseFactory.createResponse(coursesService.enrollCourseByStudent(courseId,studentId));
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/units/lessons")
