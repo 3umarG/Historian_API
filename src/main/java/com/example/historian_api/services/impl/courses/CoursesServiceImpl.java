@@ -3,16 +3,20 @@ package com.example.historian_api.services.impl.courses;
 import com.example.historian_api.dtos.responses.CourseResponseDto;
 import com.example.historian_api.dtos.responses.EnrolledCourseResponseDto;
 import com.example.historian_api.dtos.responses.LessonResponseDto;
+import com.example.historian_api.dtos.responses.VideoCommentResponseDto;
 import com.example.historian_api.enums.CourseTakenState;
 import com.example.historian_api.exceptions.NotFoundResourceException;
 import com.example.historian_api.repositories.courses.CoursesRepository;
+import com.example.historian_api.repositories.courses.LessonsRepository;
 import com.example.historian_api.repositories.courses.UnitsRepository;
+import com.example.historian_api.repositories.courses.VideosCommentsRepository;
 import com.example.historian_api.repositories.grades.StudentGradesRepository;
 import com.example.historian_api.repositories.users.StudentsRepository;
 import com.example.historian_api.services.base.courses.CoursesService;
 import com.example.historian_api.services.base.courses.EnrollmentCoursesService;
 import com.example.historian_api.services.base.courses.LessonsService;
 import com.example.historian_api.services.base.courses.UnitsService;
+import com.example.historian_api.services.base.helpers.TimeSinceFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +32,10 @@ public class CoursesServiceImpl implements CoursesService {
     private final StudentsRepository studentsRepository;
     private final StudentGradesRepository gradesRepository;
     private final UnitsRepository unitsRepository;
+    private final VideosCommentsRepository videosCommentsRepository;
+    private final TimeSinceFormatter timeSinceFormatter;
     private final EnrollmentCoursesService enrollmentCoursesService;
+    private final LessonsRepository lessonsRepository;
 
 
     @Override
@@ -89,6 +96,32 @@ public class CoursesServiceImpl implements CoursesService {
     @Override
     public EnrolledCourseResponseDto enrollCourseByStudent(Integer courseId, Integer studentId) {
         return enrollmentCoursesService.enrollCourseByStudent(courseId, studentId);
+    }
+
+    @Override
+    public List<VideoCommentResponseDto> getCommentsByLessonId(Integer lessonId) {
+
+        if (isNotFoundLesson(lessonId)){
+            throw new NotFoundResourceException("There is no Lesson with that id !!");
+        }
+
+        var comments = videosCommentsRepository.getCommentsByLessonId(lessonId);
+
+        return comments.stream().map(comment -> new VideoCommentResponseDto(
+                comment.getId(),
+                comment.getContent(),
+                comment.getCreatedAt(),
+                timeSinceFormatter.formatTimeSince(comment.getCreatedAt()),
+                comment.getAuthorId(),
+                comment.getAuthorName(),
+                comment.getAuthorType(),
+                comment.getAuthorPhotoUrl(),
+                comment.getLessonId()
+        )).toList();
+    }
+
+    private boolean isNotFoundLesson(Integer lessonId) {
+        return !lessonsRepository.existsById(lessonId);
     }
 
     private void checkForExistedUnit(Integer unitId) {

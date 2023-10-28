@@ -1,6 +1,7 @@
 package com.example.historian_api.entities.users;
 
 import com.example.historian_api.entities.competitions.Competition;
+import com.example.historian_api.entities.courses.VideoComment;
 import com.example.historian_api.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -48,6 +49,13 @@ public class Teacher implements UserDetails {
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Competition> competitions = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "teacher",
+            cascade = CascadeType.ALL
+    )
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<VideoComment> videoComments = new ArrayList<>();
 
     private String photoUrl;
 

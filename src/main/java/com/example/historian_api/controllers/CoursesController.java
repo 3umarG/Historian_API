@@ -44,4 +44,10 @@ public class CoursesController {
         var response = successResponseFactory.createResponse(coursesService.getUnitLessonsForStudent(unitId,studentId));
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/units/lessons/{lessonId}/comments")
+    public ResponseEntity<?> getCommentsByLessonId(@PathVariable Integer lessonId){
+        var response = successResponseFactory.createResponse(coursesService.getCommentsByLessonId(lessonId));
+        return ResponseEntity.ok(response);
+    }
 }

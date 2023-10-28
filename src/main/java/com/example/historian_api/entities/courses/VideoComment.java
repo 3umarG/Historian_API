@@ -1,19 +1,14 @@
 package com.example.historian_api.entities.courses;
 
 
-import com.example.historian_api.entities.posts.CommentReply;
-import com.example.historian_api.entities.posts.Post;
 import com.example.historian_api.entities.users.Student;
+import com.example.historian_api.entities.users.Teacher;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -31,11 +26,15 @@ public class VideoComment {
     private String content;
 
     @Column(nullable = false)
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
 
     @ManyToOne
-    @JoinColumn(name = "creatorId")
-    private Student creator;
+    @JoinColumn(name = "student_id")
+    private Student student;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
 
     @ManyToOne
     @JoinColumn(name = "lesson_id")
@@ -44,12 +43,22 @@ public class VideoComment {
 
 
     public VideoComment(String content,
-                        LocalDate creationDate,
-                        Student creator,
+                        LocalDateTime creationDate,
+                        Student student,
                         UnitLesson lesson) {
         this.content = content;
         this.creationDate = creationDate;
-        this.creator = creator;
+        this.student = student;
+        this.lesson = lesson;
+    }
+
+    public VideoComment(String content,
+                        LocalDateTime creationDate,
+                        Teacher teacher,
+                        UnitLesson lesson) {
+        this.content = content;
+        this.creationDate = creationDate;
+        this.teacher = teacher;
         this.lesson = lesson;
     }
 }

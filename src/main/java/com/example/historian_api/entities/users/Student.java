@@ -107,7 +107,7 @@ public class Student implements UserDetails {
 
 
     @OneToMany(
-            mappedBy = "creator",
+            mappedBy = "student",
             cascade = CascadeType.ALL
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
