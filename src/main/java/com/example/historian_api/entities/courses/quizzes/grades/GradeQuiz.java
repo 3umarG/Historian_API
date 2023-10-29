@@ -27,6 +27,8 @@ public class GradeQuiz {
 
     private String description;
 
+    private Boolean isFinal;
+
     @ManyToOne
     @JoinColumn(name = "grade_id")
     private StudentGrade grade;
@@ -45,8 +47,9 @@ public class GradeQuiz {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<GradeQuizResult> results = new ArrayList<>();
 
-    public GradeQuiz(String title, String description, StudentGrade grade) {
+    public GradeQuiz(String title, String description, StudentGrade grade,Boolean isFinal) {
         this.title = title;
+        this.isFinal = isFinal;
         this.description = description;
         this.grade = grade;
     }
