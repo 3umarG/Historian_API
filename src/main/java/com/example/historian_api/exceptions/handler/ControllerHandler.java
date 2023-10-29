@@ -31,6 +31,11 @@ public class ControllerHandler {
     private final ResponseFactory401 unAuthorizedFactory;
     private final ResponseFactory403 forbiddenFactory;
 
+    @ExceptionHandler(NotFoundStudentException.class)
+    public ResponseEntity<?> handleNotFoundStudentException(NotFoundStudentException e){
+        var response = badRequestFactory.createResponse(e.getMessage());
+        return ResponseEntity.status(405).body(response);
+    }
 
     @ExceptionHandler(AlreadyEnrolledCourseException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

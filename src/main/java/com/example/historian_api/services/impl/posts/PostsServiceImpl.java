@@ -7,6 +7,7 @@ import com.example.historian_api.entities.posts.PostImages;
 import com.example.historian_api.entities.projections.PostWithLikesAndCommentsCountsProjection;
 import com.example.historian_api.entities.users.Teacher;
 import com.example.historian_api.exceptions.NotFoundResourceException;
+import com.example.historian_api.exceptions.NotFoundStudentException;
 import com.example.historian_api.mappers.PostDtoToPostMapper;
 import com.example.historian_api.mappers.PostToPostDtoMapper;
 import com.example.historian_api.repositories.posts.BookmarksRepository;
@@ -50,7 +51,7 @@ public class PostsServiceImpl implements PostsService {
     @Override
     public List<PostResponseDto> getAll(Integer studentId) {
         var student = studentsRepository.findById(studentId)
-                .orElseThrow(() -> new NotFoundResourceException("There is no Student with that id !!"));
+                .orElseThrow(() -> new NotFoundStudentException("لا يوجد طالب بهذا الرقم, قم بانشاء حساب جديد !!"));
 
         List<PostWithLikesAndCommentsCountsProjection> posts = postsRepository.findAllPosts();
 
