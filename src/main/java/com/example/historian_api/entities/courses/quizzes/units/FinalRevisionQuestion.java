@@ -30,7 +30,9 @@ public class FinalRevisionQuestion {
 
     private String question;
 
-    @Convert(converter = StringToListConverter.class)
+    @ElementCollection
+    @CollectionTable(name="final_revision_question_answers", joinColumns=@JoinColumn(name="question_id"))
+    @Column(name="answer")
     private List<String> answers = new ArrayList<>();
 
     private Integer correctAnswerIndex;

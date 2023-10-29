@@ -29,7 +29,9 @@ public class LessonQuestion {
 
     private String question;
 
-    @Convert(converter = StringToListConverter.class)
+    @ElementCollection
+    @CollectionTable(name="lessons_question_answers", joinColumns=@JoinColumn(name="question_id"))
+    @Column(name="answer")
     private List<String> answers = new ArrayList<>();
 
     private Integer correctAnswerIndex;
