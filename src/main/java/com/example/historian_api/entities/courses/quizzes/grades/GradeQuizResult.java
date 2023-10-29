@@ -1,10 +1,11 @@
-package com.example.historian_api.entities.courses;
+package com.example.historian_api.entities.courses.quizzes.grades;
 
 
-import com.example.historian_api.entities.keys.FinalRevisionResultKey;
+import com.example.historian_api.entities.keys.GradeQuizResultKey;
 import com.example.historian_api.entities.users.Student;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,16 +15,17 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "final_revisions_results")
-public class FinalRevisionResult {
+@Table(name = "grade_quizzes_results")
+@Builder
+public class GradeQuizResult {
 
     @EmbeddedId
-    private FinalRevisionResultKey key;
+    private GradeQuizResultKey key;
 
     @ManyToOne
-    @MapsId("unitId")
-    @JoinColumn(name = "unit_id")
-    private Unit unit;
+    @MapsId("quizId")
+    @JoinColumn(name = "quiz_id")
+    private GradeQuiz quiz;
 
     @ManyToOne
     @MapsId("studentId")
@@ -38,5 +40,4 @@ public class FinalRevisionResult {
 
     private BigDecimal actualScore;
 
-    // Todo : review this for any changes
 }

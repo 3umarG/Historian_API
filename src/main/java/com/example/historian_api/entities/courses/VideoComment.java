@@ -1,6 +1,7 @@
 package com.example.historian_api.entities.courses;
 
 
+import com.example.historian_api.entities.courses.quizzes.lessons.UnitLesson;
 import com.example.historian_api.entities.users.Student;
 import com.example.historian_api.entities.users.Teacher;
 import jakarta.persistence.*;

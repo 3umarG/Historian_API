@@ -1,6 +1,6 @@
 package com.example.historian_api.repositories.courses;
 
-import com.example.historian_api.entities.courses.Unit;
+import com.example.historian_api.entities.courses.quizzes.units.Unit;
 import com.example.historian_api.entities.projections.UnitDetailsInCourseProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

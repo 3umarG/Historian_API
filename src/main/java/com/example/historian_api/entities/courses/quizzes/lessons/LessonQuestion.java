@@ -1,4 +1,4 @@
-package com.example.historian_api.entities.courses;
+package com.example.historian_api.entities.courses.quizzes.lessons;
 
 
 import com.example.historian_api.entities.converters.StringToListConverter;
@@ -14,16 +14,15 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "final_revision_questions")
-public class FinalRevisionQuestion {
-
+@Table(name = "lessons_questions")
+public class LessonQuestion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "unit_id")
-    private Unit unit;
+    @JoinColumn(name = "lesson_id")
+    private UnitLesson lesson;
 
     private String question;
 
@@ -34,12 +33,12 @@ public class FinalRevisionQuestion {
 
     private Boolean isCheckedAnswer;
 
-    public FinalRevisionQuestion(Unit unit,
-                                 String question,
-                                 List<String> answers,
-                                 Integer correctAnswerIndex,
-                                 Boolean isCheckedAnswer) {
-        this.unit = unit;
+    public LessonQuestion(UnitLesson lesson,
+                          String question,
+                          List<String> answers,
+                          Integer correctAnswerIndex,
+                          Boolean isCheckedAnswer) {
+        this.lesson = lesson;
         this.isCheckedAnswer = isCheckedAnswer;
         this.question = question;
         this.answers = answers;

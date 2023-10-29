@@ -1,6 +1,7 @@
-package com.example.historian_api.entities.courses;
+package com.example.historian_api.entities.courses.quizzes.grades;
 
 
+import com.example.historian_api.entities.courses.StudentGrade;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

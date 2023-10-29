@@ -2,11 +2,14 @@ package com.example.historian_api.entities.users;
 
 import com.example.historian_api.dtos.requests.RegisterStudentRequestDto;
 import com.example.historian_api.entities.courses.*;
+import com.example.historian_api.entities.courses.quizzes.grades.GradeQuizQuestionSolution;
+import com.example.historian_api.entities.courses.quizzes.grades.GradeQuizResult;
+import com.example.historian_api.entities.courses.quizzes.lessons.LessonQuizResult;
+import com.example.historian_api.entities.courses.quizzes.units.FinalRevisionResult;
 import com.example.historian_api.entities.feedbacks.Feedback;
 import com.example.historian_api.entities.posts.Bookmark;
 import com.example.historian_api.entities.posts.Comment;
 import com.example.historian_api.entities.posts.Like;
-import com.example.historian_api.enums.Gender;
 import com.example.historian_api.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -127,6 +130,15 @@ public class Student implements UserDetails {
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Feedback> feedbacks = new ArrayList<>();
+
+
+    @OneToMany(
+            mappedBy = "student",
+            cascade = CascadeType.ALL
+    )
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<GradeQuizQuestionSolution> gradesQuestionsSolutions = new ArrayList<>();
+
 
     public Student(String name,
                    String deviceSerial,

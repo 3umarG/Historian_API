@@ -1,6 +1,10 @@
-package com.example.historian_api.entities.courses;
+package com.example.historian_api.entities.courses.quizzes.units;
 
 
+import com.example.historian_api.entities.courses.Course;
+import com.example.historian_api.entities.courses.quizzes.lessons.UnitLesson;
+import com.example.historian_api.entities.courses.quizzes.units.FinalRevisionQuestion;
+import com.example.historian_api.entities.courses.quizzes.units.FinalRevisionResult;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

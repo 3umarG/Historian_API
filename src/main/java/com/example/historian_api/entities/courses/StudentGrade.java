@@ -1,5 +1,6 @@
 package com.example.historian_api.entities.courses;
 
+import com.example.historian_api.entities.courses.quizzes.grades.GradeQuiz;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
