@@ -28,9 +28,14 @@ public class GradesQuizzesController {
     @GetMapping("/{quizId}/questions")
     public ResponseEntity<?> getAllQuestionsByQuizId(
             @RequestParam("isSolved") Boolean isQuizSolved,
-            @PathVariable String quizId,
+            @PathVariable Integer quizId,
             @RequestHeader("uid") Integer studentId) {
-        return ResponseEntity.ok().build();
+
+        var typeOfResponse = isQuizSolved
+                ? null
+                : quizzesService.getGradeQuizNotSolvedQuestions(quizId);
+        var response = successResponseFactory.createResponse(typeOfResponse);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
