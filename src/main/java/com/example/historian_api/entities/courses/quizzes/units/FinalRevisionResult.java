@@ -1,7 +1,7 @@
-package com.example.historian_api.entities.courses;
+package com.example.historian_api.entities.courses.quizzes.units;
 
 
-import com.example.historian_api.entities.keys.LessonQuizResultKey;
+import com.example.historian_api.entities.keys.FinalRevisionResultKey;
 import com.example.historian_api.entities.users.Student;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,21 +14,21 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "lessons_quizzes_results")
-public class LessonQuizResult {
+@Table(name = "final_revisions_results")
+public class FinalRevisionResult {
 
     @EmbeddedId
-    private LessonQuizResultKey key;
+    private FinalRevisionResultKey key;
+
+    @ManyToOne
+    @MapsId("unitId")
+    @JoinColumn(name = "unit_id")
+    private Unit unit;
 
     @ManyToOne
     @MapsId("studentId")
     @JoinColumn(name = "student_id")
     private Student student;
-
-    @ManyToOne
-    @MapsId("lessonId")
-    @JoinColumn(name = "lesson_id")
-    private UnitLesson lesson;
 
     private BigDecimal solutionPercentage;
 
@@ -38,5 +38,5 @@ public class LessonQuizResult {
 
     private BigDecimal actualScore;
 
-
+    // Todo : review this for any changes
 }

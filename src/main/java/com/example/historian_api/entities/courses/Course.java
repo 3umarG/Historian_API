@@ -1,5 +1,6 @@
 package com.example.historian_api.entities.courses;
 
+import com.example.historian_api.entities.courses.quizzes.units.Unit;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
