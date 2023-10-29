@@ -6,6 +6,7 @@ import com.example.historian_api.entities.courses.quizzes.grades.GradeQuizQuesti
 import com.example.historian_api.entities.courses.quizzes.grades.GradeQuizResult;
 import com.example.historian_api.entities.courses.quizzes.lessons.LessonQuestionSolution;
 import com.example.historian_api.entities.courses.quizzes.lessons.LessonQuizResult;
+import com.example.historian_api.entities.courses.quizzes.units.FinalRevisionQuestionSolution;
 import com.example.historian_api.entities.courses.quizzes.units.FinalRevisionResult;
 import com.example.historian_api.entities.feedbacks.Feedback;
 import com.example.historian_api.entities.posts.Bookmark;
@@ -146,6 +147,14 @@ public class Student implements UserDetails {
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<LessonQuestionSolution> lessonQuestionSolutions = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "student",
+            cascade = CascadeType.ALL
+    )
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<FinalRevisionQuestionSolution> finalRevisionQuestionSolutions = new ArrayList<>();
+
 
 
     public Student(String name,
