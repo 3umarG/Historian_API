@@ -40,6 +40,7 @@ public class GradesQuizzesController {
             @RequestHeader("uid") Integer studentId,
             @RequestHeader("qid") Integer quizId,
             @RequestBody AddQuizScoreRequestDto dto) {
-        return ResponseEntity.ok().build();
+        var response = successResponseFactory.createResponse(quizzesService.solveQuiz(studentId,quizId,dto));
+        return ResponseEntity.ok(response);
     }
 }
