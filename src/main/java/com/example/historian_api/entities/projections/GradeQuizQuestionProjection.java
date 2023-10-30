@@ -9,5 +9,13 @@ public interface GradeQuizQuestionProjection {
     String getCorrectAnswerDescription();
     String getPhotoUrl();
     String getAnswer();
+
+    Integer getStudentId();
+
+    String getStudentAnswer();
+
+    Integer getStudentAnswerIndex();
+
+    Boolean getIsStudentSucceeded();
 }
 

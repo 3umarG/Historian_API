@@ -8,5 +8,5 @@ import java.util.List;
 public interface QuizzesService {
     List<GradeQuizResponseDto> getGradeQuizzesForStudent(Integer gradeId , Integer studentId);
 
-    QuizWithQuestionsResponseDto getGradeQuizNotSolvedQuestions(Integer quizId);
+    QuizWithQuestionsResponseDto getGradeQuizQuestions(Integer quizId, Integer studentId);
 }

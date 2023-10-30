@@ -53,13 +53,16 @@ public class QuizzesServiceImpl implements QuizzesService {
     }
 
     @Override
-    public QuizWithQuestionsResponseDto getGradeQuizNotSolvedQuestions(Integer quizId) {
+    public QuizWithQuestionsResponseDto getGradeQuizQuestions(Integer quizId, Integer studentId) {
 
         var quiz = quizzesRepository.findById(quizId)
                 .orElseThrow(() -> new NotFoundResourceException("There is no Quiz with that id !!"));
 
+        if (isNotFoundStudent(studentId)){
+            throw new NotFoundResourceException("There is no Student with that id !!");
+        }
 
-        var questions = gradeQuizQuestionsRepository.findAllQuestionsByQuizId(quizId);
+        var questions = gradeQuizQuestionsRepository.findAllQuestionsByQuizId(quizId,studentId);
         var quizWithQuestionsWrapper = new QuizQuestionWrapper(questions);
 
 

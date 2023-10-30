@@ -20,11 +20,17 @@ public interface GradeQuizQuestionsRepository extends JpaRepository<GradeQuizQue
                    "questions.quiz_id as quizId, " +
                    "questions.correct_answer_description as correctAnswerDescription, " +
                    "questions.photo_url as photoUrl, " +
-                   "answers.answer as answer " +
+                   "answers.answer as answer, " +
+                   "solutions.student_id as studentId, " +
+                   "solutions.student_answer as studentAnswer, " +
+                   "solutions.student_answer_index as studentAnswerIndex, " +
+                   "solutions.is_student_succeeded as isStudentSucceeded " +
                    "FROM grade_quizzes_questions questions " +
                    "LEFT JOIN grade_quiz_question_answers answers " +
                    "ON questions.id = answers.question_id " +
+                   "LEFT JOIN grade_quizzes_questions_solutions solutions " +
+                   "ON solutions.question_id = questions.id AND solutions.student_id = ?2 " +
                    "WHERE questions.quiz_id = ?1", nativeQuery = true)
-    List<GradeQuizQuestionProjection> findAllQuestionsByQuizId(Integer quizId);
+    List<GradeQuizQuestionProjection> findAllQuestionsByQuizId(Integer quizId , Integer studentId);
 
 }
