@@ -18,7 +18,7 @@ public interface CoursesRepository extends JpaRepository<Course, Integer> {
                    "         left join enrollment_courses ec " +
                    "                   on c.id = ec.course_id and ec.student_id = ?2 " +
                    "where c.grade_id = ?1 " +
-                   "order by c.id desc ",
+                   "order by c.id ",
             nativeQuery = true)
     List<GradeCoursesInformationProjection> getAllCoursesByGradeIdWithEnrollmentStateForStudent(Integer gradeId, Integer studentId);
 
@@ -30,7 +30,7 @@ public interface CoursesRepository extends JpaRepository<Course, Integer> {
                    "          join enrollment_courses ec " +
                    "                   on c.id = ec.course_id and ec.student_id = ?1 " +
                    "where ec.state = ?2 " +
-                   "order by c.id desc ",
+                   "order by c.id ",
             nativeQuery = true)
     List<GradeCoursesInformationProjection> getAllCoursesWithStateByStudentId(Integer studentId, String status);
 

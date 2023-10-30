@@ -3,6 +3,7 @@ package com.example.historian_api.entities.courses.quizzes.grades;
 
 import com.example.historian_api.entities.converters.StringToListConverter;
 import com.example.historian_api.entities.courses.QuestionImage;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class GradeQuizQuestion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "quiz_id")
     private GradeQuiz quiz;
@@ -41,12 +43,14 @@ public class GradeQuizQuestion {
 
     private String correctAnswerDescription;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "question_image_id")
     private QuestionImage questionImage;
 
     private String photoUrl;
 
+    @JsonIgnore
     @OneToMany(
             mappedBy = "question",
             cascade = CascadeType.ALL
