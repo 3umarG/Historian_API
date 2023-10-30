@@ -20,7 +20,7 @@ public interface GradeQuizzesRepository extends JpaRepository<GradeQuiz, Integer
                    "from grade_quizzes quizzes " +
                    "         left join grade_quizzes_results results " +
                    "                   on quizzes.id = results.quiz_id and results.student_id = ?2 " +
-                   "where quizzes.grade_id = ?1 " +
+                   "where quizzes.grade_id = ?1 and quizzes.is_hidden = false " +
                    "order by quizzes.id",
             nativeQuery = true)
     List<GradeQuizProjection> getAllQuizzesForStudentByGradeId(Integer gradeId, Integer studentId);
