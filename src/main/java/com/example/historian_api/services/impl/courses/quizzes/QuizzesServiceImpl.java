@@ -5,6 +5,7 @@ import com.example.historian_api.dtos.responses.QuestionResponseDto;
 import com.example.historian_api.dtos.responses.QuizWithQuestionsResponseDto;
 import com.example.historian_api.entities.courses.quizzes.grades.GradeQuizQuestion;
 import com.example.historian_api.exceptions.NotFoundResourceException;
+import com.example.historian_api.mappers.QuizQuestionWrapper;
 import com.example.historian_api.repositories.courses.quizzes.GradeQuizQuestionsRepository;
 import com.example.historian_api.repositories.courses.quizzes.GradeQuizzesRepository;
 import com.example.historian_api.repositories.grades.StudentGradesRepository;
@@ -57,11 +58,14 @@ public class QuizzesServiceImpl implements QuizzesService {
         var quiz = quizzesRepository.findById(quizId)
                 .orElseThrow(() -> new NotFoundResourceException("There is no Quiz with that id !!"));
 
-        var questions = gradeQuizQuestionsRepository.findAllByQuiz_IdOrderById(quizId);
+
+        var questions = gradeQuizQuestionsRepository.findAllQuestionsByQuizId(quizId);
+        var quizWithQuestionsWrapper = new QuizQuestionWrapper(questions);
+
 
         return new QuizWithQuestionsResponseDto(
                 quiz.getIsFinal(),
-                generateNotSolvedQuestionsResponseDto(questions)
+                quizWithQuestionsWrapper.reformatQuestionsWithAnswers()
         );
     }
 
