@@ -11,8 +11,6 @@ import java.util.List;
 @Repository
 public interface GradeQuizQuestionsRepository extends JpaRepository<GradeQuizQuestion, Integer> {
 
-    List<GradeQuizQuestion> findAllByQuiz_IdOrderById(Integer quizId);
-
     @Query(value = "SELECT questions.id as id, " +
                    "questions.correct_answer_index as correctAnswerIndex, " +
                    "questions.is_checked_answer as isCheckedAnswer, " +
@@ -30,7 +28,8 @@ public interface GradeQuizQuestionsRepository extends JpaRepository<GradeQuizQue
                    "ON questions.id = answers.question_id " +
                    "LEFT JOIN grade_quizzes_questions_solutions solutions " +
                    "ON solutions.question_id = questions.id AND solutions.student_id = ?2 " +
-                   "WHERE questions.quiz_id = ?1", nativeQuery = true)
+                   "WHERE questions.quiz_id = ?1 " +
+                   "order by questions.id", nativeQuery = true)
     List<GradeQuizQuestionProjection> findAllQuestionsByQuizId(Integer quizId , Integer studentId);
 
 }
