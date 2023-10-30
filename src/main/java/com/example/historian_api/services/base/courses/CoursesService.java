@@ -1,5 +1,6 @@
 package com.example.historian_api.services.base.courses;
 
+import com.example.historian_api.dtos.requests.LessonCommentRequestDto;
 import com.example.historian_api.dtos.responses.CourseResponseDto;
 import com.example.historian_api.dtos.responses.EnrolledCourseResponseDto;
 import com.example.historian_api.dtos.responses.LessonResponseDto;
@@ -17,4 +18,6 @@ public interface CoursesService {
     EnrolledCourseResponseDto enrollCourseByStudent(Integer courseId, Integer studentId);
 
     List<VideoCommentResponseDto> getCommentsByLessonId(Integer lessonId);
+
+    VideoCommentResponseDto addCommentToLesson(LessonCommentRequestDto requestDto);
 }
