@@ -1,9 +1,12 @@
 package com.example.historian_api.services.impl.courses;
 
+import com.example.historian_api.dtos.requests.LessonCommentRequestDto;
 import com.example.historian_api.dtos.responses.CourseResponseDto;
 import com.example.historian_api.dtos.responses.EnrolledCourseResponseDto;
 import com.example.historian_api.dtos.responses.LessonResponseDto;
 import com.example.historian_api.dtos.responses.VideoCommentResponseDto;
+import com.example.historian_api.entities.courses.VideoComment;
+import com.example.historian_api.enums.AuthorType;
 import com.example.historian_api.enums.CourseTakenState;
 import com.example.historian_api.exceptions.NotFoundResourceException;
 import com.example.historian_api.repositories.courses.CoursesRepository;
@@ -20,6 +23,7 @@ import com.example.historian_api.services.base.helpers.TimeSinceFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -118,6 +122,31 @@ public class CoursesServiceImpl implements CoursesService {
                 comment.getAuthorPhotoUrl(),
                 comment.getLessonId()
         )).toList();
+    }
+
+    @Override
+    public VideoCommentResponseDto addCommentToLesson(LessonCommentRequestDto requestDto) {
+
+        var student = studentsRepository.findById(requestDto.studentId())
+                .orElseThrow(() -> new NotFoundResourceException("There is no Student with that id !!"));
+
+        var lesson = lessonsRepository.findById(requestDto.lessonId())
+                .orElseThrow(() -> new NotFoundResourceException("There is no Lesson with that id !!"));
+
+        var comment = new VideoComment(requestDto.content(), LocalDateTime.now(),student,lesson);
+        var savedComment = videosCommentsRepository.save(comment);
+
+        return new VideoCommentResponseDto(
+                savedComment.getId(),
+                savedComment.getContent(),
+                savedComment.getCreationDate(),
+                timeSinceFormatter.formatTimeSince(savedComment.getCreationDate()),
+                student.getId(),
+                student.getName(),
+                AuthorType.STUDENT.name(),
+                student.getPhotoUrl(),
+                lesson.getId()
+        );
     }
 
     private boolean isNotFoundLesson(Integer lessonId) {
