@@ -1,4 +1,4 @@
-package com.example.historian_api.repositories.courses.quizzes;
+package com.example.historian_api.repositories.courses.quizzes.grades;
 
 import com.example.historian_api.entities.courses.quizzes.grades.GradeQuizResult;
 import com.example.historian_api.entities.keys.GradeQuizResultKey;
