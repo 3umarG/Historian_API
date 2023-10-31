@@ -54,6 +54,8 @@ public class UnitLesson {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<LessonQuizResult> results = new ArrayList<>();
 
+    private Boolean isQuizHidden;
+
 
     @OneToMany(
             mappedBy = "lesson",
@@ -66,10 +68,12 @@ public class UnitLesson {
     public UnitLesson(String title,
                       String content,
                       Unit unit,
+                      Boolean isQuizHidden,
                       String videoUrl,
                       String videoDescription,
                       boolean isFree) {
         this.title = title;
+        this.isQuizHidden = isQuizHidden;
         this.content = content;
         this.unit = unit;
         this.videoUrl = videoUrl;
