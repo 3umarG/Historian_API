@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @OpenAPIDefinition(servers = {@Server(
         url = "https://historian-api.up.railway.app",
         description = "Project for Historian API"
-)}
-)
+)})
 @CrossOrigin(
         origins = "*",
         maxAge = 3600,
