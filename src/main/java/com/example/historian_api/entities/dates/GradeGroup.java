@@ -16,8 +16,9 @@ import java.util.List;
 @Entity
 @Builder
 @Setter
-@Table(name = "grade_group")
+@Table(name = "grades_groups")
 public class GradeGroup {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,4 +37,9 @@ public class GradeGroup {
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<GroupDate> dates = new ArrayList<>();
+
+    public GradeGroup(String title, StudentGrade grade) {
+        this.title = title;
+        this.grade = grade;
+    }
 }

@@ -1,4 +1,5 @@
 package com.example.historian_api.controllers;
+
 import com.example.historian_api.dtos.requests.GradeGroupRequestDto;
 import com.example.historian_api.dtos.responses.GradeGroupResponseDto;
 import com.example.historian_api.entities.projections.GradeGroupProjection;
@@ -19,7 +20,7 @@ public class GradeGroupController {
     private final GradeGroupsServices gradeGroupsServices;
     private final ResponseFactory200 successFactory;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<?> getAll() {
         try {
             List<GradeGroupResponseDto> groups = gradeGroupsServices.getAllGroups();
@@ -29,7 +30,8 @@ public class GradeGroupController {
                     .body("An error occurred: " + e.getMessage());
         }
     }
-    @GetMapping("/{gradeId}")
+
+    @GetMapping("/grades/{gradeId}")
     public ResponseEntity<?> getAllByStudentGradeId(@PathVariable Integer gradeId) {
         try {
             List<GradeGroupResponseDto> groups = gradeGroupsServices.getGroupsByGradeId(gradeId);
@@ -38,8 +40,10 @@ public class GradeGroupController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred: " + e.getMessage());
         }
-    }@GetMapping
-    public ResponseEntity<?> getByGroupId(@RequestParam Long groupId) {
+    }
+
+    @GetMapping("/{groupId}")
+    public ResponseEntity<?> getByGroupId(@PathVariable Long groupId) {
         try {
             GradeGroupResponseDto group = gradeGroupsServices.getGroupById(groupId);
             return ResponseEntity.ok(successFactory.createResponse(group));

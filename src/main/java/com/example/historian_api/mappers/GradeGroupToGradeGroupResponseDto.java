@@ -12,10 +12,10 @@ public class GradeGroupToGradeGroupResponseDto implements Function<GradeGroup, G
     @Override
     public GradeGroupResponseDto apply(GradeGroup gradeGroup) {
         return GradeGroupResponseDto.builder()
-                .Id(gradeGroup.getId())
+                .id(gradeGroup.getId())
                 .gradeId(gradeGroup.getGrade().getId())
                 .title(gradeGroup.getTitle())
-                .groupDateList(gradeGroup.getDates())
+                .dates(gradeGroup.getDates())
                 .build();
     }
 }

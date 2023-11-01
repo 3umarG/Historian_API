@@ -8,9 +8,9 @@ import java.util.List;
 @Builder
 public record
 GradeGroupResponseDto(
-        Long Id,
+        Long id,
         String title,
         Integer gradeId,
-        List<GroupDate> groupDateList
+        List<GroupDate> dates
 ) {
 }

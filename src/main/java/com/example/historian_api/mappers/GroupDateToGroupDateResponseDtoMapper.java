@@ -19,7 +19,7 @@ public class GroupDateToGroupDateResponseDtoMapper implements Function<GroupDate
         map.put("lessonDateTime",groupDate.getLessonDateTime());
         return GroupDateResponseDto
                 .builder()
-                .dateId(groupDate.getId())
+                .id(groupDate.getId())
                 .groupId(groupDate.getGroup().getId())
                 .dayName(groupDate.getDayName())
                 .lessonDateTime(groupDate.getLessonDateTime())

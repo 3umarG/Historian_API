@@ -5,7 +5,6 @@ import com.example.historian_api.entities.dates.GroupDate;
 import com.example.historian_api.entities.projections.GradeGroupProjection;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.function.Function;
 
 @Component
@@ -14,10 +13,10 @@ public class GradeGroupProjectionToGradeGroupResponseDto implements Function<Gra
     public GradeGroupResponseDto apply(GradeGroupProjection gradeGroup) {
 
         return GradeGroupResponseDto.builder()
-                .Id(gradeGroup.getGroupId())
+                .id(gradeGroup.getGroupId())
                 .gradeId(gradeGroup.getStudentGrade().getId())
                 .title(gradeGroup.getTitle())
-                .groupDateList(gradeGroup.getGroupDates().stream().map(groupDateProjection ->
+                .dates(gradeGroup.getGroupDates().stream().map(groupDateProjection ->
                         GroupDate
                                 .builder()
                                 .id(groupDateProjection.getDateId())
