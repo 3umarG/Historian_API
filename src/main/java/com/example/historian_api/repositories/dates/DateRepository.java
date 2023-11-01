@@ -14,5 +14,4 @@ public interface DateRepository extends JpaRepository<GroupDate,Long> {
     @Query("SELECT g FROM GroupDate g WHERE g.group.id = :groupId")
     List<GroupDate> findAllByGroupId(@Param("groupId") Long groupId);
 
-
 }

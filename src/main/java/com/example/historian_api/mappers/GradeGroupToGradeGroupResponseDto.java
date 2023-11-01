@@ -2,8 +2,10 @@ package com.example.historian_api.mappers;
 
 import com.example.historian_api.dtos.responses.GradeGroupResponseDto;
 import com.example.historian_api.entities.dates.GradeGroup;
+import com.example.historian_api.entities.projections.GroupDateProjection;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.function.Function;
 
 @Component

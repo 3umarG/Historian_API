@@ -1,6 +1,7 @@
 package com.example.historian_api.entities.dates;
 
 import com.example.historian_api.entities.courses.StudentGrade;
+import com.example.historian_api.entities.projections.GroupDateProjection;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -36,4 +37,5 @@ public class GradeGroup {
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<GroupDate> dates = new ArrayList<>();
+
 }

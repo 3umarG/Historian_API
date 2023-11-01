@@ -18,4 +18,7 @@ public interface GradeGroupRepository extends JpaRepository<GradeGroup,Long> {
     @Query("SELECT g FROM GradeGroup g order by g.id asc ")
     List<GradeGroupProjection> findAllWithProjection();
 
+    @Query("SELECT g FROM GradeGroup g WHERE g.id = :groupId")
+    GradeGroupProjection findByGroupIdWithProjection(@Param("groupId") Long groupId);
+
 }

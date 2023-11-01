@@ -7,6 +7,7 @@ import com.example.historian_api.services.base.dates.GradeGroupsServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,7 +39,8 @@ public class GradeGroupController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred: " + e.getMessage());
         }
-    }@GetMapping
+    }
+    @GetMapping
     public ResponseEntity<?> getByGroupId(@RequestParam Long groupId) {
         try {
             GradeGroupResponseDto group = gradeGroupsServices.getGroupById(groupId);
@@ -48,7 +50,6 @@ public class GradeGroupController {
                     .body("An error occurred: " + e.getMessage());
         }
     }
-
     @PostMapping
     public ResponseEntity<?> saveGradeGroup(@RequestBody GradeGroupRequestDto dto) {
         try {
@@ -61,14 +62,5 @@ public class GradeGroupController {
         }
     }
 
-    @PostMapping("/{groupId}/{newTitle}")
-    public ResponseEntity<?> updateGroupTitle(@PathVariable Long groupId, @PathVariable String newTitle) {
-        try {
-            GradeGroupResponseDto response = gradeGroupsServices.updateGroupTitle(groupId, newTitle);
-            return ResponseEntity.ok(successFactory.createResponse(response));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An error occurred: " + e.getMessage());
-        }
-    }
+
 }

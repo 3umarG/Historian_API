@@ -17,13 +17,7 @@ public class GradeGroupProjectionToGradeGroupResponseDto implements Function<Gra
                 .Id(gradeGroup.getGroupId())
                 .gradeId(gradeGroup.getStudentGrade().getId())
                 .title(gradeGroup.getTitle())
-                .groupDateList(gradeGroup.getGroupDates().stream().map(groupDateProjection ->
-                        GroupDate
-                                .builder()
-                                .id(groupDateProjection.getDateId())
-                                .dayName(groupDateProjection.getDayName())
-                                .lessonDateTime(groupDateProjection.getLessonDateTime())
-                                .build()).toList())
+                .groupDateList(gradeGroup.getGroupDates())
                 .build();
     }
 }

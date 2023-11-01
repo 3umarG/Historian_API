@@ -7,7 +7,7 @@ import java.util.Map;
 public record GroupDateResponseDto(
         Long dateId,
         Long groupId,
-         String dayName,
+        String dayName,
         String lessonDateTime
 ){
 }

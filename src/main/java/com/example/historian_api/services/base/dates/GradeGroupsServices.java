@@ -10,7 +10,6 @@ import java.util.List;
 public interface GradeGroupsServices {
 
      GradeGroupResponseDto saveGradeGroup(@NotNull GradeGroupRequestDto dto) throws NotFoundResourceException;
-     GradeGroupResponseDto updateGroupTitle(@NotNull Long groupId,@NotNull String newTitle) throws NotFoundResourceException;
      List<GradeGroupResponseDto>getAllGroups();
      GradeGroupResponseDto getGroupById(Long groupId);
      List<GradeGroupResponseDto>getGroupsByGradeId(Integer gradeId);
