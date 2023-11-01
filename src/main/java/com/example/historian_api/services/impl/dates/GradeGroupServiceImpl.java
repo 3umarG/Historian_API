@@ -56,6 +56,16 @@ public class GradeGroupServiceImpl implements GradeGroupsServices {
     }
 
     @Override
+    public GradeGroupResponseDto updateGroupTitle(Long groupId, String newTitle) {
+        repository.updateGroupTitleById(newTitle, groupId);
+        var group=repository.findByGroupIdWithProjection(groupId);
+        if(group==null){
+            throw new NotFoundResourceException("There is no group with that id !!");
+        }
+        return projectionToGradeGroupResponseDto.apply(group);
+    }
+
+    @Override
     public List<GradeGroupResponseDto> getGroupsByGradeId(Integer gradeId) {
         studentGradesRepository.findById(gradeId).orElseThrow(
                 () -> new NotFoundResourceException("There is no grade with that id !!"));

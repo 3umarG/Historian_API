@@ -12,5 +12,6 @@ public interface GradeGroupsServices {
      GradeGroupResponseDto saveGradeGroup(@NotNull GradeGroupRequestDto dto) throws NotFoundResourceException;
      List<GradeGroupResponseDto>getAllGroups();
      GradeGroupResponseDto getGroupById(Long groupId);
+     GradeGroupResponseDto updateGroupTitle(Long groupId,String newTitle);
      List<GradeGroupResponseDto>getGroupsByGradeId(Integer gradeId);
 }

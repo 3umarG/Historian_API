@@ -61,6 +61,17 @@ public class GradeGroupController {
                     .body("An error occurred: " + e.getMessage());
         }
     }
+@PostMapping("/{groupId}/{newTitle}")
+    public ResponseEntity<?> updateTitle(@PathVariable Long groupId,@PathVariable String newTitle) {
+        try {
+            GradeGroupResponseDto response = gradeGroupsServices.updateGroupTitle(groupId,newTitle);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(successFactory.createResponse(response));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred: " + e.getMessage());
+        }
+    }
 
 
 }
