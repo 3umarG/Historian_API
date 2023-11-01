@@ -8,6 +8,7 @@ import java.util.function.Function;
 
 @Component
 public class GradeGroupToGradeGroupResponseDto implements Function<GradeGroup, GradeGroupResponseDto> {
+
     @Override
     public GradeGroupResponseDto apply(GradeGroup gradeGroup) {
         return GradeGroupResponseDto.builder()

@@ -1,9 +1,6 @@
 package com.example.historian_api.repositories.dates;
 
-import com.example.historian_api.entities.dates.GradeGroup;
 import com.example.historian_api.entities.dates.GroupDate;
-import com.example.historian_api.entities.projections.FeedbackProjection;
-import com.example.historian_api.entities.projections.GroupProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
