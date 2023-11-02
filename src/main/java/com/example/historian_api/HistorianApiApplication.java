@@ -7,10 +7,18 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 @SpringBootApplication
-@OpenAPIDefinition(servers = {@Server(
-        url = "https://historian-api.up.railway.app",
-        description = "Project for Historian API"
-)})
+@OpenAPIDefinition(servers =
+        {
+                @Server(
+                        url = "https://historian-api.up.railway.app",
+                        description = "Remote Project for Historian API"
+                ),
+                @Server(
+                        url = "http://localhost:8000",
+                        description = "Local Project for Historian API"
+                )
+        }
+)
 @CrossOrigin(
         origins = "*",
         maxAge = 3600,

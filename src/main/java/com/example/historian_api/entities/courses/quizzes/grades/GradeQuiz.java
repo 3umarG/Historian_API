@@ -29,6 +29,8 @@ public class GradeQuiz {
 
     private Boolean isFinal;
 
+    private Boolean isHidden;
+
     @ManyToOne
     @JoinColumn(name = "grade_id")
     private StudentGrade grade;
@@ -47,8 +49,9 @@ public class GradeQuiz {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<GradeQuizResult> results = new ArrayList<>();
 
-    public GradeQuiz(String title, String description, StudentGrade grade,Boolean isFinal) {
+    public GradeQuiz(String title, String description, StudentGrade grade, Boolean isFinal, Boolean isHidden) {
         this.title = title;
+        this.isHidden = isHidden;
         this.isFinal = isFinal;
         this.description = description;
         this.grade = grade;
