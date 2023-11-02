@@ -1,6 +1,7 @@
 package com.example.historian_api.entities.courses;
 
 import com.example.historian_api.entities.courses.quizzes.grades.GradeQuiz;
+import com.example.historian_api.entities.dates.GradeGroup;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -41,6 +42,11 @@ public class StudentGrade {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<GradeQuiz> quizzes = new ArrayList<>();
 
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "grade", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<GradeGroup> gradeGroupList = new ArrayList<>();
 
 
     public StudentGrade(String name) {
