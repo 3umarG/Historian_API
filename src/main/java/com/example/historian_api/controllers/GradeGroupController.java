@@ -1,4 +1,5 @@
 package com.example.historian_api.controllers;
+import com.example.historian_api.dtos.requests.ContentRequestDto;
 import com.example.historian_api.dtos.requests.GradeGroupRequestDto;
 import com.example.historian_api.dtos.responses.GradeGroupResponseDto;
 import com.example.historian_api.entities.projections.GradeGroupProjection;
@@ -64,10 +65,10 @@ public class GradeGroupController {
         }
     }
 
-    @PostMapping("/{groupId}/{newTitle}")
-    public ResponseEntity<?> updateGroupTitle(@PathVariable Long groupId, @PathVariable String newTitle) {
+    @PostMapping("/{groupId}")
+    public ResponseEntity<?> updateGroupTitle(@RequestBody ContentRequestDto dto, @PathVariable Long groupId) {
         try {
-            GradeGroupResponseDto response = gradeGroupsServices.updateGroupTitle(groupId, newTitle);
+            GradeGroupResponseDto response = gradeGroupsServices.updateGroupTitle(groupId, dto.content());
             return ResponseEntity.ok(successFactory.createResponse(response));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
