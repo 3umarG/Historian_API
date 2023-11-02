@@ -10,7 +10,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface GradeGroupRepository extends JpaRepository<GradeGroup,Long> {
@@ -25,7 +24,7 @@ public interface GradeGroupRepository extends JpaRepository<GradeGroup,Long> {
 
     @Modifying
     @Transactional
-    @Query(nativeQuery = true, value = "UPDATE grade_group SET title = :newTitle WHERE id = :groupId")
+    @Query(nativeQuery = true, value = "UPDATE grades_groups SET title = :newTitle WHERE id = :groupId")
     void updateGroupTitleById(@Param("newTitle") String newTitle, @Param("groupId") Long groupId);
 
 }
