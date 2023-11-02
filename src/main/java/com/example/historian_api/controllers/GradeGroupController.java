@@ -1,5 +1,4 @@
 package com.example.historian_api.controllers;
-
 import com.example.historian_api.dtos.requests.GradeGroupRequestDto;
 import com.example.historian_api.dtos.responses.GradeGroupResponseDto;
 import com.example.historian_api.entities.projections.GradeGroupProjection;

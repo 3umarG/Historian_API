@@ -8,8 +8,8 @@ import com.example.historian_api.exceptions.NotFoundResourceException;
 import com.example.historian_api.mappers.GradeGroupProjectionToGradeGroupResponseDto;
 import com.example.historian_api.mappers.GradeGroupRequestDtoToGradeGroupMapper;
 import com.example.historian_api.mappers.GradeGroupToGradeGroupResponseDto;
-import com.example.historian_api.repositories.dates.GradeGroupRepository;
 import com.example.historian_api.repositories.grades.StudentGradesRepository;
+import com.example.historian_api.repositories.dates.GradeGroupRepository;
 import com.example.historian_api.services.base.dates.GradeGroupsServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,20 +40,13 @@ public class GradeGroupServiceImpl implements GradeGroupsServices {
 
     @Override
     public GradeGroupResponseDto updateGroupTitle(Long groupId, String newTitle) throws NotFoundResourceException {
-        GradeGroupProjection group = repository.findAllWithProjection().stream().filter(gradeGroupProjection -> gradeGroupProjection.getGroupId() == groupId).findFirst().orElseThrow(
-                () -> new NotFoundResourceException("There is no group with that id !!")
-        );
-        GradeGroupResponseDto dto = projectionToGradeGroupResponseDto.apply(group);
-        GradeGroup gradeGroup = GradeGroup
-                .builder()
-                .id(dto.id())
-                .title(dto.title())
-                .grade(studentGradesRepository.findById(dto.gradeId()).get())
-                .dates(dto.dates())
-                .build();
-        gradeGroup.setTitle(newTitle);
-        GradeGroup updatedGroup = repository.save(gradeGroup);
-        return gradeGroupToGradeGroupResponseDto.apply(updatedGroup);
+        repository.updateGroupTitleById(newTitle, groupId);
+        var group=repository.findByGroupIdWithProjection(groupId);
+        if(group==null){
+            throw new NotFoundResourceException("There is no group with that id !!");
+        }
+        return projectionToGradeGroupResponseDto.apply(group);
+
     }
 
     @Override
@@ -63,10 +56,13 @@ public class GradeGroupServiceImpl implements GradeGroupsServices {
 
     @Override
     public GradeGroupResponseDto getGroupById(Long groupId) {
-        GradeGroupProjection group = repository.findAllWithProjection().stream().filter(gradeGroupProjection -> gradeGroupProjection.getGroupId() == groupId).findFirst().orElseThrow(
-                () -> new NotFoundResourceException("There is no group with that id !!")
-        );
+
+        var group=repository.findByGroupIdWithProjection(groupId);
+        if(group==null){
+            throw new NotFoundResourceException("There is no group with that id !!");
+        }
         return projectionToGradeGroupResponseDto.apply(group);
+
     }
 
     @Override

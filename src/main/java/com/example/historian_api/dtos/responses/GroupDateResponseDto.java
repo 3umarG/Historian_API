@@ -5,7 +5,7 @@ import lombok.Builder;
 public record GroupDateResponseDto(
         Long id,
         Long groupId,
-         String dayName,
+        String dayName,
         String lessonDateTime
 ){
 }

@@ -5,6 +5,7 @@ import com.example.historian_api.entities.dates.GroupDate;
 import com.example.historian_api.entities.projections.GradeGroupProjection;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.function.Function;
 
 @Component

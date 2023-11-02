@@ -1,5 +1,6 @@
 package com.example.historian_api.entities.projections;
 
+import com.example.historian_api.entities.dates.GradeGroup;
 import org.springframework.beans.factory.annotation.Value;
 
 public interface GroupDateProjection {

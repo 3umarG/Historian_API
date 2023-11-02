@@ -1,5 +1,4 @@
 package com.example.historian_api.services.impl.dates;
-
 import com.example.historian_api.dtos.requests.GroupDateRequestDto;
 import com.example.historian_api.dtos.responses.GroupDateResponseDto;
 import com.example.historian_api.entities.dates.GroupDate;
@@ -8,24 +7,18 @@ import com.example.historian_api.mappers.GroupDateToGroupDateResponseDtoMapper;
 import com.example.historian_api.repositories.dates.DateRepository;
 import com.example.historian_api.repositories.dates.GradeGroupRepository;
 import com.example.historian_api.services.base.dates.GroupDateServices;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class GroupDateServiceImpl implements GroupDateServices {
 
     private final DateRepository groupsDatesRepository;
     private final GradeGroupRepository groupsRepository;
     private final GroupDateToGroupDateResponseDtoMapper groupDateResponseDtoMapper;
 
-    @Autowired
-    public GroupDateServiceImpl(DateRepository groupsDatesRepository, GroupDateToGroupDateResponseDtoMapper groupDateResponseDtoMapper, GradeGroupRepository groupsRepository) {
-        this.groupsDatesRepository = groupsDatesRepository;
-        this.groupDateResponseDtoMapper = groupDateResponseDtoMapper;
-        this.groupsRepository = groupsRepository;
-    }
 
     @Override
     public List<GroupDateResponseDto> getAllGroupDate(Long groupId) {

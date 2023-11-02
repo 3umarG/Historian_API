@@ -1,8 +1,6 @@
 package com.example.historian_api.services.base.dates;
-
 import com.example.historian_api.dtos.requests.GradeGroupRequestDto;
 import com.example.historian_api.dtos.responses.GradeGroupResponseDto;
-import com.example.historian_api.entities.projections.GradeGroupProjection;
 import com.example.historian_api.exceptions.NotFoundResourceException;
 import jakarta.validation.constraints.NotNull;
 
