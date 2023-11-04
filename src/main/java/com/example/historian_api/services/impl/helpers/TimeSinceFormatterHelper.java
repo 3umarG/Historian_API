@@ -40,7 +40,19 @@ public class TimeSinceFormatterHelper implements TimeSinceFormatter {
     }
 
     private static String formatSeconds(long seconds) {
-        return "منذ " + seconds + " ثواني";
+        String createdSince;
+        if (seconds == 0) {
+            createdSince = "الان";
+        } else if(seconds == 1){
+            createdSince = "منذ ثانية";
+        } else if (seconds == 2) {
+            createdSince = "منذ ثانيتين";
+        } else if (seconds <= 10) {
+            createdSince = "منذ " + seconds + " ثواني";
+        }else {
+            createdSince = "منذ " + seconds + " ثانية";
+        }
+        return createdSince;
     }
 
     private static String formatMinutes(long minutes) {

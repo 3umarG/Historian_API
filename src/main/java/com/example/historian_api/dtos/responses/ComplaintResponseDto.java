@@ -12,7 +12,8 @@ public record ComplaintResponseDto(
         String studentName,
         String complaintContent,
         ComplaintStatus status ,
-        LocalDateTime creationDate
+        LocalDateTime creationDate,
+        String createdSince
 
 ) {
 }

@@ -6,13 +6,13 @@ import com.example.historian_api.entities.users.Student;
 import com.example.historian_api.enums.ComplaintStatus;
 import com.example.historian_api.exceptions.NotFoundResourceException;
 import com.example.historian_api.repositories.users.StudentsRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.function.Function;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ComplaintRequestDtoToComplaintMapper implements Function<ComplaintRequestDto, Complaint> {
 
     private final StudentsRepository studentsRepository;

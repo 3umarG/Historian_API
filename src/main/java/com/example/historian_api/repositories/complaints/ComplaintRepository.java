@@ -15,9 +15,13 @@ import java.util.List;
 public interface ComplaintRepository extends JpaRepository<Complaint,Long> {
     @Query("SELECT c FROM Complaint c WHERE c.creator.id = :creatorId order by c.id asc ")
     List<Complaint> findByCreatorId(@Param("creatorId") Integer creatorId);
-
-    @Transactional
     @Modifying
+    @Transactional
     @Query("UPDATE Complaint c SET c.status = :newStatus WHERE c.id = :complaintId")
     int updateStatus(@Param("complaintId") Long complaintId, @Param("newStatus") ComplaintStatus newStatus);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Complaint c SET c.content = :newContent WHERE c.id = :complaintId")
+    int updateContent(@Param("complaintId") Long complaintId, @Param("newContent") String newContent);
 }

@@ -2,7 +2,6 @@ package com.example.historian_api.entities.complaints;
 
 import com.example.historian_api.entities.users.Student;
 import com.example.historian_api.enums.ComplaintStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -17,7 +16,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "complaints")
+@Table(name = "complaints", indexes = {
+        @Index(name = "complaint_status_index", columnList = "complaint_status"),
+        @Index(name = "complaint_student_id_index", columnList = "student_id"),
+})
 public class Complaint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +30,7 @@ public class Complaint {
     private String content;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "complaint_status")
     private ComplaintStatus status;
 
     @Column(nullable = false)
