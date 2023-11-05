@@ -2,6 +2,7 @@ package com.example.historian_api.config;
 
 import com.example.historian_api.repositories.users.StudentsRepository;
 import com.example.historian_api.repositories.users.TeachersRepository;
+import com.example.historian_api.utils.constants.StaticText;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,5 +26,14 @@ public class ApplicationConfiguration {
     public UserDetailsService instructorsDetailsService() {
         return phone -> teachersRepository.findByPhone(phone)
                 .orElseThrow(() -> new UsernameNotFoundException("There is no Instructor with that phone number !!"));
+    }
+
+    @Bean
+    public StaticText staticText() {
+        return StaticText
+                .builder()
+                .aboutText("Your default About text")
+                .privacyText("Your default Privacy text")
+                .build();
     }
 }
