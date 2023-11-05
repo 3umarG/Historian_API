@@ -33,6 +33,25 @@ public class StaticTextServiceImpl implements StaticTextService {
             return "Something went wrong : "+e.getMessage();
         }
     }
+
+    @Override
+    public String getTechnicalSupportContactInfo() {
+        return staticText.getTechnicalSupportContactInfo();
+    }
+
+    @Override
+    public String updateTechnicalSupportContactInfo(String technicalSupportContactInfo) {
+        try{
+            if(!technicalSupportContactInfo.isEmpty()&&!technicalSupportContactInfo.equals(staticText.getTechnicalSupportContactInfo())){
+                staticText.setTechnicalSupportContactInfo(technicalSupportContactInfo);
+                return "Updated Successfully";
+            }
+            return "You must enter a new technical support contact info";
+        }catch (Exception e){
+            return "Something went wrong : "+e.getMessage();
+        }
+    }
+
     @Override
 
     public String updatePrivacyText(String privacyText) {

@@ -34,6 +34,7 @@ public class ApplicationConfiguration {
                 .builder()
                 .aboutText("Your default About text")
                 .privacyText("Your default Privacy text")
+                .technicalSupportContactInfo("Your default technical support contact info")
                 .build();
     }
 }

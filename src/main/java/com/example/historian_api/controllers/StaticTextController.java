@@ -30,6 +30,11 @@ public class StaticTextController {
         String privacyText = service.getPrivacyText();
         return ResponseEntity.ok(successFactory.createResponse(privacyText));
     }
+    @GetMapping("/technicalSupport")
+    public ResponseEntity<?> getTechnicalSupport() {
+        String technicalSupportContactInfo = service.getTechnicalSupportContactInfo();
+        return ResponseEntity.ok(successFactory.createResponse(technicalSupportContactInfo));
+    }
     @PutMapping("/aboutText")
     public ResponseEntity<?> updateAboutText(@Valid @RequestBody UpdateStaticTextRequestDto dto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -49,4 +54,14 @@ public class StaticTextController {
         String response = service.updatePrivacyText(dto.newText());
         return ResponseEntity.ok(successFactory.createResponse(response));
     }
+    @PutMapping("/technicalSupport")
+    public ResponseEntity<?> updateTechnicalSupport(@Valid @RequestBody UpdateStaticTextRequestDto dto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(successFactory.createResponse("Invalid request data"));
+        }
+        String response = service.updateTechnicalSupportContactInfo(dto.newText());
+        return ResponseEntity.ok(successFactory.createResponse(response));
+    }
+
 }

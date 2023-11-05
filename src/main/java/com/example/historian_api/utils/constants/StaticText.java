@@ -8,4 +8,5 @@ import lombok.Data;
 public class StaticText {
     private String aboutText;
     private String privacyText;
+    private String technicalSupportContactInfo;
 }
