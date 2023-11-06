@@ -17,13 +17,15 @@ import com.example.historian_api.repositories.courses.LessonsRepository;
 import com.example.historian_api.repositories.courses.quizzes.lessons.LessonQuestionsRepository;
 import com.example.historian_api.repositories.courses.quizzes.lessons.LessonQuestionsSolutionsRepository;
 import com.example.historian_api.repositories.courses.quizzes.lessons.LessonQuizResultsRepository;
-import com.example.historian_api.repositories.users.StudentsRepository;
 import com.example.historian_api.services.base.courses.quizzes.LessonsQuizzesService;
+import com.example.historian_api.services.utils.LessonsRepositoryUtils;
+import com.example.historian_api.services.utils.StudentsRepositoryUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -31,20 +33,20 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequiredArgsConstructor
 public class LessonsQuizzesServiceImpl implements LessonsQuizzesService {
 
-    private final StudentsRepository studentsRepository;
-    private final LessonsRepository lessonsRepository;
     private final LessonQuestionsRepository lessonQuestionsRepository;
     private final LessonQuestionsSolutionsRepository questionsSolutionsRepository;
     private final LessonQuizResultsRepository lessonQuizResultsRepository;
+    private final StudentsRepositoryUtils studentsRepositoryUtils;
+    private final LessonsRepositoryUtils lessonsRepositoryUtils;
 
 
     @Override
     public QuizWithQuestionsResponseDto getLessonQuestions(Integer lessonId, Integer studentId) {
 
-        if (isNotFoundLesson(lessonId)) {
+        if (lessonsRepositoryUtils.isNotFoundLesson(lessonId)) {
             throw new NotFoundResourceException("There is no Lesson with that id !!");
         }
-        if (isNotFoundStudent(studentId)) {
+        if (studentsRepositoryUtils.isNotFoundStudent(studentId)) {
             throw new NotFoundResourceException("There is no Student with that id !!");
         }
 
@@ -59,100 +61,120 @@ public class LessonsQuizzesServiceImpl implements LessonsQuizzesService {
 
     }
 
-    private boolean isNotFoundLesson(Integer lessonId) {
-        return !lessonsRepository.existsById(lessonId);
-    }
-
-    private boolean isNotFoundStudent(Integer studentId) {
-        return !studentsRepository.existsById(studentId);
-    }
-
     @Override
     public QuizResultWithQuestionsResponseDto solveLessonQuiz(Integer studentId, Integer lessonId, AddQuizScoreRequestDto dto) {
 
-        var student = studentsRepository.findById(studentId)
-                .orElseThrow(() -> new NotFoundResourceException("There is no Student with that id !!"));
+        var student = studentsRepositoryUtils.getStudentByIdOrThrowNotFound(studentId);
 
-        var lesson = lessonsRepository.findById(lessonId)
-                .orElseThrow(() -> new NotFoundResourceException("There is no Lesson with that id !!"));
+        var lesson = lessonsRepositoryUtils.getLessonByIdOrThrowNotFound(lessonId);
 
-        if (lessonQuizResultsRepository.existsLessonQuizResultByStudent_IdAndLesson_Id(studentId, lessonId)) {
-            throw new AlreadyEnrolledCourseException("Student already solved this lesson quiz !!");
-        }
+        ensureStudentHasNotSolvedQuiz(studentId, lessonId);
 
         int totalQuestionsScore = dto.questions().size();
+        AtomicInteger actualQuestionsScore = new AtomicInteger();
 
-        var questionsResults = new ArrayList<LessonQuestionSolution>();
+        var questionsSolutions = new ArrayList<LessonQuestionSolution>();
         var questionsResultsWrappers = new ArrayList<QuizQuestionWrapper>();
 
-        /**
-         Lambda Expressions and forEach(s) are not thread safe,
-         they don't support synchronization.
-         So I use AtomicInteger to handle un-synchronized work
-         */
-        AtomicInteger actualQuestionsScore = new AtomicInteger();
 
         dto.questions().forEach(studentAnswerToQuestion -> {
 
-            var questionResultKey = new LessonQuestionSolutionKey(extractQuestionId(studentAnswerToQuestion), studentId);
-            var question = lessonQuestionsRepository.findById(studentAnswerToQuestion.questionId())
-                    .orElseThrow(() -> new NotFoundResourceException("There is no Question with that id !!"));
+            var question = getLessonQuestionOrThrowNotFound(studentAnswerToQuestion.questionId());
 
-            var actualAnswer = extractActualAnswer(question);
-
-            boolean isStudentSucceeded = Objects.equals(studentAnswerToQuestion.answerIndex(), question.getCorrectAnswerIndex());
+            boolean isStudentSucceeded = isStudentAnswerCorrect(studentAnswerToQuestion, question);
 
             if (isStudentSucceeded) {
                 actualQuestionsScore.getAndIncrement();
             }
 
-            var questionResult = new LessonQuestionSolution(questionResultKey,
-                    student,
-                    question,
-                    question.getCorrectAnswerIndex(),
-                    studentAnswerToQuestion.answerIndex(),
-                    actualAnswer,
-                    studentAnswerToQuestion.answer(),
-                    isStudentSucceeded);
-
-            var questionWrapperDto = new QuizQuestionWrapper(
-                    question.getId(),
-                    question.getQuestion(),
-                    question.getAnswers(),
-                    question.getCorrectAnswerIndex(),
-                    extractActualAnswer(question),
-                    question.getCorrectAnswerDescription(),
-                    question.getPhotoUrl(),
-                    question.getIsCheckedAnswer(),
-                    studentId,
-                    studentAnswerToQuestion.answer(),
-                    studentAnswerToQuestion.answerIndex(),
-                    isStudentSucceeded
-            );
+            QuizQuestionWrapper questionWrapperDto = createQuizQuestionWrapper(studentId, studentAnswerToQuestion, question, isStudentSucceeded);
+            LessonQuestionSolution questionResult = createLessonQuestionSolution(studentId, studentAnswerToQuestion, question, isStudentSucceeded);
 
             questionsResultsWrappers.add(questionWrapperDto);
-            questionsResults.add(questionResult);
+            questionsSolutions.add(questionResult);
         });
 
-        var savedQuizResultDto = new SavedLessonQuizResultDto(dto.time(),actualQuestionsScore.get(),totalQuestionsScore,student,lesson);
-        var savedQuizResult = saveQuizResult(savedQuizResultDto);
+        saveQuestionsSolutionsToDb(questionsSolutions);
 
+        var savedQuizResultDto = new SavedLessonQuizResultDto(
+                dto.time(),
+                actualQuestionsScore.get(),
+                totalQuestionsScore,
+                student,
+                lesson);
+        LessonQuizResult savedQuizResult = saveQuizResult(savedQuizResultDto);
+
+
+        return createQuizResultWithQuestionsResponseDto(savedQuizResult, questionsResultsWrappers);
+
+    }
+
+    private void saveQuestionsSolutionsToDb(ArrayList<LessonQuestionSolution> questionsResults) {
         questionsSolutionsRepository.saveAll(questionsResults);
+    }
+
+    private void ensureStudentHasNotSolvedQuiz(Integer studentId, Integer lessonId) {
+        if (lessonQuizResultsRepository.existsLessonQuizResultByStudent_IdAndLesson_Id(studentId, lessonId)) {
+            throw new AlreadyEnrolledCourseException("Student already solved this lesson quiz !!");
+        }
+    }
+
+    private LessonQuestion getLessonQuestionOrThrowNotFound(Integer questionId) {
+        return lessonQuestionsRepository.findById(questionId)
+                .orElseThrow(() -> new NotFoundResourceException("There is no Question with that id !!"));
+    }
+
+    private boolean isStudentAnswerCorrect(QuestionAnswerRequestDto studentAnswerToQuestion, LessonQuestion question) {
+        return Objects.equals(studentAnswerToQuestion.answerIndex(), question.getCorrectAnswerIndex());
+    }
+
+    private LessonQuestionSolution createLessonQuestionSolution(Integer studentId, QuestionAnswerRequestDto studentAnswerToQuestion, LessonQuestion question, boolean isStudentSucceeded) {
+        LessonQuestionSolutionKey questionResultKey = new LessonQuestionSolutionKey(studentAnswerToQuestion.questionId(), studentId);
+        String actualAnswer = extractActualAnswer(question);
+
+        return new LessonQuestionSolution(
+                questionResultKey,
+                studentsRepositoryUtils.getStudentByIdOrThrowNotFound(studentId),
+                question,
+                question.getCorrectAnswerIndex(),
+                studentAnswerToQuestion.answerIndex(),
+                actualAnswer,
+                studentAnswerToQuestion.answer(),
+                isStudentSucceeded);
+    }
+
+    private QuizQuestionWrapper createQuizQuestionWrapper(Integer studentId, QuestionAnswerRequestDto studentAnswerToQuestion, LessonQuestion question, boolean isStudentSucceeded) {
+        return new QuizQuestionWrapper(
+                question.getId(),
+                question.getQuestion(),
+                question.getAnswers(),
+                question.getCorrectAnswerIndex(),
+                extractActualAnswer(question),
+                question.getCorrectAnswerDescription(),
+                question.getPhotoUrl(),
+                question.getIsCheckedAnswer(),
+                studentId,
+                studentAnswerToQuestion.answer(),
+                studentAnswerToQuestion.answerIndex(),
+                isStudentSucceeded);
+    }
+
+    private QuizResultWithQuestionsResponseDto createQuizResultWithQuestionsResponseDto(LessonQuizResult savedQuizResult, List<QuizQuestionWrapper> questionsResultsWrappers) {
         return new QuizResultWithQuestionsResponseDto(
                 savedQuizResult.getSolutionPercentage(),
                 savedQuizResult.getTakenTimeToSolveInSeconds(),
                 savedQuizResult.getTotalScore(),
                 savedQuizResult.getActualScore(),
-                questionsResultsWrappers
-        );
-
+                questionsResultsWrappers);
     }
 
     private LessonQuizResult saveQuizResult(SavedLessonQuizResultDto dto) {
         var quizResultKey = new LessonQuizResultKey(
                 dto.lesson().getId(),
                 dto.student().getId());
+
         var solutionPercentage = ((float) dto.actualQuestionsScore() / (float) dto.totalQuestionsScore()) * 100;
+
         var quizResult = new LessonQuizResult(quizResultKey,
                 dto.student(),
                 dto.lesson(),
@@ -161,16 +183,12 @@ public class LessonsQuizzesServiceImpl implements LessonsQuizzesService {
                 BigDecimal.valueOf(dto.totalQuestionsScore()),
                 BigDecimal.valueOf(dto.actualQuestionsScore())
         );
-        var savedQuizResult = lessonQuizResultsRepository.save(quizResult);
-        return savedQuizResult;
+        return lessonQuizResultsRepository.save(quizResult);
     }
 
     private static String extractActualAnswer(LessonQuestion question) {
         return question.getAnswers().get(question.getCorrectAnswerIndex());
     }
 
-    private static Integer extractQuestionId(QuestionAnswerRequestDto studentAnswerToQuestion) {
-        return studentAnswerToQuestion.questionId();
-    }
 
 }
