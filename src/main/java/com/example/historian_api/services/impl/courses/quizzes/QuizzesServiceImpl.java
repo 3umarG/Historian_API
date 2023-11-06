@@ -1,17 +1,15 @@
 package com.example.historian_api.services.impl.courses.quizzes;
 
 import com.example.historian_api.dtos.requests.AddQuizScoreRequestDto;
+import com.example.historian_api.dtos.requests.SavedGradeQuizResultDto;
 import com.example.historian_api.dtos.responses.GradeQuizResponseDto;
-import com.example.historian_api.dtos.responses.QuestionResponseDto;
 import com.example.historian_api.dtos.responses.QuizResultWithQuestionsResponseDto;
 import com.example.historian_api.dtos.responses.QuizWithQuestionsResponseDto;
-import com.example.historian_api.entities.courses.quizzes.grades.GradeQuiz;
 import com.example.historian_api.entities.courses.quizzes.grades.GradeQuizQuestion;
 import com.example.historian_api.entities.courses.quizzes.grades.GradeQuizQuestionSolution;
 import com.example.historian_api.entities.courses.quizzes.grades.GradeQuizResult;
 import com.example.historian_api.entities.keys.GradeQuizQuestionSolutionKey;
 import com.example.historian_api.entities.keys.GradeQuizResultKey;
-import com.example.historian_api.entities.users.Student;
 import com.example.historian_api.exceptions.AlreadyEnrolledCourseException;
 import com.example.historian_api.exceptions.NotFoundResourceException;
 import com.example.historian_api.mappers.QuizQuestionWrapper;
@@ -29,6 +27,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
@@ -96,21 +95,35 @@ public class QuizzesServiceImpl implements QuizzesService {
         var quiz = quizzesRepository.findById(quizId)
                 .orElseThrow(() -> new NotFoundResourceException("There is no Quiz with that id !!"));
 
-        if(quizzesResultsRepository.existsGradeQuizResultByStudent_IdAndQuiz_Id(studentId,quizId)){
+        if (quizzesResultsRepository.existsGradeQuizResultByStudent_IdAndQuiz_Id(studentId, quizId)) {
             throw new AlreadyEnrolledCourseException("Student already solved this quiz !!");
         }
 
-        var savedQuizResult = saveQuizResult(studentId, quizId, dto, quiz, student);
 
         var questionsResults = new ArrayList<GradeQuizQuestionSolution>();
         var questionsResultsWrappers = new ArrayList<QuizQuestionWrapper>();
 
+        int totalQuestionsScore = dto.questions().size();
+
+        /**
+         Lambda Expressions and forEach(s) are not thread safe,
+         they don't support synchronization.
+         So I use AtomicInteger to handle un-synchronized work
+         */
+        AtomicInteger actualQuestionsScore = new AtomicInteger();
+
         dto.questions().forEach(studentAnswerToQuestion -> {
+
             var questionResultKey = new GradeQuizQuestionSolutionKey(studentAnswerToQuestion.questionId(), studentId);
             var question = gradeQuizQuestionsRepository.findById(studentAnswerToQuestion.questionId())
                     .orElseThrow(() -> new NotFoundResourceException("There is no Question with that id !!"));
-            var actualAnswer = question.getAnswers().get(question.getCorrectAnswerIndex());
+
+            var actualAnswer = extractActualAnswer(question);
+
             boolean isStudentSucceeded = Objects.equals(studentAnswerToQuestion.answerIndex(), question.getCorrectAnswerIndex());
+
+            if (isStudentSucceeded)
+                actualQuestionsScore.getAndIncrement();
 
             var questionResult = new GradeQuizQuestionSolution(questionResultKey,
                     student,
@@ -126,7 +139,7 @@ public class QuizzesServiceImpl implements QuizzesService {
                     question.getQuestion(),
                     question.getAnswers(),
                     question.getCorrectAnswerIndex(),
-                    question.getAnswers().get(question.getCorrectAnswerIndex()),
+                    extractActualAnswer(question),
                     question.getCorrectAnswerDescription(),
                     question.getPhotoUrl(),
                     question.getIsCheckedAnswer(),
@@ -140,6 +153,9 @@ public class QuizzesServiceImpl implements QuizzesService {
             questionsResults.add(questionResult);
         });
 
+        var savedQuizResultDto = new SavedGradeQuizResultDto(dto.time(), actualQuestionsScore.get(), totalQuestionsScore, student, quiz);
+        var savedQuizResult = saveQuizResult(savedQuizResultDto);
+
         quizQuestionSolutionsRepository.saveAll(questionsResults);
         return new QuizResultWithQuestionsResponseDto(
                 savedQuizResult.getSolutionPercentage(),
@@ -150,33 +166,22 @@ public class QuizzesServiceImpl implements QuizzesService {
         );
     }
 
-    private GradeQuizResult saveQuizResult(Integer studentId, Integer quizId, AddQuizScoreRequestDto dto, GradeQuiz quiz, Student student) {
-        var quizResultKey = new GradeQuizResultKey(studentId, quizId);
-        var solutionPercentage = (Float.valueOf(dto.actualScore()) / Float.valueOf(dto.totalScore())) * 100;
-        var quizResult = new GradeQuizResult(quizResultKey,
-                quiz,
-                student,
-                BigDecimal.valueOf(solutionPercentage),
-                dto.time(),
-                BigDecimal.valueOf(dto.totalScore()),
-                BigDecimal.valueOf(dto.actualScore())
-        );
-        return quizzesResultsRepository.save(quizResult);
+    private static String extractActualAnswer(GradeQuizQuestion question) {
+        return question.getAnswers().get(question.getCorrectAnswerIndex());
     }
 
-    private static List<QuestionResponseDto> generateNotSolvedQuestionsResponseDto(List<GradeQuizQuestion> questions) {
-        return questions.stream().map(q -> new QuestionResponseDto(
-                q.getId(),
-                q.getQuestion(),
-                q.getAnswers(),
-                q.getCorrectAnswerIndex(),
-                null,
-                q.getAnswers().get(q.getCorrectAnswerIndex()),
-                null,
-                q.getCorrectAnswerDescription(),
-                q.getPhotoUrl(),
-                q.getIsCheckedAnswer()
-        )).toList();
+    private GradeQuizResult saveQuizResult(SavedGradeQuizResultDto dto) {
+        var quizResultKey = new GradeQuizResultKey(dto.student().getId(), dto.quiz().getId());
+        var solutionPercentage = ((float) dto.actualQuestionsScore() / (float) dto.totalQuestionsScore()) * 100;
+        var quizResult = new GradeQuizResult(quizResultKey,
+                dto.quiz(),
+                dto.student(),
+                BigDecimal.valueOf(solutionPercentage),
+                dto.time(),
+                BigDecimal.valueOf(dto.totalQuestionsScore()),
+                BigDecimal.valueOf(dto.actualQuestionsScore())
+        );
+        return quizzesResultsRepository.save(quizResult);
     }
 
     private boolean isNotFoundStudent(Integer studentId) {
