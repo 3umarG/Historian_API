@@ -15,7 +15,7 @@ import java.util.Objects;
 
 public abstract class QuizSolver {
 
-    public abstract void ensureStudentHasNotSolvedQuiz(Integer studentId, Integer lessonId);
+    public abstract void ensureStudentHasNotSolvedQuiz(Integer studentId, Integer quizId);
 
     public abstract void saveQuestionsSolutionsToDb(List<?> solutions);
 
