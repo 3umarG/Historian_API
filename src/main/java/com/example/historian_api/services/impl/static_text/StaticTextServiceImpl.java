@@ -1,9 +1,13 @@
 package com.example.historian_api.services.impl.static_text;
 
+import com.example.historian_api.dtos.responses.StaticTextResponseDto;
 import com.example.historian_api.services.base.static_text.StaticTextService;
 import com.example.historian_api.utils.constants.StaticText;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,20 +39,68 @@ public class StaticTextServiceImpl implements StaticTextService {
     }
 
     @Override
-    public String getTechnicalSupportContactInfo() {
+    public String updateGooglePlayLink(String googlePlayLink) {
+        try{
+            if(!googlePlayLink.isEmpty()&&!googlePlayLink.equals(staticText.getGooglePlayLink())){
+                staticText.setAboutText(googlePlayLink);
+                return "Updated Successfully";
+            }
+            return "You must enter a new google play link";
+        }catch (Exception e){
+            return "Something went wrong : "+e.getMessage();
+        }
+    }
+
+    @Override
+    public String updateAppStoreLink(String appStoreLink) {
+        try{
+            if(!appStoreLink.isEmpty()&&!appStoreLink.equals(staticText.getAppStoreLink())){
+                staticText.setAboutText(appStoreLink);
+                return "Updated Successfully";
+            }
+            return "You must enter a new app store link";
+        }catch (Exception e){
+            return "Something went wrong : "+e.getMessage();
+        }
+    }
+
+    @Override
+    public List<String> getTechnicalSupportContactInfo() {
         return staticText.getTechnicalSupportContactInfo();
     }
 
     @Override
-    public String updateTechnicalSupportContactInfo(String technicalSupportContactInfo) {
-        try{
-            if(!technicalSupportContactInfo.isEmpty()&&!technicalSupportContactInfo.equals(staticText.getTechnicalSupportContactInfo())){
-                staticText.setTechnicalSupportContactInfo(technicalSupportContactInfo);
-                return "Updated Successfully";
+    public StaticTextResponseDto getAllStaticText() {
+        return StaticTextResponseDto
+                .builder()
+                .aboutText(staticText.getAboutText())
+                .privacyText(staticText.getPrivacyText())
+                .appStoreLink(staticText.getAppStoreLink())
+                .googlePlayLink(staticText.getGooglePlayLink())
+                .technicalSupportContactsInfo(staticText.getTechnicalSupportContactInfo())
+                .build();
+    }
+
+    @Override
+    public String addTechnicalSupportNumber(String technicalSupportContactInfo) {
+        try {
+            if (!technicalSupportContactInfo.isEmpty()) {
+                List<String> contactInfo = staticText.getTechnicalSupportContactInfo();
+
+                if (contactInfo == null) {
+                    contactInfo = new ArrayList<>();
+                    staticText.setTechnicalSupportContactInfo(contactInfo);
+                }
+
+                if (!contactInfo.contains(technicalSupportContactInfo)) {
+                    contactInfo.add(technicalSupportContactInfo);
+                    return "Added Successfully";
+                }
+                return "Technical support contact info already exists.";
             }
             return "You must enter a new technical support contact info";
-        }catch (Exception e){
-            return "Something went wrong : "+e.getMessage();
+        } catch (Exception e) {
+            return "Something went wrong: " + e.getMessage();
         }
     }
 
