@@ -38,5 +38,4 @@ public class FinalRevisionResult {
 
     private BigDecimal actualScore;
 
-    // Todo : review this for any changes
 }

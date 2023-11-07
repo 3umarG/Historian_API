@@ -3,6 +3,7 @@ package com.example.historian_api.entities.courses.quizzes.lessons;
 
 import com.example.historian_api.entities.converters.StringToListConverter;
 import com.example.historian_api.entities.courses.QuestionImage;
+import com.example.historian_api.entities.courses.quizzes.Question;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,35 +19,20 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "lessons_questions")
-public class LessonQuestion {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class LessonQuestion extends Question {
 
     @ManyToOne
     @JoinColumn(name = "lesson_id")
     private UnitLesson lesson;
 
-    private String question;
 
     @ElementCollection
-    @CollectionTable(name="lessons_question_answers", joinColumns=@JoinColumn(name="question_id"))
-    @Column(name="answer")
+    @CollectionTable(name = "lessons_question_answers", joinColumns = @JoinColumn(name = "question_id"))
+    @Column(name = "answer")
     private List<String> answers = new ArrayList<>();
 
-    private Integer correctAnswerIndex;
 
-    private Boolean isCheckedAnswer;
-
-    private String correctAnswerDescription;
-
-    @OneToOne
-    @JoinColumn(name = "question_image_id")
-    private QuestionImage questionImage;
-
-    private String photoUrl;
-
-    @OneToMany(mappedBy = "question",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<LessonQuestionSolution> solutions = new ArrayList<>();
 
@@ -58,13 +44,8 @@ public class LessonQuestion {
                           String correctAnswerDescription,
                           String photoUrl,
                           QuestionImage questionImage) {
+        super(question, correctAnswerIndex, isCheckedAnswer, correctAnswerDescription, questionImage, photoUrl);
         this.lesson = lesson;
-        this.questionImage = questionImage;
-        this.correctAnswerDescription = correctAnswerDescription;
-        this.photoUrl = photoUrl;
-        this.isCheckedAnswer = isCheckedAnswer;
-        this.question = question;
         this.answers = answers;
-        this.correctAnswerIndex = correctAnswerIndex;
     }
 }
