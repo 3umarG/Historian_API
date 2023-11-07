@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("${api.version}")
+@RequestMapping("${api.version}/statics")
 @RequiredArgsConstructor
 public class StaticTextController {
 
