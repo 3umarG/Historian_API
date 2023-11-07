@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Qualifier("GradeQuizSolver")
-public class GradeQuizSolver extends QuizSolver {
+public class GradeQuizSolver implements QuizSolver {
 
     private final GradeQuizzesResultsRepository quizzesResultsRepository;
     private final GradeQuizQuestionSolutionsRepository questionSolutionsRepository;

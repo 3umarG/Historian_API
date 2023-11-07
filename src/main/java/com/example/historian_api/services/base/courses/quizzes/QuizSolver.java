@@ -13,20 +13,20 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class QuizSolver {
+public interface QuizSolver {
 
-    public abstract void ensureStudentHasNotSolvedQuiz(Integer studentId, Integer quizId);
+    void ensureStudentHasNotSolvedQuiz(Integer studentId, Integer quizId);
 
-    public abstract void saveQuestionsSolutionsToDb(List<?> solutions);
+    void saveQuestionsSolutionsToDb(List<?> solutions);
 
-    public abstract QuizResult saveQuizResult(Record dto);
+    QuizResult saveQuizResult(Record dto);
 
 
-    public boolean isStudentAnswerCorrect(QuestionAnswerRequestDto studentAnswerToQuestion, Question question) {
+    default boolean isStudentAnswerCorrect(QuestionAnswerRequestDto studentAnswerToQuestion, Question question) {
         return Objects.equals(studentAnswerToQuestion.answerIndex(), question.getCorrectAnswerIndex());
     }
 
-    public String extractActualAnswer(LessonQuestion question) {
+    default String extractActualAnswer(LessonQuestion question) {
         return question.getAnswers().get(question.getCorrectAnswerIndex());
     }
 }

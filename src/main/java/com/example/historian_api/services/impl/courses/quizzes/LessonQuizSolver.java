@@ -21,7 +21,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Qualifier("LessonQuizSolver")
-public class LessonQuizSolver extends QuizSolver {
+public class LessonQuizSolver implements QuizSolver {
 
     private final LessonQuizResultsRepository lessonQuizResultsRepository;
     private final LessonQuestionsSolutionsRepository questionsSolutionsRepository;
