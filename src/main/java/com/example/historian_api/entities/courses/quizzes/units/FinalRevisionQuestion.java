@@ -3,6 +3,7 @@ package com.example.historian_api.entities.courses.quizzes.units;
 
 import com.example.historian_api.entities.converters.StringToListConverter;
 import com.example.historian_api.entities.courses.QuestionImage;
+import com.example.historian_api.entities.courses.quizzes.Question;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,36 +19,20 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "final_revision_questions")
-public class FinalRevisionQuestion {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class FinalRevisionQuestion extends Question {
 
     @ManyToOne
     @JoinColumn(name = "unit_id")
     private Unit unit;
 
-    private String question;
 
     @ElementCollection
-    @CollectionTable(name="final_revision_question_answers", joinColumns=@JoinColumn(name="question_id"))
-    @Column(name="answer")
+    @CollectionTable(name = "final_revision_question_answers", joinColumns = @JoinColumn(name = "question_id"))
+    @Column(name = "answer")
     private List<String> answers = new ArrayList<>();
 
-    private Integer correctAnswerIndex;
 
-    private Boolean isCheckedAnswer;
-
-    private String correctAnswerDescription;
-
-    @OneToOne
-    @JoinColumn(name = "question_image_id")
-    private QuestionImage questionImage;
-
-    private String photoUrl;
-
-    @OneToMany(mappedBy = "question",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<FinalRevisionQuestionSolution> solutions = new ArrayList<>();
 
@@ -59,13 +44,8 @@ public class FinalRevisionQuestion {
                                  String correctAnswerDescription,
                                  QuestionImage questionImage,
                                  String photoUrl) {
+        super(question, correctAnswerIndex, isCheckedAnswer, correctAnswerDescription, questionImage, photoUrl);
         this.unit = unit;
-        this.correctAnswerDescription = correctAnswerDescription;
-        this.questionImage = questionImage;
-        this.photoUrl = photoUrl;
-        this.isCheckedAnswer = isCheckedAnswer;
-        this.question = question;
         this.answers = answers;
-        this.correctAnswerIndex = correctAnswerIndex;
     }
 }

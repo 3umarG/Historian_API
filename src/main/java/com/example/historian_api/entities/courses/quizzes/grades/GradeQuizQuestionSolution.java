@@ -1,5 +1,6 @@
 package com.example.historian_api.entities.courses.quizzes.grades;
 
+import com.example.historian_api.entities.courses.quizzes.QuestionSolution;
 import com.example.historian_api.entities.keys.GradeQuizQuestionSolutionKey;
 import com.example.historian_api.entities.users.Student;
 import jakarta.persistence.*;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "grade_quizzes_questions_solutions")
 @AllArgsConstructor
 @NoArgsConstructor
-public class GradeQuizQuestionSolution {
+public class GradeQuizQuestionSolution extends QuestionSolution {
 
     @EmbeddedId
     private GradeQuizQuestionSolutionKey key;
@@ -27,13 +28,19 @@ public class GradeQuizQuestionSolution {
     @JoinColumn(name = "question_id")
     private GradeQuizQuestion question;
 
-    private Integer actualAnswerIndex;
-
-    private Integer studentAnswerIndex;
-
-    private String actualAnswer;
-
-    private String studentAnswer;
-
-    private Boolean isStudentSucceeded;
+    public GradeQuizQuestionSolution(
+            GradeQuizQuestionSolutionKey key,
+            Student student,
+            GradeQuizQuestion question,
+            Integer actualAnswerIndex,
+            Integer studentAnswerIndex,
+            String actualAnswer,
+            String studentAnswer,
+            Boolean isStudentSucceeded
+            ) {
+        super(actualAnswerIndex, studentAnswerIndex, actualAnswer, studentAnswer, isStudentSucceeded);
+        this.key = key;
+        this.student = student;
+        this.question = question;
+    }
 }

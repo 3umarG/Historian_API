@@ -1,6 +1,7 @@
 package com.example.historian_api.entities.courses.quizzes.grades;
 
 
+import com.example.historian_api.entities.courses.quizzes.QuizResult;
 import com.example.historian_api.entities.keys.GradeQuizResultKey;
 import com.example.historian_api.entities.users.Student;
 import jakarta.persistence.*;
@@ -17,7 +18,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "grade_quizzes_results")
 @Builder
-public class GradeQuizResult {
+public class GradeQuizResult extends QuizResult {
 
     @EmbeddedId
     private GradeQuizResultKey key;
@@ -27,17 +28,16 @@ public class GradeQuizResult {
     @JoinColumn(name = "quiz_id")
     private GradeQuiz quiz;
 
-    @ManyToOne
-    @MapsId("studentId")
-    @JoinColumn(name = "student_id")
-    private Student student;
-
-    private BigDecimal solutionPercentage;
-
-    private BigDecimal takenTimeToSolveInSeconds;
-
-    private BigDecimal totalScore;
-
-    private BigDecimal actualScore;
-
+    public GradeQuizResult(
+            GradeQuizResultKey key,
+            GradeQuiz quiz,
+            Student student,
+            BigDecimal solutionPercentage,
+            BigDecimal takenTimeToSolveInSeconds,
+            BigDecimal totalScore,
+            BigDecimal actualScore) {
+        super(student, solutionPercentage, takenTimeToSolveInSeconds, totalScore, actualScore);
+        this.key = key;
+        this.quiz = quiz;
+    }
 }
