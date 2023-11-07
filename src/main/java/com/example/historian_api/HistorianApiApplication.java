@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
                 @Server(
                         url = "http://localhost:8000",
                         description = "Local Project for Historian API"
+                ),
+                @Server(
+                        url = "http://localhost:5920",
+                        description = "Matar Local Project for Historian API"
                 )
         }
 )
