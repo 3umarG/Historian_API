@@ -23,6 +23,7 @@ import com.example.historian_api.services.utils.LessonsRepositoryUtils;
 import com.example.historian_api.services.utils.QuestionResultCollector;
 import com.example.historian_api.services.utils.StudentsRepositoryUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -35,8 +36,9 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class LessonsQuizzesServiceImpl implements LessonsQuizzesService {
 
+    @Autowired
     @Qualifier("LessonQuizSolver")
-    private final QuizSolver lessonQuizSolver;
+    private QuizSolver lessonQuizSolver;
     private final LessonQuestionsRepository lessonQuestionsRepository;
     private final LessonQuestionsSolutionsRepository questionsSolutionsRepository;
     private final LessonQuizResultsRepository lessonQuizResultsRepository;
@@ -75,7 +77,7 @@ public class LessonsQuizzesServiceImpl implements LessonsQuizzesService {
 
         lessonQuizSolver.ensureStudentHasNotSolvedQuiz(studentId, lessonId);
 
-       var questionResultCollector = new QuestionResultCollector<LessonQuestionSolution>(dto.questions().size());
+        var questionResultCollector = new QuestionResultCollector<LessonQuestionSolution>(dto.questions().size());
 
 
         dto.questions().forEach(studentAnswerToQuestion -> {

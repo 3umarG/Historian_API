@@ -23,6 +23,7 @@ import com.example.historian_api.services.utils.GradeQuizzesRepositoryUtils;
 import com.example.historian_api.services.utils.QuestionResultCollector;
 import com.example.historian_api.services.utils.StudentsRepositoryUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -35,8 +36,9 @@ public class QuizzesServiceImpl implements QuizzesService {
     private final GradeQuizQuestionsRepositoryUtils gradeQuizQuestionsRepositoryUtils;
     private final StudentsRepositoryUtils studentsRepositoryUtils;
     private final GradeQuizzesRepositoryUtils quizzesRepositoryUtils;
-    @Qualifier(value = "GradeQuizSolver")
-    private final QuizSolver quizSolver;
+    @Autowired
+    @Qualifier("GradeQuizSolver")
+    private QuizSolver quizSolver;
     private final StudentGradesRepository gradesRepository;
     private final GradeQuizzesRepository quizzesRepository;
     private final GradeQuizQuestionsRepository gradeQuizQuestionsRepository;
