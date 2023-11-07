@@ -69,8 +69,8 @@ public class LessonsQuizzesServiceImpl implements LessonsQuizzesService {
 
         ensureStudentHasNotSolvedQuiz(studentId, lessonId);
 
-        int totalQuestionsScore = dto.questions().size();
-        AtomicInteger actualQuestionsScore = new AtomicInteger();
+        var totalQuestionsScore = dto.questions().size();
+        var actualQuestionsScore = new AtomicInteger();
 
         var questionsSolutions = new ArrayList<LessonQuestionSolution>();
         var questionsResultsWrappers = new ArrayList<QuizWithQuestionsWrapper>();
@@ -78,7 +78,7 @@ public class LessonsQuizzesServiceImpl implements LessonsQuizzesService {
 
         dto.questions().forEach(studentAnswerToQuestion -> {
 
-            var question = getLessonQuestionOrThrowNotFound(studentAnswerToQuestion.questionId());
+            var question = getQuestionByIdOrThrowNotFound(studentAnswerToQuestion.questionId());
 
             boolean isStudentSucceeded = isStudentAnswerCorrect(studentAnswerToQuestion, question);
 
@@ -87,7 +87,7 @@ public class LessonsQuizzesServiceImpl implements LessonsQuizzesService {
             }
 
             QuizWithQuestionsWrapper questionWrapperDto = createQuizQuestionWrapper(studentId, studentAnswerToQuestion, question, isStudentSucceeded);
-            LessonQuestionSolution questionResult = createLessonQuestionSolution(studentId, studentAnswerToQuestion, question, isStudentSucceeded);
+            LessonQuestionSolution questionResult = createQuestionSolution(studentId, studentAnswerToQuestion, question, isStudentSucceeded);
 
             questionsResultsWrappers.add(questionWrapperDto);
             questionsSolutions.add(questionResult);
@@ -118,7 +118,7 @@ public class LessonsQuizzesServiceImpl implements LessonsQuizzesService {
         }
     }
 
-    private LessonQuestion getLessonQuestionOrThrowNotFound(Integer questionId) {
+    private LessonQuestion getQuestionByIdOrThrowNotFound(Integer questionId) {
         return lessonQuestionsRepository.findById(questionId)
                 .orElseThrow(() -> new NotFoundResourceException("There is no Question with that id !!"));
     }
@@ -127,7 +127,7 @@ public class LessonsQuizzesServiceImpl implements LessonsQuizzesService {
         return Objects.equals(studentAnswerToQuestion.answerIndex(), question.getCorrectAnswerIndex());
     }
 
-    private LessonQuestionSolution createLessonQuestionSolution(Integer studentId, QuestionAnswerRequestDto studentAnswerToQuestion, LessonQuestion question, boolean isStudentSucceeded) {
+    private LessonQuestionSolution createQuestionSolution(Integer studentId, QuestionAnswerRequestDto studentAnswerToQuestion, LessonQuestion question, boolean isStudentSucceeded) {
         LessonQuestionSolutionKey questionResultKey = new LessonQuestionSolutionKey(studentAnswerToQuestion.questionId(), studentId);
         String actualAnswer = extractActualAnswer(question);
 
