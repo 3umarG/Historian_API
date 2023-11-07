@@ -1,6 +1,7 @@
 package com.example.historian_api.entities.courses.quizzes.units;
 
 
+import com.example.historian_api.entities.courses.quizzes.QuizResult;
 import com.example.historian_api.entities.keys.FinalRevisionResultKey;
 import com.example.historian_api.entities.users.Student;
 import jakarta.persistence.*;
@@ -15,7 +16,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Entity
 @Table(name = "final_revisions_results")
-public class FinalRevisionResult {
+public class FinalRevisionResult extends QuizResult {
 
     @EmbeddedId
     private FinalRevisionResultKey key;
@@ -25,17 +26,16 @@ public class FinalRevisionResult {
     @JoinColumn(name = "unit_id")
     private Unit unit;
 
-    @ManyToOne
-    @MapsId("studentId")
-    @JoinColumn(name = "student_id")
-    private Student student;
-
-    private BigDecimal solutionPercentage;
-
-    private BigDecimal takenTimeToSolveInSeconds;
-
-    private BigDecimal totalScore;
-
-    private BigDecimal actualScore;
-
+    public FinalRevisionResult(
+            Student student,
+            BigDecimal solutionPercentage,
+            BigDecimal takenTimeToSolveInSeconds,
+            BigDecimal totalScore,
+            BigDecimal actualScore,
+            FinalRevisionResultKey key,
+            Unit unit) {
+        super(student, solutionPercentage, takenTimeToSolveInSeconds, totalScore, actualScore);
+        this.key = key;
+        this.unit = unit;
+    }
 }
