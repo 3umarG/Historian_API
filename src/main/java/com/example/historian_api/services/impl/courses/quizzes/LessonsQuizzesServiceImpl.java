@@ -12,8 +12,7 @@ import com.example.historian_api.entities.keys.LessonQuestionSolutionKey;
 import com.example.historian_api.entities.keys.LessonQuizResultKey;
 import com.example.historian_api.exceptions.AlreadyEnrolledCourseException;
 import com.example.historian_api.exceptions.NotFoundResourceException;
-import com.example.historian_api.mappers.QuizQuestionWrapper;
-import com.example.historian_api.repositories.courses.LessonsRepository;
+import com.example.historian_api.mappers.QuizWithQuestionsWrapper;
 import com.example.historian_api.repositories.courses.quizzes.lessons.LessonQuestionsRepository;
 import com.example.historian_api.repositories.courses.quizzes.lessons.LessonQuestionsSolutionsRepository;
 import com.example.historian_api.repositories.courses.quizzes.lessons.LessonQuizResultsRepository;
@@ -51,7 +50,7 @@ public class LessonsQuizzesServiceImpl implements LessonsQuizzesService {
         }
 
         var questions = lessonQuestionsRepository.findAllQuestionsByLessonId(lessonId, studentId);
-        var quizWithQuestionsWrapper = new QuizQuestionWrapper(questions);
+        var quizWithQuestionsWrapper = new QuizWithQuestionsWrapper(questions);
 
 
         return new QuizWithQuestionsResponseDto(
@@ -74,7 +73,7 @@ public class LessonsQuizzesServiceImpl implements LessonsQuizzesService {
         AtomicInteger actualQuestionsScore = new AtomicInteger();
 
         var questionsSolutions = new ArrayList<LessonQuestionSolution>();
-        var questionsResultsWrappers = new ArrayList<QuizQuestionWrapper>();
+        var questionsResultsWrappers = new ArrayList<QuizWithQuestionsWrapper>();
 
 
         dto.questions().forEach(studentAnswerToQuestion -> {
@@ -87,7 +86,7 @@ public class LessonsQuizzesServiceImpl implements LessonsQuizzesService {
                 actualQuestionsScore.getAndIncrement();
             }
 
-            QuizQuestionWrapper questionWrapperDto = createQuizQuestionWrapper(studentId, studentAnswerToQuestion, question, isStudentSucceeded);
+            QuizWithQuestionsWrapper questionWrapperDto = createQuizQuestionWrapper(studentId, studentAnswerToQuestion, question, isStudentSucceeded);
             LessonQuestionSolution questionResult = createLessonQuestionSolution(studentId, studentAnswerToQuestion, question, isStudentSucceeded);
 
             questionsResultsWrappers.add(questionWrapperDto);
@@ -143,8 +142,8 @@ public class LessonsQuizzesServiceImpl implements LessonsQuizzesService {
                 isStudentSucceeded);
     }
 
-    private QuizQuestionWrapper createQuizQuestionWrapper(Integer studentId, QuestionAnswerRequestDto studentAnswerToQuestion, LessonQuestion question, boolean isStudentSucceeded) {
-        return new QuizQuestionWrapper(
+    private QuizWithQuestionsWrapper createQuizQuestionWrapper(Integer studentId, QuestionAnswerRequestDto studentAnswerToQuestion, LessonQuestion question, boolean isStudentSucceeded) {
+        return new QuizWithQuestionsWrapper(
                 question.getId(),
                 question.getQuestion(),
                 question.getAnswers(),
@@ -159,7 +158,7 @@ public class LessonsQuizzesServiceImpl implements LessonsQuizzesService {
                 isStudentSucceeded);
     }
 
-    private QuizResultWithQuestionsResponseDto createQuizResultWithQuestionsResponseDto(LessonQuizResult savedQuizResult, List<QuizQuestionWrapper> questionsResultsWrappers) {
+    private QuizResultWithQuestionsResponseDto createQuizResultWithQuestionsResponseDto(LessonQuizResult savedQuizResult, List<QuizWithQuestionsWrapper> questionsResultsWrappers) {
         return new QuizResultWithQuestionsResponseDto(
                 savedQuizResult.getSolutionPercentage(),
                 savedQuizResult.getTakenTimeToSolveInSeconds(),

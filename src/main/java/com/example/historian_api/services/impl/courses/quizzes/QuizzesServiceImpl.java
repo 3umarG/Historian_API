@@ -12,7 +12,7 @@ import com.example.historian_api.entities.keys.GradeQuizQuestionSolutionKey;
 import com.example.historian_api.entities.keys.GradeQuizResultKey;
 import com.example.historian_api.exceptions.AlreadyEnrolledCourseException;
 import com.example.historian_api.exceptions.NotFoundResourceException;
-import com.example.historian_api.mappers.QuizQuestionWrapper;
+import com.example.historian_api.mappers.QuizWithQuestionsWrapper;
 import com.example.historian_api.repositories.courses.quizzes.grades.GradeQuizQuestionSolutionsRepository;
 import com.example.historian_api.repositories.courses.quizzes.grades.GradeQuizQuestionsRepository;
 import com.example.historian_api.repositories.courses.quizzes.grades.GradeQuizzesRepository;
@@ -78,7 +78,7 @@ public class QuizzesServiceImpl implements QuizzesService {
         }
 
         var questions = gradeQuizQuestionsRepository.findAllQuestionsByQuizId(quizId, studentId);
-        var quizWithQuestionsWrapper = new QuizQuestionWrapper(questions);
+        var quizWithQuestionsWrapper = new QuizWithQuestionsWrapper(questions);
 
 
         return new QuizWithQuestionsResponseDto(
@@ -101,7 +101,7 @@ public class QuizzesServiceImpl implements QuizzesService {
 
 
         var questionsResults = new ArrayList<GradeQuizQuestionSolution>();
-        var questionsResultsWrappers = new ArrayList<QuizQuestionWrapper>();
+        var questionsResultsWrappers = new ArrayList<QuizWithQuestionsWrapper>();
 
         int totalQuestionsScore = dto.questions().size();
 
@@ -134,7 +134,7 @@ public class QuizzesServiceImpl implements QuizzesService {
                     studentAnswerToQuestion.answer(),
                     isStudentSucceeded);
 
-            var questionWrapperDto = new QuizQuestionWrapper(
+            var questionWrapperDto = new QuizWithQuestionsWrapper(
                     question.getId(),
                     question.getQuestion(),
                     question.getAnswers(),

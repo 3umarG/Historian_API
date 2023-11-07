@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Data
 @JsonInclude()
-public class QuizQuestionWrapper {
+public class QuizWithQuestionsWrapper {
     private Integer questionId;
     private String question;
     private List<String> answers;
@@ -28,7 +28,7 @@ public class QuizQuestionWrapper {
     @JsonIgnore
     private List<GradeQuizQuestionProjection> questionsProjection;
 
-    public QuizQuestionWrapper(
+    public QuizWithQuestionsWrapper(
             Integer questionId,
             String question,
             List<String> answers,
@@ -55,11 +55,11 @@ public class QuizQuestionWrapper {
         this.isCheckedAnswer = isCheckedAnswer;
     }
 
-    public QuizQuestionWrapper(List<GradeQuizQuestionProjection> questionsProjection) {
+    public QuizWithQuestionsWrapper(List<GradeQuizQuestionProjection> questionsProjection) {
         this.questionsProjection = questionsProjection;
     }
 
-    public List<QuizQuestionWrapper> reformatQuestionsWithAnswers() {
+    public List<QuizWithQuestionsWrapper> reformatQuestionsWithAnswers() {
         Map<Integer, List<GradeQuizQuestionProjection>> groupedByQuestionId = questionsProjection.stream()
                 .collect(Collectors.groupingBy(GradeQuizQuestionProjection::getId));
 
@@ -68,12 +68,12 @@ public class QuizQuestionWrapper {
                 .collect(Collectors.toList());
     }
 
-    private QuizQuestionWrapper createQuizQuestionWrapper(List<GradeQuizQuestionProjection> group) {
+    private QuizWithQuestionsWrapper createQuizQuestionWrapper(List<GradeQuizQuestionProjection> group) {
         List<String> answers = group.stream()
                 .map(GradeQuizQuestionProjection::getAnswer)
                 .toList();
 
-        return new QuizQuestionWrapper(
+        return new QuizWithQuestionsWrapper(
                 group.get(0).getId(),
                 group.get(0).getQuestion(),
                 answers,
