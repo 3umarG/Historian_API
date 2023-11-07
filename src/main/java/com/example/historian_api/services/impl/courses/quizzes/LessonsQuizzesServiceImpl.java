@@ -17,26 +17,32 @@ import com.example.historian_api.repositories.courses.quizzes.lessons.LessonQues
 import com.example.historian_api.repositories.courses.quizzes.lessons.LessonQuestionsSolutionsRepository;
 import com.example.historian_api.repositories.courses.quizzes.lessons.LessonQuizResultsRepository;
 import com.example.historian_api.services.base.courses.quizzes.LessonsQuizzesService;
+import com.example.historian_api.services.base.courses.quizzes.QuizSolver;
+import com.example.historian_api.services.utils.LessonsQuestionsRepositoryUtils;
 import com.example.historian_api.services.utils.LessonsRepositoryUtils;
+import com.example.historian_api.services.utils.QuestionResultCollector;
 import com.example.historian_api.services.utils.StudentsRepositoryUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
 public class LessonsQuizzesServiceImpl implements LessonsQuizzesService {
 
+    @Qualifier("LessonQuizSolver")
+    private final QuizSolver lessonQuizSolver;
     private final LessonQuestionsRepository lessonQuestionsRepository;
     private final LessonQuestionsSolutionsRepository questionsSolutionsRepository;
     private final LessonQuizResultsRepository lessonQuizResultsRepository;
     private final StudentsRepositoryUtils studentsRepositoryUtils;
     private final LessonsRepositoryUtils lessonsRepositoryUtils;
+    private final LessonsQuestionsRepositoryUtils lessonsQuestionsRepositoryUtils;
 
 
     @Override
@@ -67,44 +73,40 @@ public class LessonsQuizzesServiceImpl implements LessonsQuizzesService {
 
         var lesson = lessonsRepositoryUtils.getLessonByIdOrThrowNotFound(lessonId);
 
-        ensureStudentHasNotSolvedQuiz(studentId, lessonId);
+        lessonQuizSolver.ensureStudentHasNotSolvedQuiz(studentId, lessonId);
 
-        var totalQuestionsScore = dto.questions().size();
-        var actualQuestionsScore = new AtomicInteger();
-
-        var questionsSolutions = new ArrayList<LessonQuestionSolution>();
-        var questionsResultsWrappers = new ArrayList<QuizWithQuestionsWrapper>();
+       var questionResultCollector = new QuestionResultCollector<LessonQuestionSolution>(dto.questions().size());
 
 
         dto.questions().forEach(studentAnswerToQuestion -> {
 
-            var question = getQuestionByIdOrThrowNotFound(studentAnswerToQuestion.questionId());
+            var question = lessonsQuestionsRepositoryUtils.getQuestionByIdOrThrowNotFound(studentAnswerToQuestion.questionId());
 
-            boolean isStudentSucceeded = isStudentAnswerCorrect(studentAnswerToQuestion, question);
+            boolean isStudentSucceeded = lessonQuizSolver.isStudentAnswerCorrect(studentAnswerToQuestion, question);
 
             if (isStudentSucceeded) {
-                actualQuestionsScore.getAndIncrement();
+                questionResultCollector.incrementSucceededQuestionsCounter();
             }
 
             QuizWithQuestionsWrapper questionWrapperDto = createQuizQuestionWrapper(studentId, studentAnswerToQuestion, question, isStudentSucceeded);
             LessonQuestionSolution questionResult = createQuestionSolution(studentId, studentAnswerToQuestion, question, isStudentSucceeded);
 
-            questionsResultsWrappers.add(questionWrapperDto);
-            questionsSolutions.add(questionResult);
+            questionResultCollector.addQuestionSolutionWrapper(questionWrapperDto);
+            questionResultCollector.addQuestionSolution(questionResult);
         });
 
-        saveQuestionsSolutionsToDb(questionsSolutions);
+        lessonQuizSolver.saveQuestionsSolutionsToDb(questionResultCollector.getQuestionsSolutions());
 
         var savedQuizResultDto = new SavedLessonQuizResultDto(
                 dto.time(),
-                actualQuestionsScore.get(),
-                totalQuestionsScore,
+                questionResultCollector.getSucceededQuestionsCounter(),
+                questionResultCollector.getTotalQuestionsCounter(),
                 student,
                 lesson);
-        LessonQuizResult savedQuizResult = saveQuizResult(savedQuizResultDto);
+        LessonQuizResult savedQuizResult = (LessonQuizResult) lessonQuizSolver.saveQuizResult(savedQuizResultDto);
 
 
-        return createQuizResultWithQuestionsResponseDto(savedQuizResult, questionsResultsWrappers);
+        return createQuizResultWithQuestionsResponseDto(savedQuizResult, questionResultCollector.getQuestionsSolutionsWrappers());
 
     }
 
@@ -129,7 +131,7 @@ public class LessonsQuizzesServiceImpl implements LessonsQuizzesService {
 
     private LessonQuestionSolution createQuestionSolution(Integer studentId, QuestionAnswerRequestDto studentAnswerToQuestion, LessonQuestion question, boolean isStudentSucceeded) {
         LessonQuestionSolutionKey questionResultKey = new LessonQuestionSolutionKey(studentAnswerToQuestion.questionId(), studentId);
-        String actualAnswer = extractActualAnswer(question);
+        String actualAnswer = lessonQuizSolver.extractActualAnswer(question);
 
         return new LessonQuestionSolution(
                 questionResultKey,
@@ -148,7 +150,7 @@ public class LessonsQuizzesServiceImpl implements LessonsQuizzesService {
                 question.getQuestion(),
                 question.getAnswers(),
                 question.getCorrectAnswerIndex(),
-                extractActualAnswer(question),
+                lessonQuizSolver.extractActualAnswer(question),
                 question.getCorrectAnswerDescription(),
                 question.getPhotoUrl(),
                 question.getIsCheckedAnswer(),
