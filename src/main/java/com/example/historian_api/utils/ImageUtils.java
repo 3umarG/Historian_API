@@ -61,7 +61,7 @@ public class ImageUtils {
         return host + apiVersion + "/" + path + "/" + imageTitle;
     }
 
-    public String generateImageTitle(String name) {
+    public static String generateUniqueImageTitle(String name) {
         return name + "-" + UUID.randomUUID();
     }
 
