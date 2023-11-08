@@ -1,4 +1,4 @@
-package com.example.historian_api.services.utils;
+package com.example.historian_api.services.utils.students;
 
 import com.example.historian_api.entities.users.Student;
 import com.example.historian_api.exceptions.NotFoundResourceException;

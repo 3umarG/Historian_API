@@ -11,13 +11,12 @@ import com.example.historian_api.entities.courses.quizzes.units.FinalRevisionRes
 import com.example.historian_api.entities.keys.FinalRevisionQuestionSolutionKey;
 import com.example.historian_api.exceptions.NotFoundResourceException;
 import com.example.historian_api.mappers.QuizWithQuestionsWrapper;
-import com.example.historian_api.repositories.courses.quizzes.units.FinalRevisionQuestionsRepository;
 import com.example.historian_api.services.base.courses.quizzes.QuizSolver;
 import com.example.historian_api.services.base.courses.quizzes.UnitsQuizzesService;
-import com.example.historian_api.services.utils.QuestionResultCollector;
-import com.example.historian_api.services.utils.StudentsRepositoryUtils;
-import com.example.historian_api.services.utils.UnitsFinalRevisionQuestionsRepositoryUtils;
-import com.example.historian_api.services.utils.UnitsRepositoryUtils;
+import com.example.historian_api.services.utils.questions_results.QuestionResultCollector;
+import com.example.historian_api.services.utils.students.StudentsRepositoryUtils;
+import com.example.historian_api.services.utils.units_final_revision.UnitsFinalRevisionQuestionsRepositoryUtils;
+import com.example.historian_api.services.utils.units_final_revision.UnitsRepositoryUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
