@@ -1,5 +1,6 @@
 package com.example.historian_api.controllers;
 import com.example.historian_api.dtos.requests.UpdateStaticTextRequestDto;
+import com.example.historian_api.dtos.responses.StaticTextResponseDto;
 import com.example.historian_api.factories.impl.ResponseFactory200;
 import com.example.historian_api.services.base.static_text.StaticTextService;
 import jakarta.validation.Valid;
@@ -8,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -32,8 +35,13 @@ public class StaticTextController {
     }
     @GetMapping("/technicalSupport")
     public ResponseEntity<?> getTechnicalSupport() {
-        String technicalSupportContactInfo = service.getTechnicalSupportContactInfo();
+        List<String> technicalSupportContactInfo = service.getTechnicalSupportContactInfo();
         return ResponseEntity.ok(successFactory.createResponse(technicalSupportContactInfo));
+    }
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllTexts() {
+        StaticTextResponseDto responseDto = service.getAllStaticText();
+        return ResponseEntity.ok(successFactory.createResponse(responseDto));
     }
     @PutMapping("/aboutText")
     public ResponseEntity<?> updateAboutText(@Valid @RequestBody UpdateStaticTextRequestDto dto, BindingResult bindingResult) {
@@ -54,13 +62,34 @@ public class StaticTextController {
         String response = service.updatePrivacyText(dto.newText());
         return ResponseEntity.ok(successFactory.createResponse(response));
     }
-    @PutMapping("/technicalSupport")
+
+    @PutMapping("/googlePlay")
+    public ResponseEntity<?> updateGooglePlay(@Valid @RequestBody UpdateStaticTextRequestDto dto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(successFactory.createResponse("Invalid request data"));
+        }
+        String response = service.updateGooglePlayLink(dto.newText());
+        return ResponseEntity.ok(successFactory.createResponse(response));
+    }
+
+    @PutMapping("/appStore")
+    public ResponseEntity<?> updateAppStore(@Valid @RequestBody UpdateStaticTextRequestDto dto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(successFactory.createResponse("Invalid request data"));
+        }
+        String response = service.updateAppStoreLink(dto.newText());
+        return ResponseEntity.ok(successFactory.createResponse(response));
+    }
+
+    @PostMapping("/technicalSupport")
     public ResponseEntity<?> updateTechnicalSupport(@Valid @RequestBody UpdateStaticTextRequestDto dto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(successFactory.createResponse("Invalid request data"));
         }
-        String response = service.updateTechnicalSupportContactInfo(dto.newText());
+        String response = service.addTechnicalSupportNumber(dto.newText());
         return ResponseEntity.ok(successFactory.createResponse(response));
     }
 

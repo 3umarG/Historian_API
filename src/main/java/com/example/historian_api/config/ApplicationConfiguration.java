@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.List;
+
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfiguration {
@@ -30,11 +32,6 @@ public class ApplicationConfiguration {
 
     @Bean
     public StaticText staticText() {
-        return StaticText
-                .builder()
-                .aboutText("Your default About text")
-                .privacyText("Your default Privacy text")
-                .technicalSupportContactInfo("Your default technical support contact info")
-                .build();
+        return StaticText.getDefault();
     }
 }
