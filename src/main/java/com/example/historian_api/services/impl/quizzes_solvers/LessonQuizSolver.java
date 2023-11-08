@@ -1,4 +1,4 @@
-package com.example.historian_api.services.impl.courses.quizzes;
+package com.example.historian_api.services.impl.quizzes_solvers;
 
 import com.example.historian_api.dtos.requests.SavedLessonQuizResultDto;
 import com.example.historian_api.entities.courses.quizzes.QuizResult;
@@ -9,9 +9,7 @@ import com.example.historian_api.exceptions.AlreadyEnrolledCourseException;
 import com.example.historian_api.repositories.courses.quizzes.lessons.LessonQuestionsSolutionsRepository;
 import com.example.historian_api.repositories.courses.quizzes.lessons.LessonQuizResultsRepository;
 import com.example.historian_api.services.base.courses.quizzes.QuizSolver;
-import com.example.historian_api.services.utils.StudentsRepositoryUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
