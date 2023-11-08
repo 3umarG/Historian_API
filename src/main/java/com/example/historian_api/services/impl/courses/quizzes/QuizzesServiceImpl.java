@@ -18,10 +18,10 @@ import com.example.historian_api.repositories.courses.quizzes.grades.GradeQuizze
 import com.example.historian_api.repositories.grades.StudentGradesRepository;
 import com.example.historian_api.services.base.courses.quizzes.QuizSolver;
 import com.example.historian_api.services.base.courses.quizzes.QuizzesService;
-import com.example.historian_api.services.utils.grades_quizzes.GradeQuizQuestionsRepositoryUtils;
-import com.example.historian_api.services.utils.grades_quizzes.GradeQuizzesRepositoryUtils;
-import com.example.historian_api.services.utils.questions_results.QuestionResultCollector;
-import com.example.historian_api.services.utils.students.StudentsRepositoryUtils;
+import com.example.historian_api.utils.repositories_utils.grades_quizzes.GradeQuizQuestionsRepositoryUtils;
+import com.example.historian_api.utils.repositories_utils.grades_quizzes.GradeQuizzesRepositoryUtils;
+import com.example.historian_api.utils.repositories_utils.questions_results.QuestionResultCollector;
+import com.example.historian_api.utils.repositories_utils.students.StudentsRepositoryUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

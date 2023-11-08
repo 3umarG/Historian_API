@@ -1,8 +1,9 @@
-package com.example.historian_api.services.utils.students;
+package com.example.historian_api.utils.repositories_utils.students;
 
 import com.example.historian_api.entities.users.Student;
 import com.example.historian_api.exceptions.NotFoundResourceException;
 import com.example.historian_api.repositories.users.StudentsRepository;
+import com.example.historian_api.utils.constants.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,7 @@ public class StudentsRepositoryUtils {
 
     public Student getStudentByIdOrThrowNotFound(Integer studentId){
         return studentsRepository.findById(studentId)
-                .orElseThrow(() -> new NotFoundResourceException("There is no Student with that id !!"));
+                .orElseThrow(() -> new NotFoundResourceException(ExceptionMessages.getNotFoundResourceMessage("Student")));
     }
 
     public Boolean isNotFoundStudent(Integer studentId){
