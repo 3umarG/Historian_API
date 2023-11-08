@@ -1,4 +1,4 @@
-package com.example.historian_api.services.utils;
+package com.example.historian_api.services.utils.grades_quizzes;
 
 import com.example.historian_api.entities.courses.quizzes.grades.GradeQuiz;
 import com.example.historian_api.exceptions.NotFoundResourceException;

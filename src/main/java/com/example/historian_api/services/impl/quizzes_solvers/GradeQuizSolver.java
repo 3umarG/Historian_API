@@ -1,4 +1,4 @@
-package com.example.historian_api.services.impl.courses.quizzes;
+package com.example.historian_api.services.impl.quizzes_solvers;
 
 import com.example.historian_api.dtos.requests.SavedGradeQuizResultDto;
 import com.example.historian_api.entities.courses.quizzes.QuizResult;

@@ -1,4 +1,4 @@
-package com.example.historian_api.services.utils;
+package com.example.historian_api.services.utils.lessons;
 
 import com.example.historian_api.entities.courses.quizzes.lessons.UnitLesson;
 import com.example.historian_api.entities.users.Student;

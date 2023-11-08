@@ -1,4 +1,4 @@
-package com.example.historian_api.services.utils;
+package com.example.historian_api.services.utils.questions_results;
 
 import com.example.historian_api.entities.courses.quizzes.QuestionSolution;
 import com.example.historian_api.mappers.QuizWithQuestionsWrapper;

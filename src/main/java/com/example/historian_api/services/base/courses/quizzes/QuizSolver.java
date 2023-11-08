@@ -3,12 +3,8 @@ package com.example.historian_api.services.base.courses.quizzes;
 
 import com.example.historian_api.dtos.requests.QuestionAnswerRequestDto;
 import com.example.historian_api.entities.courses.quizzes.Question;
-import com.example.historian_api.entities.courses.quizzes.QuestionSolution;
 import com.example.historian_api.entities.courses.quizzes.QuizResult;
 import com.example.historian_api.entities.courses.quizzes.lessons.LessonQuestion;
-import com.example.historian_api.entities.users.Student;
-import com.example.historian_api.services.utils.StudentsRepositoryUtils;
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Objects;
