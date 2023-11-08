@@ -31,5 +31,5 @@ public interface FinalRevisionQuestionsRepository extends JpaRepository<FinalRev
                    "WHERE questions.unit_id = ?1 " +
                    "order by questions.id",
             nativeQuery = true)
-    List<GradeQuizQuestionProjection> findAllQuestionsByLessonId(Integer unitId, Integer studentId);
+    List<GradeQuizQuestionProjection> findAllQuestionsByUnitId(Integer unitId, Integer studentId);
 }
