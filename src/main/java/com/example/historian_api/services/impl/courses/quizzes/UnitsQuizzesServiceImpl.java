@@ -34,7 +34,6 @@ public class UnitsQuizzesServiceImpl implements UnitsQuizzesService {
     private QuizSolver quizSolver;
     private final StudentsRepositoryUtils studentsRepositoryUtils;
     private final UnitsRepositoryUtils unitsRepositoryUtils;
-    private final FinalRevisionQuestionsRepository questionsRepository;
     private final UnitsFinalRevisionQuestionsRepositoryUtils questionsRepositoryUtils;
 
 
@@ -49,7 +48,7 @@ public class UnitsQuizzesServiceImpl implements UnitsQuizzesService {
             throw new NotFoundResourceException("There is no Unit with that id !!");
         }
 
-        var questions = questionsRepository.findAllQuestionsByUnitId(unitId, studentId);
+        var questions = questionsRepositoryUtils.findAllQuestionsByUnitId(unitId, studentId);
         var quizWithQuestionsWrapper = new QuizWithQuestionsWrapper(questions);
 
 
