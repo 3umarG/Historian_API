@@ -42,7 +42,7 @@ public class StaticTextServiceImpl implements StaticTextService {
     public String updateGooglePlayLink(String googlePlayLink) {
         try{
             if(!googlePlayLink.isEmpty()&&!googlePlayLink.equals(staticText.getGooglePlayLink())){
-                staticText.setAboutText(googlePlayLink);
+                staticText.setGooglePlayLink(googlePlayLink);
                 return "Updated Successfully";
             }
             return "You must enter a new google play link";
@@ -55,7 +55,7 @@ public class StaticTextServiceImpl implements StaticTextService {
     public String updateAppStoreLink(String appStoreLink) {
         try{
             if(!appStoreLink.isEmpty()&&!appStoreLink.equals(staticText.getAppStoreLink())){
-                staticText.setAboutText(appStoreLink);
+                staticText.setAppStoreLink(appStoreLink);
                 return "Updated Successfully";
             }
             return "You must enter a new app store link";
