@@ -13,7 +13,7 @@ public abstract class ImageDataCreatorTemplate {
     @Autowired
     protected ImageUtils imageUtils;
 
-    public ImageDataWithTitleDto generateImageDataWithTitle(MultipartFile photo, String imagePath) throws IOException {
+    public final ImageDataWithTitleDto generateImageDataWithTitle(MultipartFile photo, String imagePath) throws IOException {
 
         if (photo != null) {
             String imageTitle = ImageUtils.generateUniqueImageTitle(photo.getName());
