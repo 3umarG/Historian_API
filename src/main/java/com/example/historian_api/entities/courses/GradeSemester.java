@@ -34,6 +34,13 @@ public class GradeSemester {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Course> courses = new ArrayList<>();
 
+    @OneToMany(
+            mappedBy = "semester",
+            cascade = CascadeType.ALL
+    )
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<SubscribedSemester> subscriptions = new ArrayList<>();
+
     public GradeSemester(String name, StudentGrade grade) {
         this.name = name;
         this.grade = grade;

@@ -95,7 +95,14 @@ public class Student implements UserDetails {
     @JoinColumn(name = "class_id")
     private StudentGrade studentGrade;
 
+    @OneToMany(
+            mappedBy = "student",
+            cascade = CascadeType.ALL
+    )
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<SubscribedSemester> subscribedSemesters = new ArrayList<>();
 
+// TODO : will remove this !!
     @OneToMany(
             mappedBy = "student",
             cascade = CascadeType.ALL
