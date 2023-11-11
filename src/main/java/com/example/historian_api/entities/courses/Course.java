@@ -28,8 +28,8 @@ public class Course {
 
 
     @ManyToOne
-    @JoinColumn(name = "grade_id")
-    private StudentGrade grade;
+    @JoinColumn(name = "term_id")
+    private GradeTerm term;
 
 
     @OneToMany(
@@ -45,8 +45,8 @@ public class Course {
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<EnrollmentCourse> enrollmentCourses = new ArrayList<>();
-    public Course(String title, StudentGrade grade) {
+    public Course(String title, GradeTerm term) {
         this.title = title;
-        this.grade = grade;
+        this.term = term;
     }
 }
