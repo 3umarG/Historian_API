@@ -23,13 +23,13 @@ public class Course {
     private Integer id;
 
 
-    @Column(nullable = false,length = 100)
+    @Column(nullable = false, length = 100)
     private String title;
 
 
     @ManyToOne
-    @JoinColumn(name = "term_id")
-    private GradeTerm term;
+    @JoinColumn(name = "semester_id")
+    private GradeSemester semester;
 
 
     @OneToMany(
@@ -45,8 +45,9 @@ public class Course {
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<EnrollmentCourse> enrollmentCourses = new ArrayList<>();
-    public Course(String title, GradeTerm term) {
+
+    public Course(String title, GradeSemester semester) {
         this.title = title;
-        this.term = term;
+        this.semester = semester;
     }
 }

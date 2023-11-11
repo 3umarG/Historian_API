@@ -32,7 +32,7 @@ public class StudentGrade {
             cascade = CascadeType.ALL
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<GradeTerm> terms = new ArrayList<>();
+    private List<GradeSemester> semesters = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(

@@ -14,8 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "grades_terms")
-public class GradeTerm {
+@Table(name = "grades_semesters")
+public class GradeSemester {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,13 +28,13 @@ public class GradeTerm {
     private StudentGrade grade;
 
     @OneToMany(
-            mappedBy = "term",
+            mappedBy = "semester",
             cascade = CascadeType.ALL
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Course> courses = new ArrayList<>();
 
-    public GradeTerm(String name, StudentGrade grade) {
+    public GradeSemester(String name, StudentGrade grade) {
         this.name = name;
         this.grade = grade;
     }
