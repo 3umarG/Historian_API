@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EnrollmentCoursesRepository extends JpaRepository<EnrollmentCourse, EnrollmentCourseKey> {
-
+// TODO : will change ...!!
     @Query(value = "select case when exists( " +
                    "    select student_id " +
                    "    from enrollment_courses " +

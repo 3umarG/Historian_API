@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface CoursesRepository extends JpaRepository<Course, Integer> {
-
+// TODO : will change those queries ..!!
     @Query(value = "select c.id, " +
                    "       c.title, " +
                    "       coalesce(ec.state, 'NOT_TAKEN') as state " +
