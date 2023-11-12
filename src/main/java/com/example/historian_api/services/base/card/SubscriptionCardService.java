@@ -7,4 +7,5 @@ import java.util.List;
 public interface SubscriptionCardService {
     SubscriptionCardResponseDto saveCard();
     List<SubscriptionCardResponseDto>getCards();
+    List<SubscriptionCardResponseDto>generateManyCards(Integer count);
 }

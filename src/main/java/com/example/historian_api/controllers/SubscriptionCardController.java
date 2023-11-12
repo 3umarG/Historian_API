@@ -26,4 +26,10 @@ public class SubscriptionCardController {
         SubscriptionCardResponseDto response = service.saveCard();
         return ResponseEntity.ok(successFactory.createResponse(response));
     }
+
+    @PostMapping("/{counter}")
+    public ResponseEntity<?> saveManySubscriptionCards(@PathVariable Integer counter) {
+        List<SubscriptionCardResponseDto> response = service.generateManyCards(counter);
+        return ResponseEntity.ok(successFactory.createResponse(response));
+    }
 }
