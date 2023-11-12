@@ -1,6 +1,5 @@
 package com.example.historian_api.entities.courses;
 
-import com.example.historian_api.entities.courses.quizzes.units.Unit;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,43 +10,39 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Getter
 @Entity
-@Table(name = "courses")
-public class Course {
+@Table(name = "grades_semesters")
+public class GradeSemester {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-
-    @Column(nullable = false, length = 100)
-    private String title;
-
+    private String name;
 
     @ManyToOne
-    @JoinColumn(name = "semester_id")
-    private GradeSemester semester;
-
+    @JoinColumn(name = "grade_id")
+    private StudentGrade grade;
 
     @OneToMany(
-            mappedBy = "course",
+            mappedBy = "semester",
             cascade = CascadeType.ALL
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<Unit> units = new ArrayList<>();
+    private List<Course> courses = new ArrayList<>();
 
     @OneToMany(
-            mappedBy = "course",
+            mappedBy = "semester",
             cascade = CascadeType.ALL
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<EnrollmentCourse> enrollmentCourses = new ArrayList<>();
+    private List<SubscribedSemester> subscriptions = new ArrayList<>();
 
-    public Course(String title, GradeSemester semester) {
-        this.title = title;
-        this.semester = semester;
+    public GradeSemester(String name, StudentGrade grade) {
+        this.name = name;
+        this.grade = grade;
     }
 }

@@ -25,7 +25,7 @@ import com.example.historian_api.repositories.users.TeachersRepository;
 import com.example.historian_api.services.base.JwtService;
 import com.example.historian_api.services.base.auth.AuthService;
 import com.example.historian_api.services.base.auth.StudentsImageService;
-import com.example.historian_api.services.base.auth.TeacherImageService;
+import com.example.historian_api.templates.ImageDataCreatorTemplate;
 import com.example.historian_api.utils.ImageUtils;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -42,15 +42,18 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
-import static com.example.historian_api.utils.constants.AppStrings.*;
+import static com.example.historian_api.utils.constants.AppStrings.STUDENTS_IMAGES_PATH;
+import static com.example.historian_api.utils.constants.AppStrings.TEACHERS_IMAGES_PATH;
 import static com.example.historian_api.utils.constants.ExceptionMessages.*;
 
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
+    @Autowired
+    @Qualifier("TeacherImageDataCreator")
+    private ImageDataCreatorTemplate imageDataCreator;
     private final AuthenticationManager authenticationManager;
     private final StudentsRepository studentsRepository;
     private final ImageUtils imageUtils;
@@ -58,7 +61,6 @@ public class AuthServiceImpl implements AuthService {
     private final JwtService jwtService;
     private final StudentsImageService studentsImageService;
     private final RegisteredStudentResponseDtoMapper registeredStudentResponseDtoMapper;
-    private final TeacherImageService teacherImageService;
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthServiceImpl.class);
     private final TeachersRepository teachersRepository;
 
@@ -95,7 +97,7 @@ public class AuthServiceImpl implements AuthService {
         StudentImage userImage = null;
 
         if (request.photo() != null) {
-            String imageTitle = generateUniqueImageTitle(request.photo());
+            String imageTitle = ImageUtils.generateUniqueImageTitle(request.photo().getName());
 
             userImage = insertStudentImageToDbWithTitle(request.photo(), imageTitle);
             photoUrl = imageUtils.generateImagePath(STUDENTS_IMAGES_PATH, imageTitle);
@@ -107,19 +109,9 @@ public class AuthServiceImpl implements AuthService {
         return Student.generateStudentFromRequestDto(request, photoUrl, userImage, grade);
     }
 
-    private static String generateUniqueImageTitle(MultipartFile image) {
-        return image.getName() + "-" + UUID.randomUUID();
-    }
 
     private StudentImage insertStudentImageToDbWithTitle(MultipartFile photo, String imageTitle) throws IOException {
         return studentsImageService.insertImage(new StudentImage(
-                imageTitle,
-                imageUtils.compressImage(photo.getBytes())
-        ));
-    }
-
-    private TeacherImage insertTeacherImageToDbWithTitle(MultipartFile photo, String imageTitle) throws IOException {
-        return teacherImageService.insertImage(new TeacherImage(
                 imageTitle,
                 imageUtils.compressImage(photo.getBytes())
         ));
@@ -199,8 +191,7 @@ public class AuthServiceImpl implements AuthService {
 
     private String generateJwtTokenForTeacher(Teacher teacher) {
         Map<String, Object> claims = teacher.getClaims();
-        var jwt = jwtService.generateToken(claims, teacher);
-        return jwt;
+        return jwtService.generateToken(claims, teacher);
 
     }
 
@@ -233,23 +224,15 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private Teacher generateTeacherFromDto(RegisterTeacherRequestDto teacherRequestDto) throws IOException {
-        String photoUrl = null;
-        TeacherImage userImage = null;
-
-        if (teacherRequestDto.photo() != null) {
-            String imageTitle = generateUniqueImageTitle(teacherRequestDto.photo());
-
-            userImage = insertTeacherImageToDbWithTitle(teacherRequestDto.photo(), imageTitle);
-            photoUrl = imageUtils.generateImagePath(TEACHERS_IMAGES_PATH, imageTitle);
-        }
+        var teacherImage = imageDataCreator.generateImageDataWithTitle(teacherRequestDto.photo(), TEACHERS_IMAGES_PATH);
 
 
         return new Teacher(
                 teacherRequestDto.name(),
                 teacherRequestDto.phone(),
                 passwordEncoder.encode(teacherRequestDto.password()),
-                userImage,
-                photoUrl,
+                (TeacherImage) teacherImage.imageData(),
+                teacherImage.photoUrl(),
                 teacherRequestDto.address(),
                 teacherRequestDto.summery(),
                 teacherRequestDto.facebookUrl(),
@@ -277,8 +260,7 @@ public class AuthServiceImpl implements AuthService {
 
     private String generateJwtTokenFromUser(Student student) {
         Map<String, Object> claims = student.getClaims();
-        var jwt = jwtService.generateToken(claims, student);
-        return jwt;
+        return jwtService.generateToken(claims, student);
     }
 
     private void authenticateStudent(LoginStudentRequestDto request, Student user) {

@@ -1,30 +1,20 @@
 package com.example.historian_api.entities.competitions;
 
 
+import com.example.historian_api.entities.shared.ImageData;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "competitions_images")
-public class CompetitionImage {
+public class CompetitionImage extends ImageData {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @Column(nullable = false)
-    private String title;
-
-
-    private byte[] data;
 
     public CompetitionImage(String title, byte[] data) {
-        this.title = title;
-        this.data = data;
+       super(title, data);
     }
 }

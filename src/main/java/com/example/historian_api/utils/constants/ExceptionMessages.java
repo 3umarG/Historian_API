@@ -7,4 +7,7 @@ public final class ExceptionMessages {
     public final static String USED_PHONE_IN_ANOTHER_DEVICE_EXCEPTION_MSG = "There is an active account in another device with that phone number";
     public final static String NOT_AUTHENTICATED_USER_EXCEPTION_MSG = "Not Authenticated User";
 
+    public static String getNotFoundResourceMessage(String resourceName){
+        return "There is no %s with that id !!".formatted(resourceName);
+    }
 }

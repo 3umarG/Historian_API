@@ -1,8 +1,9 @@
-package com.example.historian_api.services.utils.grades_quizzes;
+package com.example.historian_api.utils.repositories_utils.grades_quizzes;
 
 import com.example.historian_api.entities.courses.quizzes.grades.GradeQuiz;
 import com.example.historian_api.exceptions.NotFoundResourceException;
 import com.example.historian_api.repositories.courses.quizzes.grades.GradeQuizzesRepository;
+import com.example.historian_api.utils.constants.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,6 @@ public class GradeQuizzesRepositoryUtils {
 
     public GradeQuiz getQuizByIdOrThrowNotFound(Integer quizId) {
         return quizzesRepository.findById(quizId)
-                .orElseThrow(() -> new NotFoundResourceException("There is no Quiz with that id !!"));
+                .orElseThrow(() -> new NotFoundResourceException(ExceptionMessages.getNotFoundResourceMessage("Quiz")));
     }
 }
