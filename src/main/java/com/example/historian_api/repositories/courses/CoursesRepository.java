@@ -10,14 +10,14 @@ import java.util.List;
 
 @Repository
 public interface CoursesRepository extends JpaRepository<Course, Integer> {
-// TODO : will change those queries ..!!
+
     @Query(value = "select c.id, " +
                    "       c.title, " +
                    "       coalesce(ec.state, 'NOT_TAKEN') as state " +
                    "from courses c " +
                    "         left join enrollment_courses ec " +
                    "                   on c.id = ec.course_id and ec.student_id = ?2 " +
-                   "where c.grade_id = ?1 " +
+                   //"where c.grade_id = ?1 " + // TODO : not working ..!!
                    "order by c.id ",
             nativeQuery = true)
     List<GradeCoursesInformationProjection> getAllCoursesByGradeIdWithEnrollmentStateForStudent(Integer gradeId, Integer studentId);
@@ -34,4 +34,10 @@ public interface CoursesRepository extends JpaRepository<Course, Integer> {
             nativeQuery = true)
     List<GradeCoursesInformationProjection> getAllCoursesWithStateByStudentId(Integer studentId, String status);
 
+    @Query(value = "select c.id,c.title " +
+                   "from courses c " +
+                   "where c.semester_id = ?1 " +
+                   "order by c.id",
+    nativeQuery = true)
+    List<GradeCoursesInformationProjection> findCoursesBySemesterId(Integer semesterId);
 }

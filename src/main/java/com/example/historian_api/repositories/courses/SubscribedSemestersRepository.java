@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SubscribedSemestersRepository extends JpaRepository<SubscribedSemester, SubscribedSemesterKey> {
+
+    Boolean existsBySemester_IdAndStudent_Id(Integer semesterId,Integer studentId);
 }
