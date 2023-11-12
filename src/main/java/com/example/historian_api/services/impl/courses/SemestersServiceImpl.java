@@ -3,10 +3,13 @@ package com.example.historian_api.services.impl.courses;
 import com.example.historian_api.dtos.responses.CourseResponseDto;
 import com.example.historian_api.dtos.responses.EnrolledSemesterResponseDto;
 import com.example.historian_api.dtos.responses.SemesterResponseDto;
+import com.example.historian_api.entities.courses.GradeSemester;
 import com.example.historian_api.entities.courses.SubscribedSemester;
 import com.example.historian_api.entities.keys.SubscribedSemesterKey;
+import com.example.historian_api.entities.users.Student;
 import com.example.historian_api.enums.CourseTakenState;
 import com.example.historian_api.enums.SubscriptionPaymentMethod;
+import com.example.historian_api.exceptions.AlreadyEnrolledCourseException;
 import com.example.historian_api.exceptions.NotFoundResourceException;
 import com.example.historian_api.repositories.courses.CoursesRepository;
 import com.example.historian_api.repositories.courses.GradesSemestersRepository;
@@ -69,27 +72,47 @@ public class SemestersServiceImpl implements SemestersService {
 
     @Override
     public EnrolledSemesterResponseDto subscribeStudentInSemesterByVodafoneCash(Integer studentId, Integer semesterId) {
-        var student = studentsRepositoryUtils.getStudentByIdOrThrowNotFound(studentId);
-        var semester = semestersRepository.findById(semesterId)
-                .orElseThrow(() -> new NotFoundResourceException(ExceptionMessages.getNotFoundResourceMessage("Semester")));
+        var student = findStudentById(studentId);
+        var semester = findSemesterById(semesterId);
 
-        var subscribedSemesterKey = new SubscribedSemesterKey(semesterId,studentId);
+        if (isStudentAlreadySubscribedSemester(studentId, semesterId)){
+            throw new AlreadyEnrolledCourseException(ExceptionMessages.ALREADY_SUBSCRIBED_SEMESTER);
+        }
+
+        var savedSubscribedSemester = saveSubscribedSemesterToDb(semester, student);
+
+        return new EnrolledSemesterResponseDto(
+                semester.getId(),
+                semester.getName(),
+                savedSubscribedSemester.getSubscriptionState().name(),
+                student.getId(),
+                student.getName(),
+                student.getPhotoUrl()
+        );
+    }
+
+    private SubscribedSemester saveSubscribedSemesterToDb(GradeSemester semester, Student student) {
+        var subscribedSemesterKey = new SubscribedSemesterKey(semester.getId(), student.getId());
         var subscribedSemester = new SubscribedSemester(subscribedSemesterKey,
                 student,
                 semester,
                 CourseTakenState.PENDING,
                 SubscriptionPaymentMethod.VODAFONE_CASH);
 
-        var savedSubscribedSemester = subscribedSemestersRepository.save(subscribedSemester);
+        return subscribedSemestersRepository.save(subscribedSemester);
+    }
 
-        return new EnrolledSemesterResponseDto(
-                semesterId,
-                semester.getName(),
-                savedSubscribedSemester.getSubscriptionState().name(),
-                studentId,
-                student.getName(),
-                student.getPhotoUrl()
-        );
+    private Boolean isStudentAlreadySubscribedSemester(Integer studentId, Integer semesterId) {
+        return subscribedSemestersRepository.existsBySemester_IdAndStudent_Id(semesterId, studentId);
+    }
+
+    private GradeSemester findSemesterById(Integer semesterId) {
+        return semestersRepository.findById(semesterId)
+                .orElseThrow(() -> new NotFoundResourceException(ExceptionMessages.getNotFoundResourceMessage("Semester")));
+    }
+
+    private Student findStudentById(Integer studentId) {
+        return studentsRepositoryUtils.getStudentByIdOrThrowNotFound(studentId);
     }
 
     @Override
