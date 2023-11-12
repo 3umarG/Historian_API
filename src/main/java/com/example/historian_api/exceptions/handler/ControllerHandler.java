@@ -31,6 +31,12 @@ public class ControllerHandler {
     private final ResponseFactory401 unAuthorizedFactory;
     private final ResponseFactory403 forbiddenFactory;
 
+    @ExceptionHandler(NotValidSubscriptionCardException.class)
+    public ResponseEntity<?> handleNotValidSubscriptionCardException(NotValidSubscriptionCardException e){
+        var response = badRequestFactory.createResponse(e.getMessage());
+        return ResponseEntity.badRequest().body(response);
+    }
+
     @ExceptionHandler(NotFoundStudentException.class)
     public ResponseEntity<?> handleNotFoundStudentException(NotFoundStudentException e){
         var response = badRequestFactory.createResponse(e.getMessage());

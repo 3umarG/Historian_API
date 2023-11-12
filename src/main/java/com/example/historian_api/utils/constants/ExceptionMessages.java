@@ -6,7 +6,9 @@ public final class ExceptionMessages {
     public final static String USED_PHONE_NUMBER_EXCEPTION_MSG = "This phone already used with another account!!";
     public final static String USED_PHONE_IN_ANOTHER_DEVICE_EXCEPTION_MSG = "There is an active account in another device with that phone number";
     public final static String NOT_AUTHENTICATED_USER_EXCEPTION_MSG = "Not Authenticated User";
-    public static final String ALREADY_SUBSCRIBED_SEMESTER = "لقد قدمت طلب بالاشتراك بالفعل في هذا الترم,الرجاء تحويل المبلغ المطلوب على رقم فودافون كاش ثم التواصل مع الدعم وارفاق صورة من وصل التحويل !!";
+    public static final String ALREADY_SUBSCRIBED_SEMESTER_VODAFONE_CASH = "لقد قدمت طلب بالاشتراك بالفعل في هذا الترم,الرجاء تحويل المبلغ المطلوب على رقم فودافون كاش ثم التواصل مع الدعم وارفاق صورة من وصل التحويل !!";
+    public static final String ALREADY_SUBSCRIBED_SEMESTER_CODE = "لقد قمت بالاشتراك بالفعل في هذا الترم !!";
+    public static final String NOT_VALID_SUBSCRIPTION_CODE = "هذا الكود غير صحيح أو أصبح غير صالح للاستخدام !!";
 
     public static String getNotFoundResourceMessage(String resourceName){
         return "There is no %s with that id !!".formatted(resourceName);
