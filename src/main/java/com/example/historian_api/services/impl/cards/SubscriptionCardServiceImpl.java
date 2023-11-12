@@ -36,11 +36,13 @@ public class SubscriptionCardServiceImpl implements SubscriptionCardService {
     @Override
     public List<SubscriptionCardResponseDto> generateManyCards(Integer count) {
         List<SubscriptionCardResponseDto> cardResponseDtoList = new ArrayList<>();
+        List<SubscriptionCard> cards = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             SubscriptionCard card = generateUniqueCard();
-            repository.save(card);
+            cards.add(card);
             cardResponseDtoList.add(mapper.apply(card));
         }
+        repository.saveAll(cards);
         return cardResponseDtoList;
     }
 
@@ -56,8 +58,8 @@ public class SubscriptionCardServiceImpl implements SubscriptionCardService {
     }
 
     private String generateUniqueCardValue() {
-        List<SubscriptionCard>existingCards=repository.findAll();
-        String cardValue=generateRandomString();
+        List<SubscriptionCard> existingCards = repository.findAll();
+        String cardValue = generateRandomString();
         for (SubscriptionCard card : existingCards) {
             if (!card.getCardValue().equals(cardValue)) {
                 break;
