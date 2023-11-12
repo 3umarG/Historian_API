@@ -14,5 +14,7 @@ public record LoginStudentRequestDto(
         @NotBlank(message = "Device Serial is required")
         @NotEmpty(message = "Device Serial is required")
         @NotNull(message = "Device Serial is required")
-        String deviceSerial) {
+        String deviceSerial
+
+) {
 }
