@@ -11,6 +11,8 @@ import com.example.historian_api.enums.CourseTakenState;
 import com.example.historian_api.enums.SubscriptionPaymentMethod;
 import com.example.historian_api.exceptions.AlreadyEnrolledCourseException;
 import com.example.historian_api.exceptions.NotFoundResourceException;
+import com.example.historian_api.exceptions.NotValidSubscriptionCardException;
+import com.example.historian_api.repositories.cards.SubscriptionCardRepository;
 import com.example.historian_api.repositories.courses.CoursesRepository;
 import com.example.historian_api.repositories.courses.GradesSemestersRepository;
 import com.example.historian_api.repositories.courses.SubscribedSemestersRepository;
@@ -34,7 +36,7 @@ public class SemestersServiceImpl implements SemestersService {
     private final CoursesRepository coursesRepository;
     private final UnitsService unitsService;
     private final SubscribedSemestersRepository subscribedSemestersRepository;
-
+    private final SubscriptionCardRepository subscriptionCardsRepository;
 
     @Override
     public List<SemesterResponseDto> getAllSemestersInGradeForStudent(Integer gradeId, Integer studentId) {
@@ -52,7 +54,7 @@ public class SemestersServiceImpl implements SemestersService {
     @Override
     public List<CourseResponseDto> getCoursesInSemester(Integer semesterId) {
 
-        if (!semestersRepository.existsById(semesterId)){
+        if (!semestersRepository.existsById(semesterId)) {
             throw new NotFoundResourceException(ExceptionMessages.getNotFoundResourceMessage("Semester"));
         }
 
@@ -75,11 +77,11 @@ public class SemestersServiceImpl implements SemestersService {
         var student = findStudentById(studentId);
         var semester = findSemesterById(semesterId);
 
-        if (isStudentAlreadySubscribedSemester(studentId, semesterId)){
-            throw new AlreadyEnrolledCourseException(ExceptionMessages.ALREADY_SUBSCRIBED_SEMESTER);
+        if (isStudentAlreadySubscribedSemester(studentId, semesterId)) {
+            throw new AlreadyEnrolledCourseException(ExceptionMessages.ALREADY_SUBSCRIBED_SEMESTER_VODAFONE_CASH);
         }
 
-        var savedSubscribedSemester = saveSubscribedSemesterToDb(semester, student);
+        var savedSubscribedSemester = saveSubscribedSemesterByVodafoneCashToDb(semester, student);
 
         return new EnrolledSemesterResponseDto(
                 semester.getId(),
@@ -91,7 +93,7 @@ public class SemestersServiceImpl implements SemestersService {
         );
     }
 
-    private SubscribedSemester saveSubscribedSemesterToDb(GradeSemester semester, Student student) {
+    private SubscribedSemester saveSubscribedSemesterByVodafoneCashToDb(GradeSemester semester, Student student) {
         var subscribedSemesterKey = new SubscribedSemesterKey(semester.getId(), student.getId());
         var subscribedSemester = new SubscribedSemester(subscribedSemesterKey,
                 student,
@@ -117,6 +119,39 @@ public class SemestersServiceImpl implements SemestersService {
 
     @Override
     public EnrolledSemesterResponseDto subscribeStudentInSemesterByCode(Integer studentId, Integer semesterId, String code) {
-        return null;
+        var student = findStudentById(studentId);
+        var semester = findSemesterById(semesterId);
+
+        if (isStudentAlreadySubscribedSemester(studentId, semesterId)) {
+            throw new AlreadyEnrolledCourseException(ExceptionMessages.ALREADY_SUBSCRIBED_SEMESTER_CODE);
+        }
+
+        if (isNotValidCode(code)) {
+            throw new NotValidSubscriptionCardException(ExceptionMessages.NOT_VALID_SUBSCRIPTION_CODE);
+        }
+
+        var savedSubscribedSemester = saveSubscribedSemesterByCodeCardToDb(semester, student);
+        invalidateCardWithCode(code);
+
+        return new EnrolledSemesterResponseDto(semesterId,
+                semester.getName(),
+                savedSubscribedSemester.getSubscriptionState().name(),
+                studentId,
+                student.getName(),
+                student.getPhotoUrl());
+    }
+
+    private void invalidateCardWithCode(String code) {
+        subscriptionCardsRepository.invalidateCardByCode(code);
+    }
+
+    private SubscribedSemester saveSubscribedSemesterByCodeCardToDb(GradeSemester semester, Student student) {
+        var subscribedSemesterKey = new SubscribedSemesterKey(semester.getId(), student.getId());
+        var subscribedSemester = new SubscribedSemester(subscribedSemesterKey, student, semester, CourseTakenState.APPROVED, SubscriptionPaymentMethod.CODE_CARD);
+        return subscribedSemestersRepository.save(subscribedSemester);
+    }
+
+    private boolean isNotValidCode(String code) {
+        return !subscriptionCardsRepository.isActiveCardCode(code);
     }
 }

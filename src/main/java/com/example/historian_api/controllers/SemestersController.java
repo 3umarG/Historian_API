@@ -39,11 +39,12 @@ public class SemestersController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/{semesterId}/card")
+    @PostMapping("/{semesterId}/subscription-card")
     public ResponseEntity<?> subscribeStudentInSemesterByCode(
             @PathVariable Integer semesterId,
             @RequestHeader("uid") Integer studentId,
             @RequestBody ContentRequestDto dto) {
-        return ResponseEntity.ok().build();
+        var response = successResponseFactory.createResponse(semestersService.subscribeStudentInSemesterByCode(studentId,semesterId, dto.content()));
+        return ResponseEntity.ok(response);
     }
 }
