@@ -8,7 +8,7 @@ import com.example.historian_api.dtos.responses.QuizWithQuestionsResponseDto;
 import java.util.List;
 
 public interface QuizzesService {
-    List<GradeQuizResponseDto> getGradeQuizzesForStudent(Integer gradeId , Integer studentId);
+    List<GradeQuizResponseDto> getGradeQuizzesForStudent(Integer semesterId , Integer studentId);
 
     QuizWithQuestionsResponseDto getGradeQuizQuestions(Integer quizId, Integer studentId);
 

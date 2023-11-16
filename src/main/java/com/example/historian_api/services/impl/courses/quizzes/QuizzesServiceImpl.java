@@ -13,11 +13,12 @@ import com.example.historian_api.entities.keys.GradeQuizQuestionSolutionKey;
 import com.example.historian_api.entities.users.Student;
 import com.example.historian_api.exceptions.NotFoundResourceException;
 import com.example.historian_api.mappers.QuizWithQuestionsWrapper;
+import com.example.historian_api.repositories.courses.GradesSemestersRepository;
 import com.example.historian_api.repositories.courses.quizzes.grades.GradeQuizQuestionsRepository;
 import com.example.historian_api.repositories.courses.quizzes.grades.GradeQuizzesRepository;
-import com.example.historian_api.repositories.grades.StudentGradesRepository;
 import com.example.historian_api.services.base.courses.quizzes.QuizSolver;
 import com.example.historian_api.services.base.courses.quizzes.QuizzesService;
+import com.example.historian_api.utils.constants.ExceptionMessages;
 import com.example.historian_api.utils.repositories_utils.grades_quizzes.GradeQuizQuestionsRepositoryUtils;
 import com.example.historian_api.utils.repositories_utils.grades_quizzes.GradeQuizzesRepositoryUtils;
 import com.example.historian_api.utils.repositories_utils.questions_results.QuestionResultCollector;
@@ -39,22 +40,22 @@ public class QuizzesServiceImpl implements QuizzesService {
     @Autowired
     @Qualifier("GradeQuizSolver")
     private QuizSolver quizSolver;
-    private final StudentGradesRepository gradesRepository;
     private final GradeQuizzesRepository quizzesRepository;
     private final GradeQuizQuestionsRepository gradeQuizQuestionsRepository;
+    private final GradesSemestersRepository gradesSemestersRepository;
 
     @Override
-    public List<GradeQuizResponseDto> getGradeQuizzesForStudent(Integer gradeId, Integer studentId) {
+    public List<GradeQuizResponseDto> getGradeQuizzesForStudent(Integer semesterId, Integer studentId) {
 
         if (studentsRepositoryUtils.isNotFoundStudent(studentId)) {
-            throw new NotFoundResourceException("There is no Student with that id !!");
+            throw new NotFoundResourceException(ExceptionMessages.getNotFoundResourceMessage("Student"));
         }
 
-        if (!gradesRepository.existsById(gradeId)) {
-            throw new NotFoundResourceException("There is no Grade with that id !!");
+        if (!gradesSemestersRepository.existsById(semesterId)) {
+            throw new NotFoundResourceException(ExceptionMessages.getNotFoundResourceMessage("Semester"));
         }
 
-        var quizzes = quizzesRepository.getAllQuizzesForStudentByGradeId(gradeId, studentId);
+        var quizzes = quizzesRepository.getAllQuizzesForStudentBySemesterId(semesterId, studentId);
 
         return quizzes.stream()
                 .map(quiz -> new GradeQuizResponseDto(
@@ -63,7 +64,7 @@ public class QuizzesServiceImpl implements QuizzesService {
                         quiz.getDescription(),
                         quiz.getIsSolvedOrNot(),
                         quiz.getIsFinalOrNot(),
-                        quiz.getGradeId()
+                        quiz.getSemesterId()
                 ))
                 .toList();
 
