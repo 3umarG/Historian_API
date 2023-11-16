@@ -1,5 +1,6 @@
 package com.example.historian_api.entities.courses;
 
+import com.example.historian_api.entities.courses.quizzes.grades.GradeQuiz;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,6 +41,13 @@ public class GradeSemester {
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<SubscribedSemester> subscriptions = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "semester",
+            cascade = CascadeType.ALL
+    )
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<GradeQuiz> quizzes = new ArrayList<>();
 
     public GradeSemester(String name, StudentGrade grade) {
         this.name = name;

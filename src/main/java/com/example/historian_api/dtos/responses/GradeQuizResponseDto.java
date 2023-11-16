@@ -6,6 +6,6 @@ public record GradeQuizResponseDto(
         String description,
         Boolean isSolved,
         Boolean isFinal,
-        Integer gradeId
+        Integer semesterId
 ) {
 }

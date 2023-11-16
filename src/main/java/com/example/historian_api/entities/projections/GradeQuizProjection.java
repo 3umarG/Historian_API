@@ -13,8 +13,8 @@ public interface GradeQuizProjection {
     @Value("#{target.title}")
     String getTitle();
 
-    @Value("#{target.grade_id}")
-    Integer getGradeId();
+    @Value("#{target.semester_id}")
+    Integer getSemesterId();
 
     @Value("#{target.is_final}")
     Boolean getIsFinalOrNot();

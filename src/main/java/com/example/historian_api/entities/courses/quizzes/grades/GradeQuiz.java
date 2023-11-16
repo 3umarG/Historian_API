@@ -1,7 +1,7 @@
 package com.example.historian_api.entities.courses.quizzes.grades;
 
 
-import com.example.historian_api.entities.courses.StudentGrade;
+import com.example.historian_api.entities.courses.GradeSemester;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,8 +32,8 @@ public class GradeQuiz {
     private Boolean isHidden;
 
     @ManyToOne
-    @JoinColumn(name = "grade_id")
-    private StudentGrade grade;
+    @JoinColumn(name = "semester_id")
+    private GradeSemester semester;
 
     @OneToMany(
             mappedBy = "quiz",
@@ -49,11 +49,11 @@ public class GradeQuiz {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<GradeQuizResult> results = new ArrayList<>();
 
-    public GradeQuiz(String title, String description, StudentGrade grade, Boolean isFinal, Boolean isHidden) {
+    public GradeQuiz(String title, String description, GradeSemester semester, Boolean isFinal, Boolean isHidden) {
         this.title = title;
         this.isHidden = isHidden;
         this.isFinal = isFinal;
         this.description = description;
-        this.grade = grade;
+        this.semester = semester;
     }
 }

@@ -34,14 +34,6 @@ public class StudentGrade {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<GradeSemester> semesters = new ArrayList<>();
 
-    @JsonIgnore
-    @OneToMany(
-            mappedBy = "grade",
-            cascade = CascadeType.ALL
-    )
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<GradeQuiz> quizzes = new ArrayList<>();
-
 
     @JsonIgnore
     @OneToMany(mappedBy = "grade", cascade = CascadeType.ALL, orphanRemoval = true)

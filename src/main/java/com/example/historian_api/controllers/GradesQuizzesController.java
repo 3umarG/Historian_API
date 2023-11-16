@@ -18,10 +18,10 @@ public class GradesQuizzesController {
     private final ResponseFactory200 successResponseFactory;
 
     @GetMapping
-    public ResponseEntity<?> getAllQuizzesByGradeId(
-            @RequestHeader("gid") Integer gradeId,
+    public ResponseEntity<?> getAllQuizzesBySemesterId(
+            @RequestHeader("tim") Integer semesterId,
             @RequestHeader("uid") Integer studentId) {
-        var response = successResponseFactory.createResponse(quizzesService.getGradeQuizzesForStudent(gradeId, studentId));
+        var response = successResponseFactory.createResponse(quizzesService.getGradeQuizzesForStudent(semesterId, studentId));
         return ResponseEntity.ok(response);
     }
 
