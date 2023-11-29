@@ -9,7 +9,7 @@ import com.example.historian_api.dtos.responses.VideoCommentResponseDto;
 import java.util.List;
 
 public interface CoursesService {
-    List<CourseResponseDto> getAllCoursesByGradeIdForStudent(Integer gradeId, Integer studentId);
+    List<CourseResponseDto> getAllCoursesByGradeIdForStudent(Integer semesterId, Integer studentId);
 
     List<CourseResponseDto> getAllSubscribedCoursesForStudent(Integer studentId);
 
