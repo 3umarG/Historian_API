@@ -9,10 +9,7 @@ import com.example.historian_api.entities.courses.VideoComment;
 import com.example.historian_api.enums.AuthorType;
 import com.example.historian_api.enums.CourseTakenState;
 import com.example.historian_api.exceptions.NotFoundResourceException;
-import com.example.historian_api.repositories.courses.CoursesRepository;
-import com.example.historian_api.repositories.courses.LessonsRepository;
-import com.example.historian_api.repositories.courses.UnitsRepository;
-import com.example.historian_api.repositories.courses.VideosCommentsRepository;
+import com.example.historian_api.repositories.courses.*;
 import com.example.historian_api.repositories.grades.StudentGradesRepository;
 import com.example.historian_api.repositories.users.StudentsRepository;
 import com.example.historian_api.services.base.courses.CoursesService;
@@ -20,6 +17,7 @@ import com.example.historian_api.services.base.courses.EnrollmentCoursesService;
 import com.example.historian_api.services.base.courses.LessonsService;
 import com.example.historian_api.services.base.courses.UnitsService;
 import com.example.historian_api.services.base.helpers.TimeSinceFormatter;
+import com.example.historian_api.utils.constants.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -40,17 +38,17 @@ public class CoursesServiceImpl implements CoursesService {
     private final TimeSinceFormatter timeSinceFormatter;
     private final EnrollmentCoursesService enrollmentCoursesService;
     private final LessonsRepository lessonsRepository;
+    private final GradesSemestersRepository semestersRepository;
 
 
     @Override
-    public List<CourseResponseDto> getAllCoursesByGradeIdForStudent(Integer gradeId, Integer studentId) {
-        if (!isExistedGrade(gradeId)) {
-            throw new NotFoundResourceException("There is no Grade with that id !!");
-        }
+    public List<CourseResponseDto> getAllCoursesByGradeIdForStudent(Integer semesterId, Integer studentId) {
+
+        checkForExistedSemester(semesterId);
 
         checkForExistedStudent(studentId);
 
-        var coursesProjection = coursesRepository.getAllCoursesByGradeIdWithEnrollmentStateForStudent(gradeId, studentId);
+        var coursesProjection = coursesRepository.getAllCoursesBySemesterIdWithEnrollmentStateForStudent(semesterId, studentId);
 
         return coursesProjection.stream().map(course -> {
             var unitsForCourse = unitsService.getAllUnitsByCourseId(course.getCourseId());
@@ -61,6 +59,12 @@ public class CoursesServiceImpl implements CoursesService {
                     unitsForCourse
             );
         }).toList();
+    }
+
+    private void checkForExistedSemester(Integer semesterId) {
+        if (!isExistedSemester(semesterId)) {
+            throw new NotFoundResourceException(ExceptionMessages.getNotFoundResourceMessage("Semester"));
+        }
     }
 
     private void checkForExistedStudent(Integer studentId) {
@@ -167,7 +171,7 @@ public class CoursesServiceImpl implements CoursesService {
         return !unitsRepository.existsById(unitId);
     }
 
-    private boolean isExistedGrade(Integer gradeId) {
-        return gradesRepository.existsById(gradeId);
+    private boolean isExistedSemester(Integer semesterId) {
+        return semestersRepository.existsById(semesterId);
     }
 }

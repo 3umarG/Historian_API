@@ -19,8 +19,8 @@ public class CoursesController {
     @GetMapping
     public ResponseEntity<?> getGradeCoursesForStudent(
             @RequestHeader("uid") Integer studentId,
-            @RequestHeader("gid") Integer gradeId) {
-        var response = successResponseFactory.createResponse(coursesService.getAllCoursesByGradeIdForStudent(gradeId, studentId));
+            @RequestHeader("tim") Integer semesterId) {
+        var response = successResponseFactory.createResponse(coursesService.getAllCoursesByGradeIdForStudent(semesterId, studentId));
         return ResponseEntity.ok(response);
     }
 
