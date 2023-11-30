@@ -14,6 +14,8 @@ public class StaticText {
     private List<String> technicalSupportContactInfo;
     private String googlePlayLink;
     private String appStoreLink;
+
+    private String vodafoneCash;
     public static StaticText getDefault() {
         return StaticText.builder()
                 .aboutText("Your default About text")
@@ -21,6 +23,7 @@ public class StaticText {
                 .technicalSupportContactInfo(new ArrayList<>())
                 .googlePlayLink("Your default google play app link")
                 .appStoreLink("Your default app store app link")
+                .vodafoneCash("+20")
                 .build();
     }
 }
