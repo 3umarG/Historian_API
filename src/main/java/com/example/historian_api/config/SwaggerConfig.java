@@ -7,9 +7,12 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import springfox.documentation.swagger.web.UiConfiguration;
+import springfox.documentation.swagger.web.UiConfigurationBuilder;
 
 @Configuration
 public class SwaggerConfig {
+
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
@@ -33,4 +36,12 @@ public class SwaggerConfig {
                 .bearerFormat("JWT")
                 .scheme("bearer");
     }
+
+//    @Bean
+//    public UiConfiguration uiConfig() {
+//        return UiConfigurationBuilder.builder()
+//                .displayRequestDuration(true)
+//                .validatorUrl(null)
+//                .build();
+//    }
 }

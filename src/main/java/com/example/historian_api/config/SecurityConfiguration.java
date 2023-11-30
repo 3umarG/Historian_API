@@ -21,6 +21,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -31,7 +32,6 @@ public class SecurityConfiguration {
 
     @Qualifier("studentsDetailsService")
     private final UserDetailsService studentsDetailsService;
-
 
     @Qualifier("instructorsDetailsService")
     private final UserDetailsService instructorsDetailsService;
@@ -45,6 +45,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(withDefaults()) // Enable CORS configuration
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(
                                         "/api/v*/auth/**",
@@ -68,6 +69,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain notAuthenticatedFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(withDefaults())
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(
                                         "/api/v*/**",
