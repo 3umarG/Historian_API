@@ -23,10 +23,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
                 )
         }
 )
-@CrossOrigin(
-        origins = "*",
-        maxAge = 3600,
-        allowedHeaders = "*")
+//@CrossOrigin(
+//        origins = "http://localhost:3000",
+//        maxAge = 3600,
+//        allowedHeaders = "*")
 public class HistorianApiApplication {
 
     public static void main(String[] args) {

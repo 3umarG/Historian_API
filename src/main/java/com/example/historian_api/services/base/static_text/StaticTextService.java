@@ -11,6 +11,7 @@ public interface StaticTextService {
     String updateAboutText(String aboutText);
     String updateGooglePlayLink(String googlePlayLink);
     String updateAppStoreLink(String appStoreLink);
+    String updateVodafoneCashNumber(String vodafoneCashNumber);
     List<String> getTechnicalSupportContactInfo();
     StaticTextResponseDto getAllStaticText();
     String addTechnicalSupportNumber(String technicalSupportContactInfo);

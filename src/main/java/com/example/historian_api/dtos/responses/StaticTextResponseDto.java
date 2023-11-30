@@ -10,6 +10,7 @@ public record StaticTextResponseDto(
         String privacyText,
         String googlePlayLink,
         String appStoreLink,
+        String vodafoneCash,
         List<String> technicalSupportContactsInfo
 ) {
 }

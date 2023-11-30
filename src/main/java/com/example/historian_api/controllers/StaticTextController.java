@@ -24,13 +24,13 @@ public class StaticTextController {
 
     @GetMapping("/aboutText")
     public ResponseEntity<?> getAboutText() {
-       String aboutText = service.getAboutText();
+       Object aboutText = service.getAboutText();
         return ResponseEntity.ok(successFactory.createResponse(aboutText));
     }
 
     @GetMapping("/privacyText")
     public ResponseEntity<?> getPrivacyText() {
-        String privacyText = service.getPrivacyText();
+        Object privacyText = service.getPrivacyText();
         return ResponseEntity.ok(successFactory.createResponse(privacyText));
     }
     @GetMapping("/technicalSupport")
@@ -49,9 +49,20 @@ public class StaticTextController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(successFactory.createResponse("Invalid request data"));
         }
-       String response = service.updateAboutText(dto.newText());
+        Object response = service.updateAboutText(dto.newText());
         return ResponseEntity.ok(successFactory.createResponse(response));
     }
+
+    @PutMapping("/vodafoneCash")
+    public ResponseEntity<?> updateVodafoneCash(@Valid @RequestBody UpdateStaticTextRequestDto dto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(successFactory.createResponse("Invalid request data"));
+        }
+        Object response = service.updateVodafoneCashNumber(dto.newText());
+        return ResponseEntity.ok(successFactory.createResponse(response));
+    }
+
 
     @PutMapping("/privacyText")
     public ResponseEntity<?> updatePrivacyText(@Valid @RequestBody UpdateStaticTextRequestDto dto, BindingResult bindingResult) {
@@ -59,7 +70,7 @@ public class StaticTextController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(successFactory.createResponse("Invalid request data"));
         }
-        String response = service.updatePrivacyText(dto.newText());
+        Object response = service.updatePrivacyText(dto.newText());
         return ResponseEntity.ok(successFactory.createResponse(response));
     }
 
@@ -69,7 +80,7 @@ public class StaticTextController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(successFactory.createResponse("Invalid request data"));
         }
-        String response = service.updateGooglePlayLink(dto.newText());
+        Object response = service.updateGooglePlayLink(dto.newText());
         return ResponseEntity.ok(successFactory.createResponse(response));
     }
 
@@ -79,7 +90,7 @@ public class StaticTextController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(successFactory.createResponse("Invalid request data"));
         }
-        String response = service.updateAppStoreLink(dto.newText());
+        Object response = service.updateAppStoreLink(dto.newText());
         return ResponseEntity.ok(successFactory.createResponse(response));
     }
 
@@ -89,7 +100,7 @@ public class StaticTextController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(successFactory.createResponse("Invalid request data"));
         }
-        String response = service.addTechnicalSupportNumber(dto.newText());
+        Object response = service.addTechnicalSupportNumber(dto.newText());
         return ResponseEntity.ok(successFactory.createResponse(response));
     }
 

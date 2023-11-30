@@ -65,6 +65,19 @@ public class StaticTextServiceImpl implements StaticTextService {
     }
 
     @Override
+    public String updateVodafoneCashNumber(String vodafoneCashNumber) {
+        try{
+            if(!vodafoneCashNumber.isEmpty()&&!vodafoneCashNumber.equals(staticText.getVodafoneCash())){
+                staticText.setVodafoneCash(vodafoneCashNumber);
+                return "Updated Successfully";
+            }
+            return "You must enter a new vodafone cash number";
+        }catch (Exception e){
+            return "Something went wrong : "+e.getMessage();
+        }
+    }
+
+    @Override
     public List<String> getTechnicalSupportContactInfo() {
         return staticText.getTechnicalSupportContactInfo();
     }
@@ -77,6 +90,7 @@ public class StaticTextServiceImpl implements StaticTextService {
                 .privacyText(staticText.getPrivacyText())
                 .appStoreLink(staticText.getAppStoreLink())
                 .googlePlayLink(staticText.getGooglePlayLink())
+                .vodafoneCash(staticText.getVodafoneCash())
                 .technicalSupportContactsInfo(staticText.getTechnicalSupportContactInfo())
                 .build();
     }
