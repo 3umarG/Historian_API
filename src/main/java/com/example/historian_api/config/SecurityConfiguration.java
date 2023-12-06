@@ -45,7 +45,6 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(withDefaults()) // Enable CORS configuration
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(
                                         "/api/v*/auth/**",
@@ -69,7 +68,6 @@ public class SecurityConfiguration {
     public SecurityFilterChain notAuthenticatedFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(withDefaults())
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(
                                         "/api/v*/**",
