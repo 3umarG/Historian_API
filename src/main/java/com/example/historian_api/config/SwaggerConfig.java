@@ -37,11 +37,4 @@ public class SwaggerConfig {
                 .scheme("bearer");
     }
 
-//    @Bean
-//    public UiConfiguration uiConfig() {
-//        return UiConfigurationBuilder.builder()
-//                .displayRequestDuration(true)
-//                .validatorUrl(null)
-//                .build();
-//    }
 }
